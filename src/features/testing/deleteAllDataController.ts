@@ -1,9 +1,8 @@
 import { Request, Response } from 'express'
-import { db } from '../db/db'
+import { setDB } from '../../db/db'
 
 export const deleteAllDataController = (req: Request, res: Response) => {
-    db.posts = []
-    db.blogs = []
+    setDB()
     res
         .sendStatus(204)
 }

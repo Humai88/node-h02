@@ -6,10 +6,10 @@ export const db: DBType = {
   blogs: []
 }
 
-// функция для быстрой очистки/заполнения базы данных для тестов
 export const setDB = (dataset?: Partial<DBType>) => {
   if (!dataset) { 
       db.posts = []
+      db.blogs = []
       return
   }
 

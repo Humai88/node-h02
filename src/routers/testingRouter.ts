@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import { deleteAllDataController } from '../testing/deleteAllDataController'
+import { deleteAllDataController } from '../features/testing/deleteAllDataController'
 
 
 export const testRouter = Router()

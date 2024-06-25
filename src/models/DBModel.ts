@@ -1,13 +1,7 @@
-export interface PostDBType {
-
-}
-
-export interface BlogDBType {
-
-}
-
+import { BlogViewModel } from "./BlogViewModel"
+import { PostViewModel } from "./PostViewModel"
 
 export type DBType = {
-  posts: PostDBType[]
-  blogs: BlogDBType[]
+  posts: PostViewModel[]
+  blogs: BlogViewModel[]
 }
