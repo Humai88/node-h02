@@ -4,11 +4,12 @@ import { createBlogController } from '../features/blogs/controllers/createBlogCo
 import { findBlogController } from '../features/blogs/controllers/findBlogController'
 import { deleteBlogController } from '../features/blogs/controllers/deleteBlogController'
 import { updateBlogController } from '../features/blogs/controllers/updateBlogController'
+import { blogValidator } from '../features/blogs/middlewares/blogValidator'
 
 export const blogsRouter = Router()
  
 blogsRouter.get('/', getBlogsController)
-blogsRouter.post('/', createBlogController)
+blogsRouter.post('/', ...blogValidator, createBlogController)
 blogsRouter.get('/:id', findBlogController)
 blogsRouter.delete('/:id', deleteBlogController)
-blogsRouter.put('/:id', updateBlogController)
+blogsRouter.put('/:id', ...blogValidator, updateBlogController)

@@ -4,11 +4,12 @@ import { createPostController } from '../features/posts/controllers/createPostCo
 import { findPostController } from '../features/posts/controllers/findPostController'
 import { deletePostController } from '../features/posts/controllers/deletePostController'
 import { updatePostController } from '../features/posts/controllers/updatePostController'
+import { postValidator } from '../features/posts/middlewares/postValidator'
 
 export const postsRouter = Router()
  
 postsRouter.get('/', getPostsController)
-postsRouter.post('/', createPostController)
+postsRouter.post('/', ...postValidator, createPostController)
 postsRouter.get('/:id', findPostController)
 postsRouter.delete('/:id', deletePostController)
-postsRouter.put('/:id', updatePostController)
+postsRouter.put('/:id', ...postValidator, updatePostController)

@@ -5,7 +5,7 @@ import { PostInputModel } from '../../../models/PostInputModel';
 import { PostViewModel } from '../../../models/PostViewModel';
 
 
-export const createPostController = (req: Request<null, PostViewModel | ErrorResultModel, PostInputModel>, res: Response<PostViewModel | ErrorResultModel>) => {
+export const createPostController = (req: Request<any, PostViewModel | ErrorResultModel, PostInputModel>, res: Response<PostViewModel | ErrorResultModel>) => {
   const newBlog = PostsRepository.createPost(req.body)
   res
       .status(201)

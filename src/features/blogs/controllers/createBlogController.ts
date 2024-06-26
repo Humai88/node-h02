@@ -5,7 +5,7 @@ import { BlogViewModel } from '../../../models/BlogViewModel';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 
 
-export const createBlogController = (req: Request<null, BlogViewModel | ErrorResultModel, BlogInputModel>, res: Response<BlogViewModel | ErrorResultModel>) => {
+export const createBlogController = (req: Request<any, BlogViewModel, BlogInputModel>, res: Response<BlogViewModel | ErrorResultModel>) => {
 const newBlog = BlogsRepository.createBlog(req.body)
   res
       .status(201)
