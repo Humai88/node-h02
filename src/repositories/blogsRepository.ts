@@ -9,7 +9,7 @@ export const BlogsRepository = {
 
 
   findBlog(id: string) {
-    const blog = db.blogs.find(blog => blog.id === id) as BlogViewModel
+    const blog: BlogViewModel = db.blogs.find(blog  => blog.id === id) as BlogViewModel
     if (!blog) {
       return false
     } else {

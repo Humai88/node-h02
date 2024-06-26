@@ -8,7 +8,7 @@ import { PostsRepository } from '../../../repositories/postsRepository';
 export const updatePostController = (req: Request<ParamModel, null, PostViewModel>, res: Response<null | ErrorResultModel>) => {
   const postToUpdate = PostsRepository.updatePost(req.params.id,req.body)
   if (!postToUpdate) {
-      res.status(404).json({ errorsMessages: [{ message: 'Video not found', field: 'id' }] })
+      res.status(404).json({ errorsMessages: [{ message: 'Post not found', field: 'id' }] })
       return
   }
   res

@@ -8,7 +8,7 @@ import { ErrorResultModel } from '../../../models/ErrorResultModel';
 export const updateBlogController = (req: Request<ParamModel, null, BlogViewModel>, res: Response<null | ErrorResultModel>) => {
   const blogToUpdate = BlogsRepository.updateBlog(req.params.id,req.body)
   if (!blogToUpdate) {
-      res.status(404).json({ errorsMessages: [{ message: 'Video not found', field: 'id' }] })
+      res.status(404).json({ errorsMessages: [{ message: 'Blog not found', field: 'id' }] })
       return
   }
   res
