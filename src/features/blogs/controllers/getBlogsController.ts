@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
-import { db } from '../../../db/db';
+import { BlogViewModel } from '../../../models/BlogViewModel';
+import { BlogsRepository } from '../../../repositories/blogsRepository';
 
-export const getBlogsController = (req: Request, res: Response) => {
-  const blogs = db.blogs
+
+export const getBlogsController = (req: Request, res: Response<BlogViewModel[]>) => {
+  const blogs = BlogsRepository.getBlogs()
   res
     .status(200)
     .json(blogs)

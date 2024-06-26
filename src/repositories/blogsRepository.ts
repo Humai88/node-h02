@@ -2,12 +2,17 @@ import { db } from "../db/db"
 import { BlogInputModel } from "../models/BlogInputModel"
 import { BlogViewModel } from "../models/BlogViewModel"
 
-export const blogsRepository = {
+export const BlogsRepository = {
+  getBlogs() {
+    return db.blogs
+  },
+
+
   findBlog(id: string) {
-    const blog = db.blogs.find(blog => blog.id === id)as BlogViewModel
-    if(!blog) {
+    const blog = db.blogs.find(blog => blog.id === id) as BlogViewModel
+    if (!blog) {
       return false
-    } else{
+    } else {
       return blog
     }
   },

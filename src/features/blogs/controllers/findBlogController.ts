@@ -1,9 +1,12 @@
 import { Request, Response } from 'express';
-import { blogsRepository } from '../../../repositories/blogsRepository';
+import { BlogsRepository } from '../../../repositories/blogsRepository';
+import { BlogViewModel } from '../../../models/BlogViewModel';
+import { ErrorResultModel } from '../../../models/ErrorResultModel';
+import { ParamModel } from '../../../models/BlogInputModel';
 
 
-export const findBlogController = (req: Request, res: Response) => {
-  const blog = blogsRepository.findBlog(req.params.id)
+export const findBlogController = (req: Request<ParamModel>, res: Response<BlogViewModel | ErrorResultModel>) => {
+  const blog = BlogsRepository.findBlog(req.params.id)
   if (!blog) {
     res.status(404).json({ errorsMessages: [{ message: 'Video not found', field: 'id' }] })
     return

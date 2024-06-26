@@ -1,10 +1,12 @@
 import { Request, Response } from 'express';
-import { blogsRepository } from '../../../repositories/blogsRepository';
+import { BlogsRepository } from '../../../repositories/blogsRepository';
 import { ParamModel } from '../../../models/BlogInputModel';
 import { BlogViewModel } from '../../../models/BlogViewModel';
+import { ErrorResultModel } from '../../../models/ErrorResultModel';
 
-export const updateBlogController = (req: Request<ParamModel, null, BlogViewModel>, res: Response) => {
-  const blogToUpdate = blogsRepository.updateBlog(req.params.id,req.body)
+
+export const updateBlogController = (req: Request<ParamModel, null, BlogViewModel>, res: Response<null | ErrorResultModel>) => {
+  const blogToUpdate = BlogsRepository.updateBlog(req.params.id,req.body)
   if (!blogToUpdate) {
       res.status(404).json({ errorsMessages: [{ message: 'Video not found', field: 'id' }] })
       return

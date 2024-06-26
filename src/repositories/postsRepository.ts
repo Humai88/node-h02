@@ -3,36 +3,55 @@ import { PostInputModel } from "../models/PostInputModel"
 import { PostViewModel } from "../models/PostViewModel"
 
 
-// export const postRepository = {
-//   async createPost(input: PostInputModel): Promise<{ error?: string, id?: number }> {
-//     const newPost: PostViewModel = {
-//       ...input,
-//       id: String(Date.now() + Math.random()),
-//       // ...
-//     }
+export const PostsRepository = {
+  getPosts() {
+    return db.posts
+  },
 
-//     try {
-//       db.posts = [...db.posts, newPost]
-//     } catch (e) {
-//       // log
-//       return { error: e.message }
-//     }
+  findPost(id: string) {
+    const post = db.posts.find(post => post.id === id) as PostViewModel
+    if (!post) {
+      return false
+    } else {
+      return post
+    }
+  },
 
-//     return { id: newPost.id }
-//   },
-//   async findPost(id: number): Promise<PostViewModel> {
-//     return db.posts.find(p => p.id === id)
-//   },
-//   async findForOutput(id: number): Promise<null | PostViewModel> {
-//     const post = await this.find(id)
-//     if (!post) { return null }
-//     return this.mapToOutput(post)
+  createPost(post: PostInputModel) {
+    const newPost: PostViewModel = {
+      ...post,
+      id: String(Date.now() + Math.random()),
+      blogName: db.blogs.find(blog => blog.id === post.blogId)?.name as string
+    }
+    db.posts = [...db.posts, newPost]
+    return newPost
+  },
 
-//   },
-//   mapToOutput(post: PostViewModel): PostViewModel {
-//     return {
-//       id: post.id,
-//       title: post.title,
-//     }
-//   }
-// }
+  updatePost(id: string, post: PostInputModel) {
+    let postToUpdate = db.posts.find(post => post.id === id) as PostViewModel;
+    if (postToUpdate) {
+      postToUpdate = {
+        ...post,
+        id,
+        blogName: db.blogs.find(blog => blog.id === post.blogId)?.name as string
+      }
+      db.posts = db.posts.map(post => post.id === id ? postToUpdate : post)
+      return true
+    } else {
+      return false
+    }
+
+  },
+
+  deletePost(id: string) {
+    let blogToDelete = db.posts.find(post => post.id === id) as PostViewModel;
+    if (blogToDelete) {
+      db.posts = db.posts.filter(post => post.id !== id)
+      return true
+    } else {
+      return false
+    }
+
+  },
+
+}
