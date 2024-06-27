@@ -7,7 +7,7 @@ import { PostsRepository } from '../../../repositories/postsRepository';
 export const deletePostController = (req: Request<ParamModel>, res: Response<null | ErrorResultModel>) => {
   const postToDelete = PostsRepository.deletePost(req.params.id)
   if (!postToDelete) {
-      res.status(404).json({ errorsMessages: [{ message: 'Video not found', field: 'id' }] })
+      res.status(404).json({ errorsMessages: [{ message: 'Post not found', field: 'id' }] })
       return
   }
   res

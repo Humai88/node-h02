@@ -14,4 +14,5 @@ export const setDB = (dataset?: Partial<DBModel>) => {
   }
 
   db.posts = dataset.posts || db.posts
+  db.blogs = dataset.blogs || db.blogs
 }
