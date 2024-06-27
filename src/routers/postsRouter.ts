@@ -5,11 +5,12 @@ import { findPostController } from '../features/posts/controllers/findPostContro
 import { deletePostController } from '../features/posts/controllers/deletePostController'
 import { updatePostController } from '../features/posts/controllers/updatePostController'
 import { postValidator } from '../features/posts/middlewares/postValidator'
+import { adminMiddleware } from '../global/middlewares/adminMiddleware'
 
 export const postsRouter = Router()
  
 postsRouter.get('/', getPostsController)
 postsRouter.post('/', ...postValidator, createPostController)
 postsRouter.get('/:id', findPostController)
-postsRouter.delete('/:id', deletePostController)
+postsRouter.delete('/:id', adminMiddleware, deletePostController)
 postsRouter.put('/:id', ...postValidator, updatePostController)

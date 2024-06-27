@@ -2,6 +2,8 @@ import {req} from "./../helpers"
 import { setDB } from '../../src/db/db'
 import {dataset1} from "./../mockData"
 import { BlogInputModel } from "../../src/models/BlogInputModel"
+import { fromUTF8ToBase64 } from "../../src/global/middlewares/adminMiddleware"
+import { SETTINGS } from "../../src/settings"
 
 describe('GET /blogs controller tests', () => {
 
@@ -46,6 +48,16 @@ describe('POST /blogs controller tests', () => {
     beforeEach(() => {
         setDB()
     })
+    
+    it('should return 401 error if user is not authorized', async () => {
+      const inputData: BlogInputModel = {
+        name: "Blog",
+        description: "Description for the New Blog",
+        websiteUrl: "https://www.newblog.com",
+      }
+        const response = await req.post('/blogs').send(inputData)
+        expect(response.status).toBe(401)
+    })
 
     it('should successfully create a blog with valid input', async () => {
         const blogInputData: BlogInputModel = {
@@ -53,7 +65,7 @@ describe('POST /blogs controller tests', () => {
           description: "Description for the New Blog",
           websiteUrl: "https://www.newblog.com",
         }
-        const response = await req.post('/blogs').send(blogInputData)
+        const response = await req.post('/blogs').set('Authorization', `Basic ${fromUTF8ToBase64(SETTINGS.ADMIN)}`).send(blogInputData)
         expect(response.status).toBe(201)
         expect(response.body).toHaveProperty('id')
         expect(response.body.name).toBe(blogInputData.name)
@@ -70,7 +82,7 @@ describe('POST /blogs controller tests', () => {
         description: "Description for the New Blog",
         websiteUrl: "https://www.newblog.com",
       }
-        const response = await req.post('/blogs').send(invalidInputData)
+        const response = await req.post('/blogs').set('Authorization', `Basic ${fromUTF8ToBase64(SETTINGS.ADMIN)}`).send(invalidInputData)
         expect(response.status).toBe(400)
         expect(response.body.errorsMessages[0].field).toBe('name')
         expect(response.body.errorsMessages[0].message).toBe('Name must be between 1 and 15 characters')
@@ -82,7 +94,7 @@ describe('POST /blogs controller tests', () => {
         description: "   ",
         websiteUrl: "https://www.newblog.com",
       }
-        const response = await req.post('/blogs').send(invalidInputData)
+        const response = await req.post('/blogs').set('Authorization', `Basic ${fromUTF8ToBase64(SETTINGS.ADMIN)}`).send(invalidInputData)
         expect(response.status).toBe(400)
         expect(response.body.errorsMessages[0].field).toBe('description')
         expect(response.body.errorsMessages[0].message).toBe('Description must be between 1 and 500 characters')
@@ -94,7 +106,7 @@ describe('POST /blogs controller tests', () => {
         description: "Description for the New Blog",
         websiteUrl: "www.newblog.com",
       }
-        const response = await req.post('/blogs').send(invalidInputData)
+        const response = await req.post('/blogs').set('Authorization', `Basic ${fromUTF8ToBase64(SETTINGS.ADMIN)}`).send(invalidInputData)
         expect(response.status).toBe(400)
         expect(response.body.errorsMessages[0].field).toBe('websiteUrl')
         expect(response.body.errorsMessages[0].message).toBe('Invalid URL format')
@@ -108,13 +120,23 @@ describe('PUT /blogs controller tests', () => {
       setDB(dataset1)
   })
 
+  it('should return 401 error if user is not authorized', async () => {
+    const inputData: BlogInputModel = {
+      name: "Blog",
+      description: "Description for the New Blog",
+      websiteUrl: "https://www.newblog.com",
+    }
+      const response = await req.put('/blogs/1').send(inputData)
+      expect(response.status).toBe(401)
+  })
+
   it('should successfully update a blog with valid input', async () => {
       const blogInputData: BlogInputModel = {
         name: "New Blog",
         description: "Description for the New Blog",
         websiteUrl: "https://www.newblog.com",
       }
-      const response = await req.put('/blogs/1').send(blogInputData)
+      const response = await req.put('/blogs/1').set('Authorization', `Basic ${fromUTF8ToBase64(SETTINGS.ADMIN)}`).send(blogInputData)
       expect(response.status).toBe(204)
 
       const getResponse = await req.get('/blogs')
@@ -129,7 +151,7 @@ describe('PUT /blogs controller tests', () => {
       description: "Description for the New post",
       websiteUrl: "https://www.newpost.com",
     }
-    const response = await req.put('/blogs/9').send(blogInputData)
+    const response = await req.put('/blogs/9').set('Authorization', `Basic ${fromUTF8ToBase64(SETTINGS.ADMIN)}`).send(blogInputData)
     expect(response.status).toBe(404)
     expect(response.body).toEqual({ errorsMessages: [{ message: 'Blog not found', field: 'id' }] })
 })
@@ -140,7 +162,7 @@ describe('PUT /blogs controller tests', () => {
       description: "Description for the New Blog",
       websiteUrl: "https://www.newblog.com",
     }
-      const response = await req.put('/blogs/s1').send(invalidInputData)
+      const response = await req.put('/blogs/s1').set('Authorization', `Basic ${fromUTF8ToBase64(SETTINGS.ADMIN)}`).send(invalidInputData)
       expect(response.status).toBe(400)
       expect(response.body.errorsMessages[0].field).toBe('name')
       expect(response.body.errorsMessages[0].message).toBe('Name must be between 1 and 15 characters')
@@ -152,7 +174,7 @@ describe('PUT /blogs controller tests', () => {
       description: "   ",
       websiteUrl: "https://www.newblog.com",
     }
-      const response = await req.put('/blogs/1').send(invalidInputData)
+      const response = await req.put('/blogs/1').set('Authorization', `Basic ${fromUTF8ToBase64(SETTINGS.ADMIN)}`).send(invalidInputData)
       expect(response.status).toBe(400)
       expect(response.body.errorsMessages[0].field).toBe('description')
       expect(response.body.errorsMessages[0].message).toBe('Description must be between 1 and 500 characters')
@@ -164,7 +186,7 @@ describe('PUT /blogs controller tests', () => {
       description: "Description for the New Blog",
       websiteUrl: "www.newblog.com",
     }
-      const response = await req.put('/blogs/1').send(invalidInputData)
+      const response = await req.put('/blogs/1').set('Authorization', `Basic ${fromUTF8ToBase64(SETTINGS.ADMIN)}`).send(invalidInputData)
       expect(response.status).toBe(400)
       expect(response.body.errorsMessages[0].field).toBe('websiteUrl')
       expect(response.body.errorsMessages[0].message).toBe('Invalid URL format')
@@ -178,8 +200,13 @@ describe('DELETE /blogs/:id controller tests', () => {
       setDB(dataset1)
   })
 
+  it('should return 401 error if user is not authorized', async () => {
+      const response = await req.delete('/blogs/1')
+      expect(response.status).toBe(401)
+  })
+
   it('should successfully delete an existing blog', async () => {
-      const deleteResponse = await req.delete(`/blogs/2`)
+      const deleteResponse = await req.delete(`/blogs/2`).set('Authorization', `Basic ${fromUTF8ToBase64(SETTINGS.ADMIN)}`)
       expect(deleteResponse.status).toBe(204)
 
       const getResponse = await req.get(`/blogs/2`)
@@ -187,13 +214,13 @@ describe('DELETE /blogs/:id controller tests', () => {
   })
 
   it('should return 404 if blog not found', async () => {
-      const response = await req.delete(`/blogs/8`)
+      const response = await req.delete(`/blogs/8`).set('Authorization', `Basic ${fromUTF8ToBase64(SETTINGS.ADMIN)}`)
       expect(response.status).toBe(404)
       expect(response.body).toEqual({ errorsMessages: [{ message: 'Blog not found', field: 'id' }] })
   })
 
   it('should ensure the video is deleted from the database', async () => {
-      await req.delete(`/videos/3`)
+      await req.delete(`/videos/3`).set('Authorization', `Basic ${fromUTF8ToBase64(SETTINGS.ADMIN)}`)
       
       const getResponse = await req.get('/blogs')
       expect(getResponse.body).not.toContainEqual(expect.objectContaining({ id: 3 }))

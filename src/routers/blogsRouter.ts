@@ -5,11 +5,12 @@ import { findBlogController } from '../features/blogs/controllers/findBlogContro
 import { deleteBlogController } from '../features/blogs/controllers/deleteBlogController'
 import { updateBlogController } from '../features/blogs/controllers/updateBlogController'
 import { blogValidator } from '../features/blogs/middlewares/blogValidator'
+import { adminMiddleware } from '../global/middlewares/adminMiddleware'
 
 export const blogsRouter = Router()
  
 blogsRouter.get('/', getBlogsController)
 blogsRouter.post('/', ...blogValidator, createBlogController)
 blogsRouter.get('/:id', findBlogController)
-blogsRouter.delete('/:id', deleteBlogController)
+blogsRouter.delete('/:id', adminMiddleware, deleteBlogController)
 blogsRouter.put('/:id', ...blogValidator, updateBlogController)
