@@ -61,6 +61,7 @@ describe('POST /posts controller tests', () => {
   })
 
     it('should successfully create a post with valid input', async () => {
+        setDB(dataset1)
         const postInputData: PostInputModel = {
           title: "New post",
           content: "Content for the New post",
@@ -74,8 +75,8 @@ describe('POST /posts controller tests', () => {
 
         const getResponse = await req.get('/posts')
         expect(getResponse.status).toBe(200)
-        expect(getResponse.body.length).toBe(1)
-        expect(getResponse.body[0].shortDescription).toBe(postInputData.shortDescription)
+        expect(getResponse.body.length).toBe(4)
+        expect(getResponse.body[3].shortDescription).toBe(postInputData.shortDescription)
     })
 
     it('should return 400 with error messages for missed title', async () => {
