@@ -20,6 +20,8 @@ export const BlogsRepository = {
   createBlog(blog: BlogInputModel) {
     const newBlog: BlogViewModel = {
       ...blog,
+      isMembership: false,
+      createdAt: new Date().toISOString(),
       id: String(Date.now() + Math.random())
     }
     db.blogs = [...db.blogs, newBlog]
@@ -31,7 +33,9 @@ export const BlogsRepository = {
     if (blogToUpdate) {
       blogToUpdate = {
         ...blog,
-        id
+        id,
+        isMembership: blogToUpdate.isMembership,
+        createdAt: blogToUpdate.createdAt
       }
       db.blogs = db.blogs.map(blog => blog.id === id ? blogToUpdate : blog)
       return true

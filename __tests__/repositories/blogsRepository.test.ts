@@ -1,6 +1,7 @@
 import {db} from "../../src/db/db";
 import { dataset1 } from "../mockData";
 import {BlogsRepository} from "../../src/repositories/blogsRepository";
+import { create } from "domain";
 
 describe('BlogsRepository', () => {
   beforeEach(() => {
@@ -19,6 +20,8 @@ describe('BlogsRepository', () => {
       name: "Blog 1",
       description: "Description for Blog 1",
       websiteUrl: "https://www.blog1.com",
+      createdAt: "011-10-05T14:48:00.000Z",
+      isMembership: false
     });
   });
 
@@ -44,7 +47,7 @@ describe('BlogsRepository', () => {
       websiteUrl: "https://www.blog1.com",};
     const result = BlogsRepository.updateBlog('1', updatedBlog);
     expect(result).toBeTruthy();
-    expect(db.blogs.find(blog => blog.id === '1')).toEqual({ id: '1', ...updatedBlog });
+    expect(db.blogs.find(blog => blog.id === '1')).toEqual({ id: '1', ...updatedBlog, createdAt: "011-10-05T14:48:00.000Z", isMembership: false});
   });
 
   test('updateBlog returns false with invalid ID', () => {

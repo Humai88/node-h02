@@ -7,6 +7,8 @@ export const blog1: BlogViewModel = {
   name: "Blog 1",
   description: "Description for Blog 1",
   websiteUrl: "https://www.blog1.com",
+  isMembership: false,
+  createdAt: "011-10-05T14:48:00.000Z",
 }
 
 export const blog2: BlogViewModel = {
@@ -14,6 +16,8 @@ export const blog2: BlogViewModel = {
   name: "Blog 2",
   description: "Description for Blog 2",
   websiteUrl: "https://www.blog2.com",
+  isMembership: false,
+  createdAt: "011-10-05T14:48:00.000Z",
 }
 
 export const blog3: BlogViewModel = {
@@ -21,6 +25,8 @@ export const blog3: BlogViewModel = {
   name: "Blog 3",
   description: "Description for Blog 3",
   websiteUrl: "https://www.blog2.com",
+  isMembership: false,
+  createdAt: "011-10-05T14:48:00.000Z",
 }
 
 export const post1: PostViewModel = {
@@ -30,6 +36,7 @@ export const post1: PostViewModel = {
   blogId: "1",
   shortDescription: "Short description for Post 1",
   blogName: "Blog 1",
+  createdAt: "011-10-05T14:48:00.000Z",
 }
 
 export const post2: PostViewModel = {
@@ -39,6 +46,7 @@ export const post2: PostViewModel = {
   blogId: "2",
   shortDescription: "Short description for Post 2",
   blogName: "Blog 2",
+  createdAt: "011-10-05T14:48:00.000Z",
 }
 
 export const post3: PostViewModel = {
@@ -48,6 +56,7 @@ export const post3: PostViewModel = {
   blogId: "3",
   shortDescription: "Short description for Post 3",
   blogName: "Blog 3",
+  createdAt: "011-10-05T14:48:00.000Z",
 }
 
 export const dataset1: DBModel = {

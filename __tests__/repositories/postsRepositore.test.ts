@@ -48,7 +48,7 @@ describe('PostsRepository', () => {
     };
     const result = PostsRepository.updatePost(validPostId, updatedPost);
     expect(result).toBeTruthy();
-    expect(db.posts.find(post => post.id === validPostId)).toEqual({ id: validPostId, ...updatedPost, blogName: expect.any(String) });
+    expect(db.posts.find(post => post.id === validPostId)).toEqual({ id: validPostId, ...updatedPost, blogName: expect.any(String), createdAt: "011-10-05T14:48:00.000Z"});
   });
 
   test('updatePost returns false with invalid ID', () => {

@@ -20,6 +20,7 @@ export const PostsRepository = {
   createPost(post: PostInputModel) {
     const newPost: PostViewModel = {
       ...post,
+      createdAt: new Date().toISOString(),
       id: String(Date.now() + Math.random()),
       blogName: db.blogs.find(blog => blog.id === post.blogId)?.name as string
     }
@@ -33,6 +34,7 @@ export const PostsRepository = {
       postToUpdate = {
         ...post,
         id,
+        createdAt: postToUpdate.createdAt,
         blogName: db.blogs.find(blog => blog.id === post.blogId)?.name as string
       }
       db.posts = db.posts.map(post => post.id === id ? postToUpdate : post)
