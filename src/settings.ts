@@ -4,7 +4,7 @@ dotenv.config()
  
 export const SETTINGS = {
     ADMIN: 'admin:qwerty',
-    MONGO_URL: process.env.MONGO_URL || 'mongodb://0.0.0.0:27017',
+    MONGO_URL: 'mongodb+srv://humaivier88:iXvXN2cqtweJdITg@cluster1.lshg8oz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1',
     DB_NAME: process.env.DB_NAME || 'blog',
     BLOG_COLLECTION_NAME: process.env.BLOG_COLLECTION_NAME || 'blogs',
     POST_COLLECTION_NAME: process.env.POST_COLLECTION_NAME || 'posts',

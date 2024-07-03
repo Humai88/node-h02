@@ -1,8 +1,9 @@
-import { blogsCollection, postsCollection } from "../db/mongo-db"
+import {  blogsCollection, postsCollection } from "../db/mongo-db"
+import { BlogViewModel } from "../models/BlogViewModel";
 import { PostInputModel } from "../models/PostInputModel"
 import { PostViewModel } from "../models/PostViewModel"
 import { BlogsDBRepository } from "./blogsDBRepository"
-
+import { v4  } from 'uuid';
 
 export const PostsDBRepository = {
   async getPosts(): Promise<PostViewModel[]> {
@@ -19,11 +20,11 @@ export const PostsDBRepository = {
   },
 
   async createPost(post: PostInputModel): Promise<PostViewModel> {
-    const blog = await BlogsDBRepository.findBlog(post.blogId)
+    const blog: BlogViewModel | null = await blogsCollection.findOne({ id: post.blogId })
     const newPost: PostViewModel = {
       ...post,
       createdAt: new Date().toISOString(),
-      id: String(Date.now() + Math.random()),
+      id: v4(),
       blogName: blog?.name ? blog.name : ''
     }
     await postsCollection.insertOne(newPost)

@@ -20,10 +20,8 @@ export const runDB = async () => {
     try {
         await client.connect()
         console.log('connected to db')
-        return true
     } catch (e) {
         console.log(e)
         await client.close()
-        return false
     }
 }

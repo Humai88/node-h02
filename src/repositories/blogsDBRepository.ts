@@ -1,6 +1,7 @@
 import { blogsCollection } from "../db/mongo-db"
 import { BlogInputModel } from "../models/BlogInputModel"
 import { BlogViewModel } from "../models/BlogViewModel"
+import { v4  } from 'uuid';
 
 export const BlogsDBRepository = {
   async getBlogs(): Promise<BlogViewModel[]> {
@@ -21,7 +22,7 @@ export const BlogsDBRepository = {
       ...blog,
       isMembership: false,
       createdAt: new Date().toISOString(),
-      id: String(Date.now() + Math.random())
+      id: v4()
     }
     await blogsCollection.insertOne(newBlog)
     return newBlog
