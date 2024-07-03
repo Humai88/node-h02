@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import { ParamModel } from '../../../models/BlogInputModel';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
-import { PostsRepository } from '../../../repositories/postsRepository';
+import { PostsDBRepository } from '../../../repositories/postsDBRepository';
 
 
-export const deletePostController = (req: Request<ParamModel>, res: Response<null | ErrorResultModel>) => {
-  const postToDelete = PostsRepository.deletePost(req.params.id)
+export const deletePostController = async (req: Request<ParamModel>, res: Response<null | ErrorResultModel>) => {
+  const postToDelete = await PostsDBRepository.deletePost(req.params.id)
   if (!postToDelete) {
       res.status(404).json({ errorsMessages: [{ message: 'Post not found', field: 'id' }] })
       return

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { PostsRepository } from '../../../repositories/postsRepository';
 import { PostViewModel } from '../../../models/PostViewModel';
+import { PostsDBRepository } from '../../../repositories/postsDBRepository';
 
 
-export const getPostsController = (req: Request, res: Response<PostViewModel[]>) => {
-  const posts = PostsRepository.getPosts()
+export const getPostsController = async (req: Request, res: Response<PostViewModel[]>) => {
+  const posts = await PostsDBRepository.getPosts()
   res
     .status(200)
     .json(posts)

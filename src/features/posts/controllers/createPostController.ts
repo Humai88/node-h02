@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
-import { PostsRepository } from '../../../repositories/postsRepository';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { PostInputModel } from '../../../models/PostInputModel';
 import { PostViewModel } from '../../../models/PostViewModel';
+import { PostsDBRepository } from '../../../repositories/postsDBRepository';
 
 
-export const createPostController = (req: Request<any, PostViewModel | ErrorResultModel, PostInputModel>, res: Response<PostViewModel | ErrorResultModel>) => {
-  const newBlog = PostsRepository.createPost(req.body)
+export const createPostController = async (req: Request<any, PostViewModel | ErrorResultModel, PostInputModel>, res: Response<PostViewModel | ErrorResultModel>) => {
+  const newBlog = await PostsDBRepository.createPost(req.body)
   res
-      .status(201)
-      .json(newBlog)
+    .status(201)
+    .json(newBlog)
 };
