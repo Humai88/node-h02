@@ -1,13 +1,13 @@
 // ...
 
 import { BlogViewModel } from "../models/BlogViewModel";
-import { DBModel } from "../models/DBModel";
 import { PostViewModel } from "../models/PostViewModel";
 import { SETTINGS } from "../settings";
 import { Collection, MongoClient } from "mongodb"; // Import the MongoClient class from the "mongodb" module
 
  
 // получение доступа к бд
+
 const client: MongoClient = new MongoClient(SETTINGS.MONGO_URL)
 export const db = client.db(SETTINGS.DB_NAME);
  
