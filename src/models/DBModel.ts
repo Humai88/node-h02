@@ -5,3 +5,4 @@ export type DBModel = {
   posts: PostViewModel[]
   blogs: BlogViewModel[]
 }
+
