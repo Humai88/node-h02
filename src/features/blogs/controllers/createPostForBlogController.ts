@@ -6,7 +6,7 @@ import { BlogsService } from '../../../domains/blogs-service';
 
 
 
-export const createBlogController = async (req: Request<any, BlogViewModel, BlogInputModel>, res: Response<BlogViewModel | ErrorResultModel>) => {
+export const createPostForBlogController = async (req: Request<any, BlogViewModel, BlogInputModel>, res: Response<BlogViewModel | ErrorResultModel>) => {
 const newBlog = await BlogsService.createBlog(req.body)
   res
       .status(201)

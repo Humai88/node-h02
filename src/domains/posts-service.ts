@@ -3,8 +3,10 @@ import {  blogsCollection, postsCollection } from "../db/mongo-db"
 import { BlogViewModel } from "../models/BlogViewModel";
 import { PostInputModel } from "../models/PostInputModel"
 import { PostViewModel } from "../models/PostViewModel"
+import { v4  } from 'uuid';
+import {PostsDBRepository} from "../repositories/postsDBRepository"
 
-export const PostsDBRepository = {
+export const PostsService = {
   async getPosts(): Promise<PostViewModel[]> {
     const postsMongoDbResult = await postsCollection.find({}).toArray();
     return postsMongoDbResult.map((blog: WithId<PostViewModel>) => this.mapResult(blog));
@@ -21,13 +23,12 @@ export const PostsDBRepository = {
 
   async createPost(post: PostInputModel): Promise<PostViewModel> {
     const blog: BlogViewModel | null = await blogsCollection.findOne({ id: post.blogId })
-    const objectId = new ObjectId();
     const newPost: WithId<PostViewModel> = {
       ...post,
       createdAt: new Date().toISOString(),
+      id: v4(),
       blogName: blog?.name ? blog.name : '',
-      id: objectId.toHexString(),
-      _id: objectId,
+      _id: new ObjectId(),
     }
     await postsCollection.insertOne(newPost)
     return this.mapResult(newPost)
