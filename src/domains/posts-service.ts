@@ -1,47 +1,33 @@
 import { ObjectId, WithId } from "mongodb";
-import {  blogsCollection, postsCollection } from "../db/mongo-db"
+import { blogsCollection, postsCollection } from "../db/mongo-db"
 import { BlogViewModel } from "../models/BlogViewModel";
 import { PostInputModel } from "../models/PostInputModel"
 import { PostViewModel } from "../models/PostViewModel"
-import { v4  } from 'uuid';
-import {PostsDBRepository} from "../repositories/postsDBRepository"
+import { v4 } from 'uuid';
+import { PostsDBRepository } from "../repositories/postsDBRepository"
 
 export const PostsService = {
   async getPosts(): Promise<PostViewModel[]> {
-    const postsMongoDbResult = await postsCollection.find({}).toArray();
+    const postsMongoDbResult = await PostsDBRepository.getPosts()
     return postsMongoDbResult.map((blog: WithId<PostViewModel>) => this.mapResult(blog));
   },
 
   async findPost(id: string): Promise<PostViewModel | null> {
-    const post: WithId<PostViewModel> | null = await postsCollection.findOne({ id: id })
-    if (!post) {
-      return null
-    } else {
-      return this.mapResult(post)
-    }
+    const postMongoDbResult = await PostsDBRepository.findPost(id)
+    return postMongoDbResult && this.mapResult(postMongoDbResult)
   },
 
   async createPost(post: PostInputModel): Promise<PostViewModel> {
-    const blog: BlogViewModel | null = await blogsCollection.findOne({ id: post.blogId })
-    const newPost: WithId<PostViewModel> = {
-      ...post,
-      createdAt: new Date().toISOString(),
-      id: v4(),
-      blogName: blog?.name ? blog.name : '',
-      _id: new ObjectId(),
-    }
-    await postsCollection.insertOne(newPost)
-    return this.mapResult(newPost)
+    const postMongoDbResult = await PostsDBRepository.createPost(post)
+    return this.mapResult(postMongoDbResult)
   },
 
   async updatePost(id: string, post: PostInputModel): Promise<boolean> {
-    const result = await postsCollection.updateOne({ id: id }, { $set: { title: post.title, blogId: post.blogId, content: post.content, shortDescription: post.shortDescription } })
-    return result.matchedCount === 1
+    return PostsDBRepository.updatePost(id, post)
   },
 
   async deletePost(id: string): Promise<boolean> {
-    const result = await postsCollection.deleteOne({ id: id });
-    return result.deletedCount === 1
+    return PostsDBRepository.deletePost(id)
   },
 
   mapResult(mongoDbPostResult: WithId<PostViewModel>): PostViewModel {

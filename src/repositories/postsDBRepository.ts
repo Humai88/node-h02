@@ -1,25 +1,21 @@
 import { ObjectId, WithId } from "mongodb";
-import {  blogsCollection, postsCollection } from "../db/mongo-db"
+import { blogsCollection, postsCollection } from "../db/mongo-db"
 import { BlogViewModel } from "../models/BlogViewModel";
 import { PostInputModel } from "../models/PostInputModel"
 import { PostViewModel } from "../models/PostViewModel"
 
 export const PostsDBRepository = {
-  async getPosts(): Promise<PostViewModel[]> {
+  async getPosts(): Promise<WithId<PostViewModel>[]> {
     const postsMongoDbResult = await postsCollection.find({}).toArray();
-    return postsMongoDbResult.map((blog: WithId<PostViewModel>) => this.mapResult(blog));
+    return postsMongoDbResult
   },
 
-  async findPost(id: string): Promise<PostViewModel | null> {
+  async findPost(id: string): Promise<WithId<PostViewModel> | null> {
     const post: WithId<PostViewModel> | null = await postsCollection.findOne({ id: id })
-    if (!post) {
-      return null
-    } else {
-      return this.mapResult(post)
-    }
+    return post
   },
 
-  async createPost(post: PostInputModel): Promise<PostViewModel> {
+  async createPost(post: PostInputModel): Promise<WithId<PostViewModel>> {
     const blog: BlogViewModel | null = await blogsCollection.findOne({ id: post.blogId })
     const objectId = new ObjectId();
     const newPost: WithId<PostViewModel> = {
@@ -30,7 +26,7 @@ export const PostsDBRepository = {
       _id: objectId,
     }
     await postsCollection.insertOne(newPost)
-    return this.mapResult(newPost)
+    return newPost
   },
 
   async updatePost(id: string, post: PostInputModel): Promise<boolean> {
@@ -43,17 +39,5 @@ export const PostsDBRepository = {
     return result.deletedCount === 1
   },
 
-  mapResult(mongoDbPostResult: WithId<PostViewModel>): PostViewModel {
-    const postForOutput: PostViewModel = {
-      id: mongoDbPostResult.id,
-      title: mongoDbPostResult.title,
-      blogId: mongoDbPostResult.blogId,
-      content: mongoDbPostResult.content,
-      shortDescription: mongoDbPostResult.shortDescription,
-      createdAt: mongoDbPostResult.createdAt,
-      blogName: mongoDbPostResult.blogName
-    }
-    return postForOutput
-  }
 
 }
