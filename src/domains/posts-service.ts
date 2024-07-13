@@ -1,9 +1,7 @@
-import { ObjectId, WithId } from "mongodb";
-import { blogsCollection, postsCollection } from "../db/mongo-db"
-import { BlogViewModel } from "../models/BlogViewModel";
+import { WithId } from "mongodb";
 import { PostInputModel } from "../models/PostInputModel"
 import { PostViewModel } from "../models/PostViewModel"
-import { v4 } from 'uuid';
+
 import { PostsDBRepository } from "../repositories/postsDBRepository"
 
 export const PostsService = {

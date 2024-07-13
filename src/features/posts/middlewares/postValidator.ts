@@ -1,7 +1,6 @@
 import { body } from 'express-validator';
 import { inputErrors } from '../../../global/middlewares/inputErrors';
 import { adminMiddleware } from '../../../global/middlewares/adminMiddleware';
-import { db } from '../../../db/db';
 import { blogsCollection } from '../../../db/mongo-db';
 
 export const postValidator = [

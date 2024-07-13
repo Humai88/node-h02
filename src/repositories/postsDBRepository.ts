@@ -39,5 +39,4 @@ export const PostsDBRepository = {
     return result.deletedCount === 1
   },
 
-
 }

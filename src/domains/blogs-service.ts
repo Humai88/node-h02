@@ -1,7 +1,9 @@
-import { BlogInputModel } from "../models/BlogInputModel"
+import { BlogInputModel, PostInBlogInputModel } from "../models/BlogInputModel"
 import { BlogViewModel } from "../models/BlogViewModel"
 import { ObjectId, WithId } from "mongodb";
 import { BlogsDBRepository } from "../repositories/blogsDBRepository"
+import { PostViewModel } from "../models/PostViewModel";
+import { PostsService } from "./posts-service";
 
 export const BlogsService = {
   async getBlogs(): Promise<BlogViewModel[]> {
@@ -22,6 +24,7 @@ export const BlogsService = {
       createdAt: new Date().toISOString(),
       id: objectId.toHexString(),
       _id: objectId,
+      items: []
     }
     const insertResult = await BlogsDBRepository.createBlog(newBlog);
 
@@ -46,6 +49,11 @@ export const BlogsService = {
     return BlogsDBRepository.deleteBlog(id)
   },
 
+  async createPostInBlog(id: string, post: PostInBlogInputModel): Promise<PostViewModel> {
+    const postMongoDbResult = await BlogsDBRepository.createPostInBlog(id, post)
+    return PostsService.mapResult(postMongoDbResult)
+  },
+
   mapResult(mongoDbBlogResult: WithId<BlogViewModel>): BlogViewModel {
     const blogForOutput: BlogViewModel = {
       id: mongoDbBlogResult.id,
@@ -53,7 +61,8 @@ export const BlogsService = {
       description: mongoDbBlogResult.description,
       websiteUrl: mongoDbBlogResult.websiteUrl,
       createdAt: mongoDbBlogResult.createdAt,
-      isMembership: mongoDbBlogResult.isMembership
+      isMembership: mongoDbBlogResult.isMembership,
+      items: mongoDbBlogResult.items
     }
     return blogForOutput
   }
