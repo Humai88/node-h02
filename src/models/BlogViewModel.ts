@@ -9,3 +9,11 @@ export interface BlogViewModel {
     isMembership: boolean,
     items: PostViewModel[]
 }
+
+export interface PaginatorBlogViewModel {
+    // pageCount: number
+    // pageSize: number
+    // totalCount: number
+    // page: number
+    items: BlogViewModel[]
+}

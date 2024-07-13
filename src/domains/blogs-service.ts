@@ -16,6 +16,12 @@ export const BlogsService = {
     return blogMongoDbResult && this.mapResult(blogMongoDbResult)
   },
 
+  async findPostsInBlog(id: string): Promise<PostViewModel[] | null> {
+    const blogMongoDbResult = await BlogsDBRepository.findPostsInBlog(id)
+    return blogMongoDbResult && blogMongoDbResult.map((post: WithId<PostViewModel>) => PostsService.mapResult(post))
+  },
+
+
   async createBlog(blog: BlogInputModel): Promise<BlogViewModel> {
     const objectId = new ObjectId();
     const newBlog: WithId<BlogViewModel> = {

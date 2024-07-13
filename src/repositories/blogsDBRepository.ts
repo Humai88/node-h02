@@ -15,6 +15,11 @@ export const BlogsDBRepository = {
     return blog
   },
 
+  async findPostsInBlog(id: string): Promise<WithId<PostViewModel>[] | null> {
+    const blog: WithId<BlogViewModel> | null = await blogsCollection.findOne({ id: id })
+    return blog && blog.items as WithId<PostViewModel>[]
+  },
+
   async createBlog(blog: WithId<BlogViewModel>): Promise<InsertOneResult<BlogViewModel>> {
     const newBlog = await blogsCollection.insertOne(blog)
     return newBlog
