@@ -6,8 +6,8 @@ import { PostViewModel } from "../models/PostViewModel";
 import { PostsService } from "./posts-service";
 
 export const BlogsService = {
-  async getBlogs(): Promise<BlogViewModel[]> {
-    const blogsMongoDbResult = await BlogsDBRepository.getBlogs()
+  async getBlogs(searchNameTerm: string): Promise<BlogViewModel[]> {
+    const blogsMongoDbResult = await BlogsDBRepository.getBlogs(searchNameTerm)
     return blogsMongoDbResult.map((blog: WithId<BlogViewModel>) => this.mapResult(blog));
   },
 

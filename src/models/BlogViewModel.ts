@@ -11,9 +11,9 @@ export interface BlogViewModel {
 }
 
 export interface PaginatorBlogViewModel {
-    // pageCount: number
-    // pageSize: number
-    // totalCount: number
-    // page: number
+    pagesCount: number
+    pageSize: number
+    totalCount: number
+    page: number
     items: BlogViewModel[]
 }

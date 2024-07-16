@@ -9,10 +9,10 @@ export interface PostViewModel {
 }
 
 export interface PaginatorPostViewModel {
-    // pageCount: number
-    // pageSize: number
-    // totalCount: number
-    // page: number
+    pagesCount: number
+    pageSize: number
+    totalCount: number
+    page: number
     items: PostViewModel[]
 }
 

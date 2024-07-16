@@ -4,7 +4,8 @@ import { BlogsService } from '../../../domains/blogs-service';
 
 
 export const getBlogsController = async (req: Request, res: Response<BlogViewModel[]>) => {
-  const blogs = await BlogsService.getBlogs()
+  const searchNameTerm =  req.query.searchNameTerm as string;
+  const blogs = await BlogsService.getBlogs(searchNameTerm)
   res
     .status(200)
     .json(blogs)

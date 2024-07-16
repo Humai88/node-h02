@@ -5,9 +5,15 @@ import { InsertOneResult, ObjectId,  WithId } from "mongodb";
 import { PostViewModel } from "../models/PostViewModel";
 
 export const BlogsDBRepository = {
-  async getBlogs(): Promise<WithId<BlogViewModel>[]> {
-    const blogsMongoDbResult = await blogsCollection.find({}).toArray();
-    return blogsMongoDbResult
+  async getBlogs(searchNameTerm: string): Promise<WithId<BlogViewModel>[]> {
+    if(!searchNameTerm){
+      const blogsMongoDbResult = await blogsCollection.find({}).toArray();
+      return blogsMongoDbResult
+    } else {
+      const blogsMongoDbResult = await blogsCollection.find({ name: { $regex: new RegExp(searchNameTerm, 'i') } }).toArray();
+      return blogsMongoDbResult
+    }
+ 
   },
 
   async findBlog(id: string): Promise<WithId<BlogViewModel> | null> {
