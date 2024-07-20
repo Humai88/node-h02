@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { blogsCollection } from "../db/mongo-db"
 import { BlogViewModel } from "../models/BlogViewModel";
 import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
@@ -15,8 +16,13 @@ export const blogsQueryRepository = {
  
   },
 
+  async getPostsInBlog(id: string): Promise<PostViewModel[] | null> {
+    const objectId = new ObjectId(id);
+    const blogMongoDbResult: BlogDBViewModel| null = await blogsCollection.findOne({ _id: objectId })
+    return blogMongoDbResult && blogMongoDbResult.items.map((post: PostDBViewModel) => this.mapPostResult(post))
+  },
 
-  
+
   mapBlogResult(blog: BlogDBViewModel): BlogViewModel {
     const blogForOutput: BlogViewModel = {
       id: blog._id.toString(),

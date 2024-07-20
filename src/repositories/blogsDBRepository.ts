@@ -4,16 +4,6 @@ import {  ObjectId } from "mongodb";
 import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
 
 export const blogsDBRepository = {
-  async getBlogs(searchNameTerm: string): Promise<BlogDBViewModel[]> {
-    if(!searchNameTerm){
-      const blogsMongoDbResult = await blogsCollection.find({}).toArray();
-      return blogsMongoDbResult
-    } else {
-      const blogsMongoDbResult = await blogsCollection.find({ name: { $regex: new RegExp(searchNameTerm, 'i') } }).toArray();
-      return blogsMongoDbResult
-    }
- 
-  },
 
   async findBlog(id: string): Promise<BlogDBViewModel | null> {
     const objectId = new ObjectId(id);

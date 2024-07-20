@@ -1,10 +1,11 @@
 import { PostViewModel } from "../models/PostViewModel"
-import { PostsDBRepository } from "./postsDBRepository";
 import { PostDBViewModel } from "../models/DBModel";
+import { postsCollection } from "../db/mongo-db";
 
 export const postsQueryRepository = {
+
   async getPosts(): Promise<PostViewModel[]> {
-    const postsMongoDbResult = await PostsDBRepository.getPosts()
+    const postsMongoDbResult = await postsCollection.find({}).toArray();
     return postsMongoDbResult.map((blog: PostDBViewModel) => this.mapPostResult(blog));
   },
 

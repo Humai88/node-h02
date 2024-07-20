@@ -4,10 +4,6 @@ import { PostInputModel } from "../models/PostInputModel"
 import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
 
 export const PostsDBRepository = {
-  async getPosts(): Promise<PostDBViewModel[]> {
-    const postsMongoDbResult = await postsCollection.find({}).toArray();
-    return postsMongoDbResult
-  },
 
   async findPost(id: string): Promise<PostDBViewModel | null> {
     const objectId = new ObjectId(id);

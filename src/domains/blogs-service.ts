@@ -6,21 +6,11 @@ import { PostViewModel } from "../models/PostViewModel";
 import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
 
 export const blogsService = {
-  async getBlogs(searchNameTerm: string): Promise<BlogViewModel[]> {
-    const blogsMongoDbResult = await blogsDBRepository.getBlogs(searchNameTerm)
-    return blogsMongoDbResult.map((blog: BlogDBViewModel) => this.mapBlogResult(blog));
-  },
 
   async findBlog(id: string): Promise<BlogViewModel | null> {
     const blogMongoDbResult = await blogsDBRepository.findBlog(id)
     return blogMongoDbResult && this.mapBlogResult(blogMongoDbResult)
   },
-
-  async findPostsInBlog(id: string): Promise<PostViewModel[] | null> {
-    const blogMongoDbResult = await blogsDBRepository.findBlog(id)
-    return blogMongoDbResult && blogMongoDbResult.items.map((post: PostDBViewModel) => this.mapPostResult(post))
-  },
-
 
   async createBlog(blog: BlogInputModel): Promise<BlogViewModel> {
     const objectId = new ObjectId();
@@ -35,6 +25,11 @@ export const blogsService = {
     return this.mapBlogResult(blogMongoDbResult);
   },
 
+  async createPostInBlog(id: string, post: PostInBlogInputModel): Promise<PostViewModel> {
+    const postMongoDbResult = await blogsDBRepository.createPostInBlog(id, post)
+    return this.mapPostResult(postMongoDbResult)
+  },
+
   async updateBlog(id: string, blog: BlogInputModel): Promise<boolean> {
     return blogsDBRepository.updateBlog(id, blog)
   },
@@ -43,10 +38,6 @@ export const blogsService = {
     return blogsDBRepository.deleteBlog(id)
   },
 
-  async createPostInBlog(id: string, post: PostInBlogInputModel): Promise<PostViewModel> {
-    const postMongoDbResult = await blogsDBRepository.createPostInBlog(id, post)
-    return this.mapPostResult(postMongoDbResult)
-  },
 
   mapBlogResult(blog: BlogDBViewModel): BlogViewModel {
     const blogForOutput: BlogViewModel = {
