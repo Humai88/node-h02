@@ -5,7 +5,7 @@ import { blogsDBRepository } from "../repositories/blogsDBRepository"
 import { PostViewModel } from "../models/PostViewModel";
 import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
 
-export const BlogsService = {
+export const blogsService = {
   async getBlogs(searchNameTerm: string): Promise<BlogViewModel[]> {
     const blogsMongoDbResult = await blogsDBRepository.getBlogs(searchNameTerm)
     return blogsMongoDbResult.map((blog: BlogDBViewModel) => this.mapBlogResult(blog));

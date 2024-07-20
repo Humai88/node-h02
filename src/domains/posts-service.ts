@@ -1,14 +1,9 @@
 import { PostInputModel } from "../models/PostInputModel"
 import { PostViewModel } from "../models/PostViewModel"
-
 import { PostsDBRepository } from "../repositories/postsDBRepository"
 import { PostDBViewModel } from "../models/DBModel";
 
-export const PostsService = {
-  async getPosts(): Promise<PostViewModel[]> {
-    const postsMongoDbResult = await PostsDBRepository.getPosts()
-    return postsMongoDbResult.map((blog: PostDBViewModel) => this.mapPostResult(blog));
-  },
+export const postsService = {
 
   async findPost(id: string): Promise<PostViewModel | null> {
     const postMongoDbResult = await PostsDBRepository.findPost(id)
