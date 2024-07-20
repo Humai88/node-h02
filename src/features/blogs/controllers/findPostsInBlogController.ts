@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { ParamModel } from '../../../models/BlogInputModel';
 import { BlogsService } from '../../../domains/blogs-service';
-import { PaginatorPostViewModel, PostViewModel } from '../../../models/PostViewModel';
+import { PostViewModel } from '../../../models/PostViewModel';
 
 
 export const findPostsInBlogController = async (req: Request<ParamModel>, res: Response<PostViewModel[] | ErrorResultModel>) => {

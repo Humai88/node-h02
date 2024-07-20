@@ -1,11 +1,10 @@
 import { blogsCollection } from "../db/mongo-db"
 import { BlogInputModel, PostInBlogInputModel } from "../models/BlogInputModel"
-import { BlogViewModel } from "../models/BlogViewModel"
-import { InsertOneResult, ObjectId,  WithId } from "mongodb";
-import { PostViewModel } from "../models/PostViewModel";
+import {  ObjectId } from "mongodb";
+import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
 
-export const BlogsDBRepository = {
-  async getBlogs(searchNameTerm: string): Promise<WithId<BlogViewModel>[]> {
+export const blogsDBRepository = {
+  async getBlogs(searchNameTerm: string): Promise<BlogDBViewModel[]> {
     if(!searchNameTerm){
       const blogsMongoDbResult = await blogsCollection.find({}).toArray();
       return blogsMongoDbResult
@@ -16,46 +15,48 @@ export const BlogsDBRepository = {
  
   },
 
-  async findBlog(id: string): Promise<WithId<BlogViewModel> | null> {
-    const blog: WithId<BlogViewModel> | null = await blogsCollection.findOne({ id: id })
+  async findBlog(id: string): Promise<BlogDBViewModel | null> {
+    const objectId = new ObjectId(id);
+    const blog: BlogDBViewModel| null = await blogsCollection.findOne({ _id: objectId })
     return blog
   },
 
-  async findPostsInBlog(id: string): Promise<WithId<PostViewModel>[] | null> {
-    const blog: WithId<BlogViewModel> | null = await blogsCollection.findOne({ id: id })
-    return blog && blog.items as WithId<PostViewModel>[]
-  },
-
-  async createBlog(blog: WithId<BlogViewModel>): Promise<InsertOneResult<BlogViewModel>> {
+  async createBlog(blog: BlogDBViewModel): Promise<BlogDBViewModel> {
     const newBlog = await blogsCollection.insertOne(blog)
-    return newBlog
+    const insertedBlog = await blogsCollection.findOne({ _id: newBlog.insertedId });
+  
+    if (!insertedBlog) {
+      throw new Error('Failed to retrieve inserted blog');
+    }
+    return insertedBlog
   },
 
-  async createPostInBlog(id: string, post: PostInBlogInputModel): Promise<WithId<PostViewModel>> {
-    const blog: WithId<BlogViewModel> | null = await blogsCollection.findOne({ id: id })
+  async createPostInBlog(id: string, post: PostInBlogInputModel): Promise<PostDBViewModel> {
+    const blog: BlogDBViewModel | null = await this.findBlog(id)
     const objectId = new ObjectId();
     const newPost = {
       ...post,
       createdAt: new Date().toISOString(),
-      id: objectId.toHexString(),
       _id: objectId,
       blogName: blog?.name ? blog.name : '',
       blogId: id
     }
 
     blog && blog.items.push(newPost)
-    await blogsCollection.updateOne({ id: id }, { $set: { items: blog?.items } })
+    await blogsCollection.updateOne({ _id: blog?._id }, { $set: { items: blog?.items } })
     return newPost
 
   },
 
   async updateBlog(id: string, blog: BlogInputModel): Promise<boolean> {
-    const result = await blogsCollection.updateOne({ id: id }, { $set: { name: blog.name, websiteUrl: blog.websiteUrl, description: blog.description } })
+    const objectBlogId = new ObjectId(id);
+    const result = await blogsCollection.updateOne({ _id: objectBlogId }, { $set: { name: blog.name, websiteUrl: blog.websiteUrl, description: blog.description } })
     return result.matchedCount === 1
   },
 
   async deleteBlog(id: string): Promise<boolean> {
-    const result = await blogsCollection.deleteOne({ id: id });
+    const objectBlogId = new ObjectId(id);
+    const result = await blogsCollection.deleteOne({ _id: objectBlogId });
     return result.deletedCount === 1
   },
 

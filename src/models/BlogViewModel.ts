@@ -10,10 +10,3 @@ export interface BlogViewModel {
     items: PostViewModel[]
 }
 
-export interface PaginatorBlogViewModel {
-    pagesCount: number
-    pageSize: number
-    totalCount: number
-    page: number
-    items: BlogViewModel[]
-}

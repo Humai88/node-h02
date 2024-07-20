@@ -2,6 +2,7 @@ import { body, param } from 'express-validator';
 import { inputErrors } from '../../../global/middlewares/inputErrors';
 import { adminMiddleware } from '../../../global/middlewares/adminMiddleware';
 import { blogsCollection } from '../../../db/mongo-db';
+import { ObjectId } from 'mongodb';
 
 export const blogValidator = [
   adminMiddleware,
@@ -17,7 +18,8 @@ export const postInBlogValidator = [
   body('content').isString().withMessage('Content must be a string').trim().isLength({ min: 1, max: 1000 }).withMessage('Content must be between 1 and 1000 characters'),
   body('shortDescription').isString().withMessage('Short description must be a string').trim().isLength({ min: 1, max: 100 }).withMessage('Short description must be between 1 and 100 characters'),
   param('id').trim().isLength({ min: 1 }).withMessage('Blog ID is required').custom(async value => {
-    const blog = await blogsCollection.findOne({ id: value })
+    const objectId = new ObjectId(value);
+    const blog = await blogsCollection.findOne({ _id: objectId })
     if (!blog) {
       throw new Error('There is no such blog');
     }

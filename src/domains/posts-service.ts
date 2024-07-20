@@ -1,23 +1,23 @@
-import { WithId } from "mongodb";
 import { PostInputModel } from "../models/PostInputModel"
 import { PostViewModel } from "../models/PostViewModel"
 
 import { PostsDBRepository } from "../repositories/postsDBRepository"
+import { PostDBViewModel } from "../models/DBModel";
 
 export const PostsService = {
   async getPosts(): Promise<PostViewModel[]> {
     const postsMongoDbResult = await PostsDBRepository.getPosts()
-    return postsMongoDbResult.map((blog: WithId<PostViewModel>) => this.mapResult(blog));
+    return postsMongoDbResult.map((blog: PostDBViewModel) => this.mapPostResult(blog));
   },
 
   async findPost(id: string): Promise<PostViewModel | null> {
     const postMongoDbResult = await PostsDBRepository.findPost(id)
-    return postMongoDbResult && this.mapResult(postMongoDbResult)
+    return postMongoDbResult && this.mapPostResult(postMongoDbResult)
   },
 
   async createPost(post: PostInputModel): Promise<PostViewModel> {
     const postMongoDbResult = await PostsDBRepository.createPost(post)
-    return this.mapResult(postMongoDbResult)
+    return this.mapPostResult(postMongoDbResult)
   },
 
   async updatePost(id: string, post: PostInputModel): Promise<boolean> {
@@ -28,9 +28,9 @@ export const PostsService = {
     return PostsDBRepository.deletePost(id)
   },
 
-  mapResult(mongoDbPostResult: WithId<PostViewModel>): PostViewModel {
+  mapPostResult(mongoDbPostResult: PostDBViewModel): PostViewModel {
     const postForOutput: PostViewModel = {
-      id: mongoDbPostResult.id,
+      id: mongoDbPostResult._id.toString(),
       title: mongoDbPostResult.title,
       blogId: mongoDbPostResult.blogId,
       content: mongoDbPostResult.content,

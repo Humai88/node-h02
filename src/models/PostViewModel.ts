@@ -8,14 +8,6 @@ export interface PostViewModel {
     createdAt: string
 }
 
-export interface PaginatorPostViewModel {
-    pagesCount: number
-    pageSize: number
-    totalCount: number
-    page: number
-    items: PostViewModel[]
-}
-
 // export type OutputType = OutputErrorsType | OutputVideoType
 
 // export const someController = (

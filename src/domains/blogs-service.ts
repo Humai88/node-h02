@@ -1,76 +1,76 @@
 import { BlogInputModel, PostInBlogInputModel } from "../models/BlogInputModel"
 import { BlogViewModel } from "../models/BlogViewModel"
-import { ObjectId, WithId } from "mongodb";
-import { BlogsDBRepository } from "../repositories/blogsDBRepository"
+import { ObjectId } from "mongodb";
+import { blogsDBRepository } from "../repositories/blogsDBRepository"
 import { PostViewModel } from "../models/PostViewModel";
-import { PostsService } from "./posts-service";
+import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
 
 export const BlogsService = {
   async getBlogs(searchNameTerm: string): Promise<BlogViewModel[]> {
-    const blogsMongoDbResult = await BlogsDBRepository.getBlogs(searchNameTerm)
-    return blogsMongoDbResult.map((blog: WithId<BlogViewModel>) => this.mapResult(blog));
+    const blogsMongoDbResult = await blogsDBRepository.getBlogs(searchNameTerm)
+    return blogsMongoDbResult.map((blog: BlogDBViewModel) => this.mapBlogResult(blog));
   },
 
   async findBlog(id: string): Promise<BlogViewModel | null> {
-    const blogMongoDbResult = await BlogsDBRepository.findBlog(id)
-    return blogMongoDbResult && this.mapResult(blogMongoDbResult)
+    const blogMongoDbResult = await blogsDBRepository.findBlog(id)
+    return blogMongoDbResult && this.mapBlogResult(blogMongoDbResult)
   },
 
   async findPostsInBlog(id: string): Promise<PostViewModel[] | null> {
-    const blogMongoDbResult = await BlogsDBRepository.findPostsInBlog(id)
-    return blogMongoDbResult && blogMongoDbResult.map((post: WithId<PostViewModel>) => PostsService.mapResult(post))
+    const blogMongoDbResult = await blogsDBRepository.findBlog(id)
+    return blogMongoDbResult && blogMongoDbResult.items.map((post: PostDBViewModel) => this.mapPostResult(post))
   },
 
 
   async createBlog(blog: BlogInputModel): Promise<BlogViewModel> {
     const objectId = new ObjectId();
-    const newBlog: WithId<BlogViewModel> = {
+    const newBlog: BlogDBViewModel = {
       ...blog,
       isMembership: false,
       createdAt: new Date().toISOString(),
-      id: objectId.toHexString(),
       _id: objectId,
       items: []
     }
-    const insertResult = await BlogsDBRepository.createBlog(newBlog);
-
-    if (!insertResult.acknowledged) {
-      throw new Error('Blog creation failed');
-    }
-
-    const createdBlog: WithId<BlogViewModel> = {
-      ...newBlog,
-      id: insertResult.insertedId.toString(),
-      _id: new ObjectId(insertResult.insertedId),
-    };
-
-    return this.mapResult(createdBlog);
+    const blogMongoDbResult = await blogsDBRepository.createBlog(newBlog);
+    return this.mapBlogResult(blogMongoDbResult);
   },
 
   async updateBlog(id: string, blog: BlogInputModel): Promise<boolean> {
-    return BlogsDBRepository.updateBlog(id, blog)
+    return blogsDBRepository.updateBlog(id, blog)
   },
 
   async deleteBlog(id: string): Promise<boolean> {
-    return BlogsDBRepository.deleteBlog(id)
+    return blogsDBRepository.deleteBlog(id)
   },
 
   async createPostInBlog(id: string, post: PostInBlogInputModel): Promise<PostViewModel> {
-    const postMongoDbResult = await BlogsDBRepository.createPostInBlog(id, post)
-    return PostsService.mapResult(postMongoDbResult)
+    const postMongoDbResult = await blogsDBRepository.createPostInBlog(id, post)
+    return this.mapPostResult(postMongoDbResult)
   },
 
-  mapResult(mongoDbBlogResult: WithId<BlogViewModel>): BlogViewModel {
+  mapBlogResult(blog: BlogDBViewModel): BlogViewModel {
     const blogForOutput: BlogViewModel = {
-      id: mongoDbBlogResult.id,
-      name: mongoDbBlogResult.name,
-      description: mongoDbBlogResult.description,
-      websiteUrl: mongoDbBlogResult.websiteUrl,
-      createdAt: mongoDbBlogResult.createdAt,
-      isMembership: mongoDbBlogResult.isMembership,
-      items: mongoDbBlogResult.items
+      id: blog._id.toString(),
+      name: blog.name,
+      description: blog.description,
+      websiteUrl: blog.websiteUrl,
+      createdAt: blog.createdAt,
+      isMembership: blog.isMembership,
+      items: blog.items.map(this.mapPostResult)
     }
     return blogForOutput
+  },
+
+ mapPostResult(post: PostDBViewModel): PostViewModel {
+    return {
+      id: post._id.toString(),
+      title: post.title,
+      shortDescription: post.shortDescription,
+      content: post.content,
+      blogId: post.blogId,
+      blogName: post.blogName,
+      createdAt: post.createdAt
+    };
   }
 
 }
