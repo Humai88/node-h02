@@ -9,7 +9,7 @@ import { adminMiddleware } from '../global/middlewares/adminMiddleware'
 import { createPostInBlogController } from '../features/blogs/controllers/createPostInBlogController'
 import { getPostsInBlogController } from '../features/blogs/controllers/getPostsInBlogController'
 import { applyBlogQueryDefaults } from '../features/blogs/middlewares/blogDefaultQueryValues'
-import { blogIdParamValidator, postQueryValidator, postValidator } from '../features/posts/middlewares/postValidator'
+import { blogIdParamValidator, postInBlogValidator, postQueryValidator } from '../features/posts/middlewares/postValidator'
 import { applyPostQueryDefaults } from '../features/posts/middlewares/postDefaultQueryValues'
 
 export const blogsRouter = Router()
@@ -20,4 +20,4 @@ blogsRouter.get('/:blogId/posts', applyPostQueryDefaults, ...blogIdParamValidato
 blogsRouter.post('/', ...blogValidator, createBlogController)
 blogsRouter.delete('/:id', adminMiddleware, deleteBlogController)
 blogsRouter.put('/:id', ...blogValidator, updateBlogController)
-blogsRouter.post('/:blogId/posts', ...blogIdParamValidator, ...postValidator, createPostInBlogController)
+blogsRouter.post('/:blogId/posts', ...blogIdParamValidator, ...postInBlogValidator, createPostInBlogController)
