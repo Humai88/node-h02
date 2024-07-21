@@ -1,10 +1,10 @@
 import { BlogViewModel } from "./BlogViewModel"
 import { PostViewModel } from "./PostViewModel"
 
-export enum SortDirection { 
-  asc = 'asc',
-  desc = 'desc'
-}
+// export enum SortDirection { 
+//   asc = 'asc',
+//   desc = 'desc'
+// }
 
 
 export interface PaginatorBlogViewModel {
@@ -15,6 +15,8 @@ export interface PaginatorBlogViewModel {
   items: BlogViewModel[]
 }
 
+export type SortDirection = 'asc' | 'desc'
+
 
 export interface PaginatorPostViewModel {
   pagesCount: number
@@ -22,4 +24,17 @@ export interface PaginatorPostViewModel {
   totalCount: number
   page: number
   items: PostViewModel[]
+}
+
+export interface QueryModel {
+  pageSize: number
+  pageNumber: number
+  sortDirection: SortDirection
+  sortBy: keyof BlogViewModel
+  searchNameTerm: string | null
+  blogId?: string
+}
+
+export type ParamModel = {
+  id: string
 }

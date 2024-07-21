@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { BlogViewModel } from '../../../models/BlogViewModel';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
-import { ParamModel } from '../../../models/BlogInputModel';
 import { blogsService } from '../../../domains/blogs-service';
+import { ParamModel } from '../../../models/QueryModel';
 
 
 export const findBlogController = async (req: Request<ParamModel>, res: Response<BlogViewModel | ErrorResultModel>) => {

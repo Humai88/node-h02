@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
-import { ParamModel } from '../../../models/BlogInputModel';
 import { PostViewModel } from '../../../models/PostViewModel';
 import { blogsQueryRepository } from '../../../repositories/blogsQueryRepository';
+import { ParamModel } from '../../../models/QueryModel';
 
 
 export const getPostsInBlogController = async (req: Request<ParamModel>, res: Response<PostViewModel[] | ErrorResultModel>) => {

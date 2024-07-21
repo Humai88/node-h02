@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { ParamModel } from '../../../models/BlogInputModel';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { postsService } from '../../../domains/posts-service';
+import { ParamModel } from '../../../models/QueryModel';
 
 
 export const deletePostController = async (req: Request<ParamModel>, res: Response<null | ErrorResultModel>) => {

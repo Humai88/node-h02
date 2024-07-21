@@ -1,6 +1,6 @@
-import { SortDirection } from "../models/QueryModel"
+import { QueryModel, SortDirection } from "../models/QueryModel"
 
-export const setQueryDefaultValues = (query: any) => { 
+export const setQueryDefaultValues = (query: QueryModel) => { 
   return {
     pageNumber: query.pageNumber ? +query.pageNumber : 1,
     pageSize: query.pageSize !== undefined ? +query.pageSize : 10,

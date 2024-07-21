@@ -10,6 +10,3 @@ export interface PostInBlogInputModel {
   shortDescription: string,
 }
 
-export type ParamModel = {
-  id: string
-}
