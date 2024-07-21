@@ -1,33 +1,29 @@
 import { PostViewModel } from "../models/PostViewModel"
 import { PostDBViewModel } from "../models/DBModel";
 import { postsCollection } from "../db/mongo-db";
-import { QueryModel } from "../models/QueryModel";
-import { ObjectId } from "mongodb";
+import { PaginatorPostViewModel, QueryModel } from "../models/QueryModel";
 
 export const postsQueryRepository = {
 
-  async getPosts(): Promise<PostViewModel[]> {
-    const postsMongoDbResult = await postsCollection.find({}).toArray();
-    return postsMongoDbResult.map((blog: PostDBViewModel) => this.mapPostResult(blog));
+  async getPosts(query: QueryModel): Promise<PaginatorPostViewModel> {
+    const blogsMongoDbResult = await postsCollection.find({})
+      .sort(query.sortBy, query.sortDirection)
+      .skip((query.pageNumber - 1) * query.pageSize)
+      .limit(query.pageSize)
+      .toArray()
+    return this.mapBlogToPaginatorResult(blogsMongoDbResult, query)
   },
 
-  setFilter(query: QueryModel) {
-    const byId = query.blogId
-      ? { blogId: new ObjectId(query.blogId) }
-      : {}
-    const search = query.searchNameTerm
-      ? { title: { $regex: query.searchNameTerm, $options: 'i' } }
-      : {}
+
+  async mapBlogToPaginatorResult(posts: PostDBViewModel[], query: any): Promise<PaginatorPostViewModel> {
+    const totalCount: number =  await postsCollection.countDocuments({})
     return {
-      ...byId,
-      ...search,
-      _id: { $in: byId }
+      pagesCount: Math.ceil(totalCount / query.pageSize),
+      page: query.pageNumber,
+      pageSize: query.pageSize,
+      totalCount,
+      items: posts.map(post => this.mapPostResult(post))
     }
-  },
-
-  async setTotalCount(filter: any): Promise<number> {
-    const totalCount = await postsCollection.countDocuments(filter)
-    return totalCount
   },
 
 
