@@ -24,7 +24,7 @@ export const postInBlogValidator = [
   body('title').isString().withMessage('Title must be a string').trim().isLength({ min: 1, max: 30 }).withMessage('Title must be between 1 and 30 characters'),
   body('content').isString().withMessage('Content must be a string').trim().isLength({ min: 1, max: 1000 }).withMessage('Content must be between 1 and 1000 characters'),
   body('shortDescription').isString().withMessage('Short description must be a string').trim().isLength({ min: 1, max: 100 }).withMessage('Short description must be between 1 and 100 characters'),
-  param('id').trim().isLength({ min: 1 }).withMessage('Blog ID is required'),
+  param('blogId').trim().isLength({ min: 1 }).withMessage('Blog ID is required'),
   inputErrors
 ];
 

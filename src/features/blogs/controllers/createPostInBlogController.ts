@@ -6,13 +6,13 @@ import { PostViewModel } from '../../../models/PostViewModel';
 import { ParamModel } from '../../../models/QueryModel';
 
 
-export const createPostInBlogController = async (req: Request<ParamModel, PostViewModel, PostInBlogInputModel>, res: Response<PostViewModel | ErrorResultModel>) => {
-  const blog = await blogsService.findBlog(req.params.id)
+export const createPostInBlogController = async (req: Request<{blogId: string}, PostViewModel, PostInBlogInputModel>, res: Response<PostViewModel | ErrorResultModel>) => {
+  const blog = await blogsService.findBlog(req.params.blogId)
   if (!blog) {
-    res.status(404).json({ errorsMessages: [{ message: 'Blog not found', field: 'id' }] })
+    res.status(404).json({ errorsMessages: [{ message: 'Blog not found', field: 'blogId' }] })
     return
   }
-const newPost = await blogsService.createPostInBlog(req.params.id, req.body)
+const newPost = await blogsService.createPostInBlog(req.params.blogId, req.body)
   res
       .status(201)
       .json(newPost)
