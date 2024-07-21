@@ -4,15 +4,15 @@ import { createBlogController } from '../features/blogs/controllers/createBlogCo
 import { findBlogController } from '../features/blogs/controllers/findBlogController'
 import { deleteBlogController } from '../features/blogs/controllers/deleteBlogController'
 import { updateBlogController } from '../features/blogs/controllers/updateBlogController'
-import { blogValidator, postInBlogValidator } from '../features/blogs/middlewares/blogValidator'
+import { blogQueryValidator, blogValidator, postInBlogValidator } from '../features/blogs/middlewares/blogValidator'
 import { adminMiddleware } from '../global/middlewares/adminMiddleware'
 import { createPostInBlogController } from '../features/blogs/controllers/createPostInBlogController'
 import { getPostsInBlogController } from '../features/blogs/controllers/getPostsInBlogController'
-import { applyQueryDefaults } from '../global/middlewares/queryDefaultMiddleware'
+import { applyBlogQueryDefaults } from '../features/blogs/middlewares/blogDefaultQueryValues'
 
 export const blogsRouter = Router()
  
-blogsRouter.get('/', applyQueryDefaults, getBlogsController)
+blogsRouter.get('/', applyBlogQueryDefaults, [...blogQueryValidator], getBlogsController)
 blogsRouter.get('/:id', findBlogController)
 blogsRouter.get('/:id/posts', getPostsInBlogController)
 blogsRouter.post('/', ...blogValidator, createBlogController)

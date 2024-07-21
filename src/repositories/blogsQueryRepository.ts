@@ -3,10 +3,10 @@ import { blogsCollection } from "../db/mongo-db"
 import { BlogViewModel } from "../models/BlogViewModel";
 import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
 import { PostViewModel } from "../models/PostViewModel";
-import { PaginatorBlogViewModel, QueryModel } from "../models/QueryModel";
+import { PaginatorBlogViewModel, QueryBlogModel } from "../models/QueryModel";
 
 export const blogsQueryRepository = {
-  async getBlogs(query: QueryModel): Promise<PaginatorBlogViewModel> {
+  async getBlogs(query: QueryBlogModel): Promise<PaginatorBlogViewModel> {
     const blogsMongoDbResult = await blogsCollection.find(this.setFilter(query))
       .sort(query.sortBy, query.sortDirection)
       .skip((query.pageNumber - 1) * query.pageSize)
@@ -21,7 +21,7 @@ export const blogsQueryRepository = {
     return blogMongoDbResult && blogMongoDbResult.items.map((post: PostDBViewModel) => this.mapPostResult(post))
   },
 
-  setFilter(query: QueryModel) {
+  setFilter(query: QueryBlogModel) {
     const search = query.searchNameTerm
       ? { name: { $regex: query.searchNameTerm, $options: 'i' } }
       : {}
@@ -35,7 +35,7 @@ export const blogsQueryRepository = {
     return totalCount
   },
 
-  async mapBlogToPaginatorResult(items: BlogDBViewModel[], query: any): Promise<PaginatorBlogViewModel> {
+  async mapBlogToPaginatorResult(items: BlogDBViewModel[], query: QueryBlogModel): Promise<PaginatorBlogViewModel> {
     const totalCount: number = await this.setTotalCount(this.setFilter(query))
     return {
       pagesCount: Math.ceil(totalCount / query.pageSize),

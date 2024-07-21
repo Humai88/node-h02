@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { PostViewModel } from '../../../models/PostViewModel';
 import { postsQueryRepository } from '../../../repositories/postsQueryRepository';
-import { PaginatorPostViewModel, QueryModel } from '../../../models/QueryModel';
+import { PaginatorPostViewModel, QueryPostModel } from '../../../models/QueryModel';
 
 
-export const getPostsController = async (req: Request<any, any, any, QueryModel>, res: Response<PaginatorPostViewModel>) => {
+export const getPostsController = async (req: Request<any, any, any, QueryPostModel>, res: Response<PaginatorPostViewModel>) => {
   const posts = await postsQueryRepository.getPosts(req.query)
   res
     .status(200)

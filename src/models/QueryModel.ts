@@ -26,13 +26,18 @@ export interface PaginatorPostViewModel {
   items: PostViewModel[]
 }
 
-export interface QueryModel {
+ interface QueryModel {
   pageSize: number
   pageNumber: number
   sortDirection: SortDirection
+}
+export interface QueryBlogModel extends QueryModel {
   sortBy: keyof BlogViewModel
   searchNameTerm: string | null
-  blogId?: string
+}
+
+export interface QueryPostModel extends QueryModel {
+  sortBy: keyof PostViewModel
 }
 
 export type ParamModel = {

@@ -1,11 +1,11 @@
 import { PostViewModel } from "../models/PostViewModel"
 import { PostDBViewModel } from "../models/DBModel";
 import { postsCollection } from "../db/mongo-db";
-import { PaginatorPostViewModel, QueryModel } from "../models/QueryModel";
+import { PaginatorPostViewModel, QueryPostModel } from "../models/QueryModel";
 
 export const postsQueryRepository = {
 
-  async getPosts(query: QueryModel): Promise<PaginatorPostViewModel> {
+  async getPosts(query: QueryPostModel): Promise<PaginatorPostViewModel> {
     const blogsMongoDbResult = await postsCollection.find({})
       .sort(query.sortBy, query.sortDirection)
       .skip((query.pageNumber - 1) * query.pageSize)
@@ -15,7 +15,7 @@ export const postsQueryRepository = {
   },
 
 
-  async mapBlogToPaginatorResult(posts: PostDBViewModel[], query: any): Promise<PaginatorPostViewModel> {
+  async mapBlogToPaginatorResult(posts: PostDBViewModel[], query: QueryPostModel): Promise<PaginatorPostViewModel> {
     const totalCount: number =  await postsCollection.countDocuments({})
     return {
       pagesCount: Math.ceil(totalCount / query.pageSize),

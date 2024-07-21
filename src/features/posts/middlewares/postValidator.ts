@@ -1,8 +1,9 @@
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import { inputErrors } from '../../../global/middlewares/inputErrors';
 import { adminMiddleware } from '../../../global/middlewares/adminMiddleware';
 import { blogsCollection } from '../../../db/mongo-db';
 import { ObjectId } from 'mongodb';
+import { SortDirection } from '../../../models/QueryModel';
 
 export const postValidator = [
   adminMiddleware,
@@ -18,4 +19,27 @@ export const postValidator = [
     return true
   }), 
   inputErrors
+];
+
+export const postQueryValidator=[
+  query('pageNumber')
+    .isInt({ min: 1 })
+    .toInt()
+    .withMessage('Page number must be a positive integer'),
+  
+  query('pageSize')
+    .isInt({ min: 1 }) 
+    .toInt()
+    .withMessage('Page size mmust be a positive integer'),
+  
+  query('sortBy')
+    .isString()
+    .isIn(['title', 'blogName', 'id', 'createdAt'])
+    .withMessage('Invalid sort field'),
+  
+  query('sortDirection')
+    .isIn(['asc', 'desc'] as SortDirection[])
+    .withMessage('Sort direction must be either "asc" or "desc"'),
+
+    inputErrors
 ];
