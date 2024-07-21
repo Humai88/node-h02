@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { BlogViewModel } from '../../../models/BlogViewModel';
-import { BlogsDBRepository } from '../../../repositories/blogsDBRepository';
+import { blogsQueryRepository } from '../../../repositories/blogsQueryRepository';
+import { PaginatorBlogViewModel, QueryBlogModel } from '../../../models/QueryModel';
 
 
-export const getBlogsController = async (req: Request, res: Response<BlogViewModel[]>) => {
-  const blogs = await BlogsDBRepository.getBlogs()
+export const getBlogsController = async (req: Request<any, any, any, QueryBlogModel>, res: Response<PaginatorBlogViewModel>) => {
+  const blogs = await blogsQueryRepository.getBlogs(req.query)
   res
     .status(200)
     .json(blogs)

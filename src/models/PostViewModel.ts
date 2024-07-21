@@ -8,7 +8,6 @@ export interface PostViewModel {
     createdAt: string
 }
 
-
 // export type OutputType = OutputErrorsType | OutputVideoType
 
 // export const someController = (

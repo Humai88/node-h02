@@ -4,6 +4,9 @@ export interface BlogInputModel {
   websiteUrl: string,
 }
 
-export type ParamModel = {
-  id: string
+export interface PostInBlogInputModel {
+  title: string,
+  content: string,
+  shortDescription: string,
 }
+
