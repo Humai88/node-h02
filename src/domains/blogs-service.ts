@@ -37,7 +37,6 @@ export const blogsService = {
     return blogsDBRepository.deleteBlog(id)
   },
 
-
   mapBlogResult(blog: BlogDBViewModel): BlogViewModel {
     const blogForOutput: BlogViewModel = {
       id: blog._id.toString(),

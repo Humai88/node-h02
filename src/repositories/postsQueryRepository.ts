@@ -2,7 +2,6 @@ import { PostViewModel } from "../models/PostViewModel"
 import { PostDBViewModel } from "../models/DBModel";
 import { postsCollection } from "../db/mongo-db";
 import { PaginatorPostViewModel, QueryPostModel } from "../models/QueryModel";
-import { ObjectId } from "mongodb";
 
 export const postsQueryRepository = {
 

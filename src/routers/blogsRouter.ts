@@ -4,12 +4,12 @@ import { createBlogController } from '../features/blogs/controllers/createBlogCo
 import { findBlogController } from '../features/blogs/controllers/findBlogController'
 import { deleteBlogController } from '../features/blogs/controllers/deleteBlogController'
 import { updateBlogController } from '../features/blogs/controllers/updateBlogController'
-import { blogQueryValidator, blogValidator, postInBlogValidator } from '../features/blogs/middlewares/blogValidator'
+import { blogQueryValidator, blogValidator  } from '../features/blogs/middlewares/blogValidator'
 import { adminMiddleware } from '../global/middlewares/adminMiddleware'
 import { createPostInBlogController } from '../features/blogs/controllers/createPostInBlogController'
 import { getPostsInBlogController } from '../features/blogs/controllers/getPostsInBlogController'
 import { applyBlogQueryDefaults } from '../features/blogs/middlewares/blogDefaultQueryValues'
-import { postQueryValidator } from '../features/posts/middlewares/postValidator'
+import { postInBlogValidator, postQueryValidator } from '../features/posts/middlewares/postValidator'
 import { applyPostQueryDefaults } from '../features/posts/middlewares/postDefaultQueryValues'
 
 export const blogsRouter = Router()
