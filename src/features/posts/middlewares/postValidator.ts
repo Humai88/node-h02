@@ -1,4 +1,4 @@
-import { body, param, query } from 'express-validator';
+import { body, param, query, ValidationChain } from 'express-validator';
 import { inputErrors } from '../../../global/middlewares/inputErrors';
 import { adminMiddleware } from '../../../global/middlewares/adminMiddleware';
 import { blogsCollection } from '../../../db/mongo-db';
@@ -19,14 +19,14 @@ export const postValidator = [
   inputErrors
 ];
 
-export const postInBlogValidator = [
-  adminMiddleware,
-  body('title').isString().withMessage('Title must be a string').trim().isLength({ min: 1, max: 30 }).withMessage('Title must be between 1 and 30 characters'),
-  body('content').isString().withMessage('Content must be a string').trim().isLength({ min: 1, max: 1000 }).withMessage('Content must be between 1 and 1000 characters'),
-  body('shortDescription').isString().withMessage('Short description must be a string').trim().isLength({ min: 1, max: 100 }).withMessage('Short description must be between 1 and 100 characters'),
-  param('blogId').trim().isLength({ min: 1 }).withMessage('Blog ID is required'),
-  inputErrors
+export const blogIdParamValidator = [
+  param('blogId')
+    .notEmpty()
+    .withMessage('Blog ID is required')
+    .isString()
+    .withMessage('Blog ID must be a string')
 ];
+
 
 export const postQueryValidator=[
   query('pageNumber')

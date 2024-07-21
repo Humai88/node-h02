@@ -3,7 +3,6 @@ import { PostInBlogInputModel } from '../../../models/BlogInputModel';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { blogsService } from '../../../domains/blogs-service';
 import { PostViewModel } from '../../../models/PostViewModel';
-import { ParamModel } from '../../../models/QueryModel';
 
 
 export const createPostInBlogController = async (req: Request<{blogId: string}, PostViewModel, PostInBlogInputModel>, res: Response<PostViewModel | ErrorResultModel>) => {
