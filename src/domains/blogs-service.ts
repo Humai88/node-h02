@@ -19,7 +19,6 @@ export const blogsService = {
       isMembership: false,
       createdAt: new Date().toISOString(),
       _id: objectId,
-      items: []
     }
     const blogMongoDbResult = await blogsDBRepository.createBlog(newBlog);
     return this.mapBlogResult(blogMongoDbResult);
@@ -47,7 +46,6 @@ export const blogsService = {
       websiteUrl: blog.websiteUrl,
       createdAt: blog.createdAt,
       isMembership: blog.isMembership,
-      items: blog.items.map(this.mapPostResult)
     }
     return blogForOutput
   },

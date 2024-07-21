@@ -7,6 +7,5 @@ export interface BlogViewModel {
     websiteUrl: string,
     createdAt: string,
     isMembership: boolean,
-    items: PostViewModel[]
 }
 

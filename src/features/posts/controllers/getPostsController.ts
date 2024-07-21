@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { PostViewModel } from '../../../models/PostViewModel';
 import { postsQueryRepository } from '../../../repositories/postsQueryRepository';
 import { PaginatorPostViewModel, QueryPostModel } from '../../../models/QueryModel';
 

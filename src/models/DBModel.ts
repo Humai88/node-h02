@@ -14,7 +14,6 @@ export interface BlogDBViewModel {
   websiteUrl: string,
   createdAt: string,
   isMembership: boolean,
-  items: PostDBViewModel[]
 }
 
 export interface PostDBViewModel {

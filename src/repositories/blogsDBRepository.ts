@@ -1,4 +1,4 @@
-import { blogsCollection } from "../db/mongo-db"
+import { blogsCollection, postsCollection } from "../db/mongo-db"
 import { BlogInputModel, PostInBlogInputModel } from "../models/BlogInputModel"
 import {  ObjectId } from "mongodb";
 import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
@@ -31,11 +31,8 @@ export const blogsDBRepository = {
       blogName: blog?.name ? blog.name : '',
       blogId: id
     }
-
-    blog && blog.items.push(newPost)
-    await blogsCollection.updateOne({ _id: blog?._id }, { $set: { items: blog?.items } })
+    await postsCollection.insertOne(newPost)
     return newPost
-
   },
 
   async updateBlog(id: string, blog: BlogInputModel): Promise<boolean> {
