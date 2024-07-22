@@ -5,12 +5,6 @@ import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
 
 export const PostsDBRepository = {
 
-  async findPost(id: string): Promise<PostDBViewModel | null> {
-    const objectId = new ObjectId(id);
-    const post: PostDBViewModel | null = await postsCollection.findOne({ _id: objectId })
-    return post
-  },
-
   async createPost(post: PostInputModel): Promise<PostDBViewModel> {
     const objectPostId = new ObjectId(post.blogId);
     const blog: BlogDBViewModel | null = await blogsCollection.findOne({ _id: objectPostId })

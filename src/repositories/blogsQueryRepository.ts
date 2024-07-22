@@ -2,6 +2,7 @@ import { blogsCollection } from "../db/mongo-db"
 import { BlogViewModel } from "../models/BlogViewModel";
 import { BlogDBViewModel } from "../models/DBModel";
 import { PaginatorBlogViewModel, QueryBlogModel } from "../models/QueryModel";
+import { blogsDBRepository } from "./blogsDBRepository";
 
 export const blogsQueryRepository = {
   
@@ -13,6 +14,12 @@ export const blogsQueryRepository = {
       .toArray()
     return this.mapBlogToPaginatorResult(blogsMongoDbResult, query)
   },
+
+  async findBlog(id: string): Promise<BlogViewModel | null> {
+    const blogMongoDbResult = await blogsDBRepository.findBlog(id)
+    return blogMongoDbResult && this.mapBlogResult(blogMongoDbResult)
+  },
+
 
   setFilter(query: QueryBlogModel) {
     const search = query.searchNameTerm

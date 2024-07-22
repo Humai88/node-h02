@@ -2,6 +2,7 @@ import { PostViewModel } from "../models/PostViewModel"
 import { PostDBViewModel } from "../models/DBModel";
 import { postsCollection } from "../db/mongo-db";
 import { PaginatorPostViewModel, QueryPostModel } from "../models/QueryModel";
+import { ObjectId } from "mongodb";
 
 export const postsQueryRepository = {
 
@@ -12,6 +13,12 @@ export const postsQueryRepository = {
       .limit(query.pageSize)
       .toArray()
     return this.mapBlogToPaginatorResult(postsMongoDbResult, query, blogId)
+  },
+  
+  async findPost(id: string): Promise<PostViewModel | null> {
+    const objectId = new ObjectId(id);
+    const post = await postsCollection.findOne({ _id: objectId })
+    return post && this.mapPostResult(post)
   },
 
   setFilter(blogId?: string) {

@@ -7,11 +7,6 @@ import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
 
 export const blogsService = {
 
-  async findBlog(id: string): Promise<BlogViewModel | null> {
-    const blogMongoDbResult = await blogsDBRepository.findBlog(id)
-    return blogMongoDbResult && this.mapBlogResult(blogMongoDbResult)
-  },
-
   async createBlog(blog: BlogInputModel): Promise<BlogViewModel> {
     const objectId = new ObjectId();
     const newBlog: BlogDBViewModel = {
