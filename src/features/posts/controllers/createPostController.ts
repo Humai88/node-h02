@@ -6,8 +6,8 @@ import { postsService } from '../../../domains/posts-service';
 
 
 export const createPostController = async (req: Request<any, PostViewModel | ErrorResultModel, PostInputModel>, res: Response<PostViewModel | ErrorResultModel>) => {
-  const newBlog = await postsService.createPost(req.body)
+  const newPost = await postsService.createPost(req.body)
   res
     .status(201)
-    .json(newBlog)
+    .json(newPost)
 };
