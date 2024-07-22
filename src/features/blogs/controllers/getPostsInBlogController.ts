@@ -3,10 +3,11 @@ import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { PaginatorPostViewModel, QueryPostModel } from '../../../models/QueryModel';
 import { postsQueryRepository } from '../../../repositories/postsQueryRepository';
 import { blogsService } from '../../../domains/blogs-service';
+import { blogsDBRepository } from '../../../repositories/blogsDBRepository';
 
 
 export const getPostsInBlogController = async (req: Request<{blogId: string}, any, any, QueryPostModel>, res: Response<PaginatorPostViewModel | ErrorResultModel>) => {
-  const blog = await blogsService.findBlog(req.params.blogId)
+  const blog = await blogsDBRepository.findBlog(req.params.blogId)
   if (!blog) {
     res.status(404).json({ errorsMessages: [{ message: 'Blog not found', field: 'blogId' }] })
     return
