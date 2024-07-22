@@ -4,6 +4,7 @@ import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { blogsService } from '../../../domains/blogs-service';
 import { PostViewModel } from '../../../models/PostViewModel';
 import { blogsQueryRepository } from '../../../repositories/blogsQueryRepository';
+import { postsQueryRepository } from '../../../repositories/postsQueryRepository';
 
 
 export const createPostInBlogController = async (req: Request<{blogId: string}, PostViewModel, PostInBlogInputModel>, res: Response<PostViewModel | ErrorResultModel>) => {
@@ -12,10 +13,11 @@ export const createPostInBlogController = async (req: Request<{blogId: string}, 
     res.status(404).json({ errorsMessages: [{ message: 'Blog not found', field: 'blogId' }] })
     return
   }
-const newPost = await blogsService.createPostInBlog(req.params.blogId, req.body)
-  res
+const newPostId = await blogsService.createPostInBlog(req.params.blogId, req.body)
+const post = await postsQueryRepository.findPost(newPostId)
+ post && res
       .status(201)
-      .json(newPost)
+      .json(post)
 };
 
 

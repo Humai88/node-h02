@@ -7,7 +7,7 @@ import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
 
 export const blogsService = {
 
-  async createBlog(blog: BlogInputModel): Promise<BlogViewModel> {
+  async createBlog(blog: BlogInputModel): Promise<string> {
     const objectId = new ObjectId();
     const newBlog: BlogDBViewModel = {
       ...blog,
@@ -16,12 +16,12 @@ export const blogsService = {
       _id: objectId,
     }
     const blogMongoDbResult = await blogsDBRepository.createBlog(newBlog);
-    return this.mapBlogResult(blogMongoDbResult);
+    return blogMongoDbResult._id.toString()
   },
 
-  async createPostInBlog(id: string, post: PostInBlogInputModel): Promise<PostViewModel> {
+  async createPostInBlog(id: string, post: PostInBlogInputModel): Promise<string> {
     const postMongoDbResult = await blogsDBRepository.createPostInBlog(id, post)
-    return this.mapPostResult(postMongoDbResult)
+    return postMongoDbResult._id.toString()
   },
 
   async updateBlog(id: string, blog: BlogInputModel): Promise<boolean> {
@@ -43,18 +43,6 @@ export const blogsService = {
     }
     return blogForOutput
   },
-
- mapPostResult(post: PostDBViewModel): PostViewModel {
-    return {
-      id: post._id.toString(),
-      title: post.title,
-      shortDescription: post.shortDescription,
-      content: post.content,
-      blogId: post.blogId,
-      blogName: post.blogName,
-      createdAt: post.createdAt
-    };
-  }
 
 }
 

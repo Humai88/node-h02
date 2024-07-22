@@ -1,13 +1,11 @@
 import { PostInputModel } from "../models/PostInputModel"
-import { PostViewModel } from "../models/PostViewModel"
 import { PostsDBRepository } from "../repositories/postsDBRepository"
-import { PostDBViewModel } from "../models/DBModel";
 
 export const postsService = {
 
-  async createPost(post: PostInputModel): Promise<PostViewModel> {
+  async createPost(post: PostInputModel): Promise<string> {
     const postMongoDbResult = await PostsDBRepository.createPost(post)
-    return this.mapPostResult(postMongoDbResult)
+    return postMongoDbResult._id.toString()
   },
 
   async updatePost(id: string, post: PostInputModel): Promise<boolean> {
@@ -18,17 +16,5 @@ export const postsService = {
     return PostsDBRepository.deletePost(id)
   },
 
-  mapPostResult(mongoDbPostResult: PostDBViewModel): PostViewModel {
-    const postForOutput: PostViewModel = {
-      id: mongoDbPostResult._id.toString(),
-      title: mongoDbPostResult.title,
-      blogId: mongoDbPostResult.blogId,
-      content: mongoDbPostResult.content,
-      shortDescription: mongoDbPostResult.shortDescription,
-      createdAt: mongoDbPostResult.createdAt,
-      blogName: mongoDbPostResult.blogName
-    }
-    return postForOutput
-  }
 
 }
