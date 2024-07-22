@@ -12,8 +12,9 @@ export const postValidator = [
   body('blogId').isString().withMessage('Blog ID must be a string').trim().isLength({ min: 1 }).withMessage('Blog ID is required').custom(async (blogId) => {  
     const blog = await blogsService.findBlog(blogId);
     if (!blog) {
-      return Promise.reject('Blog not found');
+      throw new Error('There is no such blog');
     }
+    return true
   }),
   inputErrors
 ];
