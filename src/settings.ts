@@ -8,10 +8,12 @@ export const SETTINGS = {
     DB_NAME: process.env.DB_NAME || 'blog',
     BLOG_COLLECTION_NAME: process.env.BLOG_COLLECTION_NAME || 'blogs',
     POST_COLLECTION_NAME: process.env.POST_COLLECTION_NAME || 'posts',
+    USER_COLLECTION_NAME: process.env.USER_COLLECTION_NAME || 'users',
     PORT: process.env.PORT || 3003,
     PATH: {
         BLOGS: '/blogs',
         POSTS: '/posts',
+        USERS: '/users',
         TEST: '/testing/all-data'
     },
 }
