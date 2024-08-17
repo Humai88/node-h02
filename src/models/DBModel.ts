@@ -25,3 +25,10 @@ export interface PostDBViewModel {
   blogName: string
   createdAt: string
 }
+
+export interface UserDBViewModel {
+  _id: ObjectId,
+  login: string,
+  email: string,
+  createdAt: string,
+}

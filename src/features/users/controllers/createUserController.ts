@@ -1,17 +1,16 @@
 import { Request, Response } from 'express';
-import { BlogInputModel } from '../../../models/BlogInputModel';
-import { BlogViewModel } from '../../../models/BlogViewModel';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
-import { blogsQueryRepository } from '../../../repositories/blogsQueryRepository';
 import { usersService } from '../../../domains/users-service';
+import { UserViewModel } from '../../../models/UserViewModel';
+import { UserInputModel } from '../../../models/UserInputModel';
+import { usersQueryRepository } from '../../../repositories/usersQueryRepository';
 
 
-
-export const createUserController = async (req: Request<any, BlogViewModel, BlogInputModel>, res: Response<BlogViewModel | ErrorResultModel>) => {
-const newBlogId = await usersService.createUser(req.body)
-const blog = await blogsQueryRepository.findBlog(newBlogId)
- blog && res
+export const createUserController = async (req: Request<any, UserViewModel, UserInputModel>, res: Response<UserViewModel | ErrorResultModel>) => {
+const newUserId = await usersService.createUser(req.body)
+const user = await usersQueryRepository.findUser(newUserId)
+ user && res
       .status(201)
-      .json(blog)
+      .json(user)
 };
 

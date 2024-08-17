@@ -5,9 +5,9 @@ import { SortDirection } from 'mongodb';
 
 export const userValidator = [
   adminMiddleware,
-  body('name').isString().withMessage('Name must be a string').trim().isLength({ min: 1, max: 15 }).withMessage('Name must be between 1 and 15 characters'),
-  body('description').isString().withMessage('Description must be a string').trim().isLength({ min: 1, max: 500 }).withMessage('Description must be between 1 and 500 characters'),
-  body('websiteUrl').isString().trim().isLength({ min: 1, max: 100 }).matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/).withMessage('Invalid URL format'),
+  body('login').trim().isLength({ min: 3, max: 10 }).withMessage('Login must be between 3 and 10 characters').matches(/^[a-zA-Z0-9_-]*$/).withMessage('Invalid login format'),
+  body('password').trim().isLength({ min: 6, max: 20 }).withMessage('Password must be between 6 and 20 characters'),
+  body('email').trim().matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).withMessage('Invalid email format'),
   inputErrors
 ];
 
@@ -31,9 +31,13 @@ export const userQueryValidator = [
     .isIn(['asc', 'desc'] as SortDirection[])
     .withMessage('Sort direction must be either "asc" or "desc"'),
   
-  query('searchNameTerm')
+  query('searchLoginTerm')
     .isString()
     .withMessage('Search term must be a string'),
+     
+  query('searchEmailTerm')
+  .isString()
+  .withMessage('Search term must be a string'),
 
     inputErrors
 ];

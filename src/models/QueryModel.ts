@@ -1,23 +1,27 @@
 import { BlogViewModel } from "./BlogViewModel"
 import { PostViewModel } from "./PostViewModel"
+import { UserViewModel } from "./UserViewModel"
 
-export interface PaginatorBlogViewModel {
-  pagesCount: number
-  pageSize: number
-  totalCount: number
-  page: number
-  items: BlogViewModel[]
-}
 
 export type SortDirection = 'asc' | 'desc'
 
 
-export interface PaginatorPostViewModel {
+interface PaginatorModel {
   pagesCount: number
   pageSize: number
   totalCount: number
   page: number
+}
+
+export interface PaginatorBlogViewModel extends PaginatorModel {
+  items: BlogViewModel[]
+}
+export interface PaginatorPostViewModel extends PaginatorModel {
   items: PostViewModel[]
+}
+
+export interface PaginatorUserViewModel extends PaginatorModel {
+  items: UserViewModel[]
 }
 
  interface QueryModel {
@@ -30,6 +34,11 @@ export interface QueryBlogModel extends QueryModel {
   searchNameTerm: string | null
 }
 
+export interface QueryUserModel extends QueryModel {  
+  sortBy: keyof UserViewModel
+  searchLoginTerm: string | null
+  searchEmailTerm: string | null
+}
 export interface QueryPostModel extends QueryModel {
   sortBy: keyof PostViewModel
 }

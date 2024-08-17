@@ -1,24 +1,27 @@
-import { blogsCollection, postsCollection } from "../db/mongo-db"
-import { BlogInputModel, PostInBlogInputModel } from "../models/BlogInputModel"
-import {  ObjectId } from "mongodb";
-import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
+import { usersCollection } from "../db/mongo-db"
+import { ObjectId } from "mongodb";
+import { UserDBViewModel } from "../models/DBModel";
+import { LoginInputModel } from "../models/UserInputModel";
 
 export const usersDBRepository = {
 
-  async createUser(blog: BlogDBViewModel): Promise<BlogDBViewModel> {
-    const newBlog = await blogsCollection.insertOne(blog)
-    const insertedBlog = await blogsCollection.findOne({ _id: newBlog.insertedId });
-  
-    if (!insertedBlog) {
+  async createUser(user: UserDBViewModel): Promise<UserDBViewModel> {
+    const newUser = await usersCollection.insertOne(user)
+    const insertedUser = await usersCollection.findOne({ _id: newUser.insertedId });
+
+    if (!insertedUser) {
       throw new Error('Failed to retrieve inserted blog');
     }
-    return insertedBlog
+    return insertedUser
   },
 
+  async login(login: LoginInputModel): Promise<boolean> {
+    return true
+  },
 
   async deleteUser(id: string): Promise<boolean> {
     const objectBlogId = new ObjectId(id);
-    const result = await blogsCollection.deleteOne({ _id: objectBlogId });
+    const result = await usersCollection.deleteOne({ _id: objectBlogId });
     return result.deletedCount === 1
   },
 

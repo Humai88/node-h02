@@ -1,4 +1,4 @@
-import { QueryBlogModel, QueryPostModel, SortDirection } from "../models/QueryModel"
+import { QueryBlogModel, QueryPostModel, QueryUserModel, SortDirection } from "../models/QueryModel"
 
 export const setBlogQueryDefaultValues = (query: QueryBlogModel) => {
   return {
@@ -20,12 +20,13 @@ export const setPostQueryDefaultValues = (query:  QueryPostModel) => {
   }
 }
 
-export const setUserQueryDefaultValues = (query:  QueryBlogModel) => {
+export const setUserQueryDefaultValues = (query:  QueryUserModel) => {
   return {
     pageNumber: query.pageNumber ? +query.pageNumber : 1,
     pageSize: query.pageSize !== undefined ? +query.pageSize : 10,
     sortBy: query.sortBy ? query.sortBy : 'createdAt',
     sortDirection: query.sortDirection ? query.sortDirection as SortDirection : 'desc',
-    searchNameTerm: query.searchNameTerm ? query.searchNameTerm : "",
+    searchLoginTerm: query.searchLoginTerm ? query.searchLoginTerm : "",
+    searchEmailTerm: query.searchEmailTerm ? query.searchEmailTerm : "",
   }
 }
