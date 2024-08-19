@@ -1,9 +1,7 @@
 import { BlogInputModel, PostInBlogInputModel } from "../models/BlogInputModel"
-import { BlogViewModel } from "../models/BlogViewModel"
 import { ObjectId } from "mongodb";
 import { blogsDBRepository } from "../repositories/blogsDBRepository"
-import { PostViewModel } from "../models/PostViewModel";
-import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
+import { BlogDBViewModel } from "../models/DBModel";
 
 export const blogsService = {
 
@@ -32,17 +30,6 @@ export const blogsService = {
     return blogsDBRepository.deleteBlog(id)
   },
 
-  mapBlogResult(blog: BlogDBViewModel): BlogViewModel {
-    const blogForOutput: BlogViewModel = {
-      id: blog._id.toString(),
-      name: blog.name,
-      description: blog.description,
-      websiteUrl: blog.websiteUrl,
-      createdAt: blog.createdAt,
-      isMembership: blog.isMembership,
-    }
-    return blogForOutput
-  },
 
 }
 

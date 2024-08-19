@@ -3,8 +3,8 @@ import { blogsCollection, postsCollection } from "../db/mongo-db"
 import { PostInputModel } from "../models/PostInputModel"
 import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
 
-export const PostsDBRepository = {
-
+export const postsDBRepository = {
+    
   async createPost(post: PostInputModel): Promise<PostDBViewModel> {
     const objectPostId = new ObjectId(post.blogId);
     const blog: BlogDBViewModel | null = await blogsCollection.findOne({ _id: objectPostId })
