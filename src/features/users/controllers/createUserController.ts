@@ -4,13 +4,24 @@ import { usersService } from '../../../domains/users-service';
 import { UserViewModel } from '../../../models/UserViewModel';
 import { UserInputModel } from '../../../models/UserInputModel';
 import { usersQueryRepository } from '../../../repositories/usersQueryRepository';
+import { usersDBRepository } from '../../../repositories/usersDBRepository';
 
 
 export const createUserController = async (req: Request<any, UserViewModel, UserInputModel>, res: Response<UserViewModel | ErrorResultModel>) => {
-const newUserId = await usersService.createUser(req.body)
-const user = await usersQueryRepository.findUser(newUserId)
- user && res
-      .status(201)
-      .json(user)
+      const isLoginUnique = await usersDBRepository.checkIfLoginIsUnique(req.body.login)
+      const isEmailUnique = await usersDBRepository.checkIfEmailIsUnique(req.body.email)
+      if (!isLoginUnique) {
+            res.status(400).json({ errorsMessages: [{ message: 'Login is already taken', field: 'login' }] })
+            return
+      }
+      if (!isEmailUnique) {
+            res.status(400).json({ errorsMessages: [{ message: 'Email is already registered', field: 'email' }] })
+            return
+      }
+      const newUserId = await usersService.createUser(req.body)
+      const user = await usersQueryRepository.findUser(newUserId)
+      user && res
+            .status(201)
+            .json(user)
 };
 

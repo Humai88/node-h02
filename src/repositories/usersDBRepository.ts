@@ -23,6 +23,16 @@ export const usersDBRepository = {
     return  user
   },
 
+  async checkIfLoginIsUnique(login: string): Promise<boolean> {
+    const existingUser = await usersCollection.findOne({ login: login });
+    return !existingUser;
+  },
+
+  async checkIfEmailIsUnique(email: string): Promise<boolean> {
+    const existingUser = await usersCollection.findOne({ email: email });
+    return !existingUser;
+  },
+
   async deleteUser(id: string): Promise<boolean> {
     const objectBlogId = new ObjectId(id);
     const result = await usersCollection.deleteOne({ _id: objectBlogId });
