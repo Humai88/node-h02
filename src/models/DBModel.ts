@@ -31,4 +31,6 @@ export interface UserDBViewModel {
   login: string,
   email: string,
   createdAt: string,
+  passwordHash: string,
+  passwordSalt: string
 }
