@@ -12,6 +12,7 @@ export const userValidator = [
 ];
 
 export const userQueryValidator = [
+  adminMiddleware,
   query('pageNumber')
     .isInt({ min: 1 })
     .toInt()

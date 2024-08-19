@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import {  PaginatorUserViewModel, QueryUserModel } from '../../../models/QueryModel';
+import { PaginatorUserViewModel, QueryUserModel } from '../../../models/QueryModel';
 import { usersQueryRepository } from '../../../repositories/usersQueryRepository';
 
 
