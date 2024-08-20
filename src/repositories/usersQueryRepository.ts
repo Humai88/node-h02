@@ -23,16 +23,16 @@ export const usersQueryRepository = {
 
 
   setFilter(query: QueryUserModel) {
-    const searchByLogin = query.searchLoginTerm
-      ? { login: { $regex: query.searchLoginTerm, $options: 'i' } }
-      : {}
-    const searchByEmail = query.searchEmailTerm
+      return {
+        $or: [
+          query.searchLoginTerm
+          ? { login: { $regex: query.searchLoginTerm, $options: 'i' } }
+          : {},
+          query.searchEmailTerm
       ? { email: { $regex: query.searchEmailTerm, $options: 'i' } }
       : {}
-    return {
-      ...searchByLogin,
-      ...searchByEmail
-    }
+        ].filter(condition => Object.keys(condition).length > 0)
+      };
   },
 
   async setTotalCount(filter: any): Promise<number> {
