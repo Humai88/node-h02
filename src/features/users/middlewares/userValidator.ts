@@ -21,7 +21,7 @@ export const userQueryValidator = [
   query('pageSize')
     .isInt({ min: 1 }) 
     .toInt()
-    .withMessage('Page size mmust be a positive integer'),
+    .withMessage('Page size must be a positive integer'),
   
   query('sortBy')
     .isString()
@@ -31,14 +31,6 @@ export const userQueryValidator = [
   query('sortDirection')
     .isIn(['asc', 'desc'] as SortDirection[])
     .withMessage('Sort direction must be either "asc" or "desc"'),
-  
-  query('searchLoginTerm')
-    .isString()
-    .withMessage('Search term must be a string'),
-     
-  query('searchEmailTerm')
-  .isString()
-  .withMessage('Search term must be a string'),
 
     inputErrors
 ];
