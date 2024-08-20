@@ -31,7 +31,7 @@ export const usersQueryRepository = {
           query.searchEmailTerm
       ? { email: { $regex: query.searchEmailTerm, $options: 'i' } }
       : {}
-        ].filter(condition => Object.keys(condition).length > 0)
+        ]
       };
   },
 
