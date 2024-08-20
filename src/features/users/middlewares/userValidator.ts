@@ -25,7 +25,7 @@ export const userQueryValidator = [
   
   query('sortBy')
     .isString()
-    .isIn(['createdAt', 'name', 'id', 'description', 'websiteUrl'])
+    .isIn(['createdAt', 'login', 'id', 'email'])
     .withMessage('Invalid sort field'),
   
   query('sortDirection')
