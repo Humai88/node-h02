@@ -31,4 +31,18 @@ export const postsDBRepository = {
     return result.deletedCount === 1
   },
 
+  // async createComment(comment: string): Promise<PostDBViewModel> {
+  //   const objectPostId = new ObjectId(post.blogId);
+  //   const blog: BlogDBViewModel | null = await blogsCollection.findOne({ _id: objectPostId })
+  //   const objectId = new ObjectId();
+  //   const newPost: PostDBViewModel = {
+  //     ...post,
+  //     createdAt: new Date().toISOString(),
+  //     blogName: blog?.name ? blog.name : '',
+  //     _id: objectId,
+  //   }
+  //   await commentsCollection.insertOne(newPost)
+  //   return newPost
+  // },
+
 }

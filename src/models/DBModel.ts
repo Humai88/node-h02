@@ -1,10 +1,13 @@
 import { ObjectId } from "mongodb"
 import { BlogViewModel } from "./BlogViewModel"
 import { PostViewModel } from "./PostViewModel"
+import { CommentatorInfoModel } from "./CommentModel"
 
 export type DBModel = {
   posts: PostViewModel[]
   blogs: BlogViewModel[]
+  comments: CommentDBViewModel[]
+  users: UserDBViewModel[]
 }
 
 export interface BlogDBViewModel {
@@ -33,4 +36,11 @@ export interface UserDBViewModel {
   createdAt: string,
   passwordHash: string,
   passwordSalt: string
+}
+
+export interface CommentDBViewModel {
+  _id: string,
+  content: string,
+  createdAt: string,  
+  commentatorInfo: CommentatorInfoModel
 }

@@ -1,6 +1,6 @@
 import { BlogInputModel } from "./BlogInputModel";
 import { PostInputModel } from "./PostInputModel";
-import { LoginInputModel, UserInputModel } from "./UserInputModel";
+import { LoginInputModel, UserInputModel } from "./UserModel";
 
 export type ErrorResultModel = {
   errorsMessages: FieldError[]

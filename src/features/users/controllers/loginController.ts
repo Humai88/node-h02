@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
-import { LoginInputModel } from '../../../models/UserInputModel';
+import { LoginInputModel } from '../../../models/UserModel';
 import { usersService } from '../../../domains/users-service';
 
 export const loginController = async (req: Request<any, null, LoginInputModel>, res: Response<null | ErrorResultModel>) => {

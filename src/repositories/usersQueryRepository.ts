@@ -2,7 +2,8 @@ import { ObjectId } from "mongodb";
 import { usersCollection } from "../db/mongo-db"
 import { UserDBViewModel } from "../models/DBModel";
 import { PaginatorUserViewModel, QueryUserModel } from "../models/QueryModel";
-import { UserViewModel } from "../models/UserViewModel";
+import { UserViewModel } from "../models/UserModel";
+
 
 export const usersQueryRepository = {
 

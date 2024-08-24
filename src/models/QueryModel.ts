@@ -1,6 +1,6 @@
 import { BlogViewModel } from "./BlogViewModel"
 import { PostViewModel } from "./PostViewModel"
-import { UserViewModel } from "./UserViewModel"
+import { UserViewModel } from "./UserModel"
 
 
 export type SortDirection = 'asc' | 'desc'

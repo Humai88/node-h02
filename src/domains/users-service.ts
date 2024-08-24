@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { UserDBViewModel } from "../models/DBModel";
-import { LoginInputModel, UserInputModel } from "../models/UserInputModel";
+import { LoginInputModel, UserInputModel } from "../models/UserModel";
 import { usersDBRepository } from "../repositories/usersDBRepository";
 import bcrypt from "bcrypt";
 

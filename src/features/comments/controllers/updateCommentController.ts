@@ -6,7 +6,7 @@ import { usersQueryRepository } from '../../../repositories/usersQueryRepository
 import { usersDBRepository } from '../../../repositories/usersDBRepository';
 
 
-export const createUserController = async (req: Request<any, UserViewModel, UserInputModel>, res: Response<UserViewModel | ErrorResultModel>) => {
+export const updateCommentController = async (req: Request<any, UserViewModel, UserInputModel>, res: Response<UserViewModel | ErrorResultModel>) => {
       const isLoginUnique = await usersDBRepository.checkIfLoginIsUnique(req.body.login)
       const isEmailUnique = await usersDBRepository.checkIfEmailIsUnique(req.body.email)
       if (!isLoginUnique) {
