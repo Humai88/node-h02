@@ -11,6 +11,7 @@ export const SETTINGS = {
     USER_COLLECTION_NAME: process.env.USER_COLLECTION_NAME || 'users',
     COMMENT_COLLECTION_NAME: process.env.COMMENT_COLLECTION_NAME || 'comments',
     PORT: process.env.PORT || 3003,
+    JWT_SECRET: process.env.JWT_SECRET || '256',
     PATH: {
         BLOGS: '/blogs',
         POSTS: '/posts',

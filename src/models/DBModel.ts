@@ -39,8 +39,9 @@ export interface UserDBViewModel {
 }
 
 export interface CommentDBViewModel {
-  _id: string,
+  _id: ObjectId,
   content: string,
   createdAt: string,  
-  commentatorInfo: CommentatorInfoModel
+  commentatorInfo: CommentatorInfoModel,
+  postId: string
 }

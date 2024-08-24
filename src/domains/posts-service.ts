@@ -1,4 +1,6 @@
+import { CommentInputModel } from "../models/CommentModel"
 import { PostInputModel } from "../models/PostInputModel"
+import { UserViewModel } from "../models/UserModel"
 import { postsDBRepository } from "../repositories/postsDBRepository"
 
 export const postsService = {
@@ -16,5 +18,9 @@ export const postsService = {
     return postsDBRepository.deletePost(id)
   },
 
+  async createCommentForPost(postId: string, comment: CommentInputModel, user: UserViewModel | null): Promise<string> {
+    const commentMongoDbResult = await postsDBRepository.createCommentForPost(postId, comment, user)
+    return commentMongoDbResult._id.toString()
+  },
 
 }

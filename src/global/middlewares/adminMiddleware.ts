@@ -15,19 +15,19 @@ export const fromUTF8ToBase64 = (code: string) => {
 }
 
 export const adminMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const auth = req.headers['authorization'] as string 
+  const auth = req.headers['authorization'] as string
 
   if (!auth) {
-      res
-          .status(401)
-          .json({})
-      return
+    res
+      .status(401)
+      .json({})
+    return
   }
   if (auth.slice(0, 6) !== 'Basic ') {
-      res
-          .status(401)
-          .json({})
-      return
+    res
+      .status(401)
+      .json({})
+    return
   }
 
   // const decodedAuth = fromBase64ToUTF8(auth.slice(6))
@@ -35,10 +35,10 @@ export const adminMiddleware = (req: Request, res: Response, next: NextFunction)
 
   // if (decodedAuth !== SETTINGS.ADMIN) {
   if (auth.slice(6) !== codedAuth) {
-      res
-          .status(401)
-          .json({})
-      return
+    res
+      .status(401)
+      .json({})
+    return
   }
   next()
 }

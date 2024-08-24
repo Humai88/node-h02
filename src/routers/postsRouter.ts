@@ -7,6 +7,8 @@ import { updatePostController } from '../features/posts/controllers/updatePostCo
 import { postQueryValidator, postValidator } from '../features/posts/middlewares/postValidator'
 import { adminMiddleware } from '../global/middlewares/adminMiddleware'
 import { applyPostQueryDefaults } from '../features/posts/middlewares/postDefaultQueryValues'
+import { createCommentForPostController } from '../features/posts/controllers/createCommentForPostController'
+import { commentValidator } from '../features/comments/middlewares/commentValidator'
 
 export const postsRouter = Router()
  
@@ -15,3 +17,5 @@ postsRouter.post('/', ...postValidator, createPostController)
 postsRouter.get('/:id', findPostController)
 postsRouter.delete('/:id', adminMiddleware, deletePostController)
 postsRouter.put('/:id', ...postValidator, updatePostController)
+postsRouter.post('/:postId/comments', ...commentValidator, createCommentForPostController)
+
