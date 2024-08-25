@@ -6,18 +6,19 @@ import { commentsDBRepository } from '../../../repositories/commentsDBRepository
 
 
 export const updateCommentController = async (req: Request<{commentId: string}, any, CommentInputModel>, res: Response<null | ErrorResultModel>) => {
-    const isUserAuthorOfComment = await commentsDBRepository.checkIfUserIfAuthorOfComment(req.user!, req.params.commentId)
-    if (!isUserAuthorOfComment) {
-        res.status(403).json({ errorsMessages: [{ message: 'You are not the author of this comment', field: 'userId' }] })
-    } else {
         const commentToUpdate = await commentsService.updateComment(req.params.commentId, req.body)
         if (!commentToUpdate) {
             res.status(404).json({ errorsMessages: [{ message: 'Comment not found', field: 'commentId' }] })
             return
         }
+        const isUserAuthorOfComment = await commentsDBRepository.checkIfUserIfAuthorOfComment(req.user!, req.params.commentId)
+        if (!isUserAuthorOfComment) {
+            res.status(403).json({ errorsMessages: [{ message: 'You are not the author of this comment', field: 'userId' }] })
+            return
+        }
         res
             .sendStatus(204)
-    }
+  
     
 };
 
