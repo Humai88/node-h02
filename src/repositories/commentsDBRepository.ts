@@ -10,8 +10,8 @@ export const commentsDBRepository = {
     return result.matchedCount === 1
   },
 
-  async deleteComment(id: string): Promise<boolean> {
-    const objectBlogId = new ObjectId(id);
+  async deleteComment(commentId: string): Promise<boolean> {
+    const objectBlogId = new ObjectId(commentId);
     const result = await commentsCollection.deleteOne({ _id: objectBlogId });
     return result.deletedCount === 1
   },

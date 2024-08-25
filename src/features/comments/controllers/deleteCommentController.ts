@@ -1,13 +1,12 @@
 import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
-import { ParamModel } from '../../../models/QueryModel';
-import { usersService } from '../../../domains/users-service';
+import { commentsService } from '../../../domains/comments-service';
 
 
-export const deleteCommentController = async (req: Request<ParamModel>, res: Response<null | ErrorResultModel>) => {
-  const userToDelete = await usersService.deleteUser(req.params.id)
-  if (!userToDelete) {
-      res.status(404).json({ errorsMessages: [{ message: 'User not found', field: 'id' }] })
+export const deleteCommentController = async (req: Request<{commentId: string}>, res: Response<null | ErrorResultModel>) => {
+  const commentToDelete = await commentsService.deleteComment(req.params.commentId)
+  if (!commentToDelete) {
+      res.status(404).json({ errorsMessages: [{ message: 'Commentr not found', field: 'commentId' }] })
       return
   }
   res
