@@ -5,7 +5,7 @@ import { LoginInputModel, UserInputModel } from "./UserModel";
 export type ErrorResultModel = {
   errorsMessages: FieldError[]
 };
-export type FieldNamesType = keyof BlogInputModel | keyof PostInputModel | keyof LoginInputModel | keyof UserInputModel | 'id' | 'postId';
+export type FieldNamesType = keyof BlogInputModel | keyof PostInputModel | keyof LoginInputModel | keyof UserInputModel | 'id' | 'postId' | "commentId";
 
 type FieldError = { message: string, field: FieldNamesType }
 
