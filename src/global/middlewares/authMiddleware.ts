@@ -24,7 +24,6 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
   } else {
     res
       .send(401)
-    return
   }
 
 }
