@@ -18,7 +18,6 @@ export const updateCommentController = async (req: Request<{commentId: string}, 
         }
         res
             .sendStatus(204)
-  
     
 };
 
