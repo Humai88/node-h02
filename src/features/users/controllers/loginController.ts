@@ -11,7 +11,7 @@ export const loginController = async (req: Request<any, null, LoginInputModel>, 
     } else {
         const token = await jwtService.generateToken(user)
         res
-            .status(201).send(token)
+            .status(200).send(token)
     }
 
 };
