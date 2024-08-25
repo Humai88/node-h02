@@ -1,10 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { jwtService } from '../../application/jwtService';
 import { usersQueryRepository } from '../../repositories/usersQueryRepository';
-import { UserViewModel } from '../../models/UserModel';
 
 
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware: RequestHandler<any, any, any, any> = async (req: Request, res: Response, next: NextFunction) => {
   const auth = req.headers['authorization'] as string
 
   if (!auth) {

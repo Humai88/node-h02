@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { usersCollection } from "../db/mongo-db"
 import { UserDBViewModel } from "../models/DBModel";
 import { PaginatorUserViewModel, QueryUserModel } from "../models/QueryModel";
-import { UserViewModel } from "../models/UserModel";
+import { MeViewModel, UserViewModel } from "../models/UserModel";
 
 
 export const usersQueryRepository = {
@@ -22,18 +22,29 @@ export const usersQueryRepository = {
     return user && this.mapUserResult(user)
   },
 
+  async getMeInfo(user: UserViewModel | null): Promise<MeViewModel | null> {
+    if (!user) {
+      return null
+    }
+    const me = {
+      userId: user.id,
+      login: user.login,
+      email: user.email,
+    }
+    return me
+  },
 
   setFilter(query: QueryUserModel) {
-      return {
-        $or: [
-          query.searchLoginTerm
+    return {
+      $or: [
+        query.searchLoginTerm
           ? { login: { $regex: query.searchLoginTerm, $options: 'i' } }
           : {},
-          query.searchEmailTerm
-      ? { email: { $regex: query.searchEmailTerm, $options: 'i' } }
-      : {}
-        ]
-      };
+        query.searchEmailTerm
+          ? { email: { $regex: query.searchEmailTerm, $options: 'i' } }
+          : {}
+      ]
+    };
   },
 
   async setTotalCount(filter: any): Promise<number> {

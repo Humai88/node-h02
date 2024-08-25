@@ -1,6 +1,5 @@
 import { body, query } from 'express-validator';
 import { inputErrors } from '../../../global/middlewares/inputErrors';
-import { adminMiddleware } from '../../../global/middlewares/adminMiddleware';
 import { SortDirection } from 'mongodb';
 import { authMiddleware } from '../../../global/middlewares/authMiddleware';
 
