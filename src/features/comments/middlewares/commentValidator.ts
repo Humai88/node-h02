@@ -18,7 +18,6 @@ export const commentIdParamValidator = [
 
 ];
 
-
 export const commentQueryValidator = [
   query('pageNumber')
     .isInt({ min: 1 })
