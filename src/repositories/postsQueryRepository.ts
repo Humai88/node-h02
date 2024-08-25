@@ -1,8 +1,9 @@
 import { PostViewModel } from "../models/PostViewModel"
-import { PostDBViewModel } from "../models/DBModel";
-import { postsCollection } from "../db/mongo-db";
-import { PaginatorPostViewModel, QueryPostModel } from "../models/QueryModel";
+import { CommentDBViewModel, PostDBViewModel } from "../models/DBModel";
+import { commentsCollection, postsCollection } from "../db/mongo-db";
+import { PaginatorCommentViewModel, PaginatorPostViewModel, QueryPostModel } from "../models/QueryModel";
 import { ObjectId } from "mongodb";
+import { commentsQueryRepository } from "./commentsQueryRepository";
 
 export const postsQueryRepository = {
 
@@ -14,7 +15,7 @@ export const postsQueryRepository = {
       .toArray()
     return this.mapBlogToPaginatorResult(postsMongoDbResult, query, blogId)
   },
-  
+
   async findPost(id: string): Promise<PostViewModel | null> {
     const objectId = new ObjectId(id);
     const post = await postsCollection.findOne({ _id: objectId })
@@ -25,7 +26,17 @@ export const postsQueryRepository = {
     if (!blogId) {
       return {};
     }
-    return {blogId: blogId}
+    return { blogId: blogId }
+  },
+
+
+  async getComments(query: QueryPostModel, postId: string): Promise<PaginatorCommentViewModel> {
+    const commentsMongoDbResult = await commentsCollection.find({ postId: postId })
+      .sort(query.sortBy, query.sortDirection)
+      .skip((query.pageNumber - 1) * query.pageSize)
+      .limit(query.pageSize)
+      .toArray()
+    return this.mapCommentToPaginatorResult(commentsMongoDbResult, query, postId)
   },
 
   async setTotalCount(filter: any): Promise<number> {
@@ -54,6 +65,17 @@ export const postsQueryRepository = {
       blogName: post.blogName,
       createdAt: post.createdAt
     };
-  }
+  },
+
+  async mapCommentToPaginatorResult(comments: CommentDBViewModel[], query: QueryPostModel, postId?: string,): Promise<PaginatorCommentViewModel> {
+    const totalCount = await commentsCollection.countDocuments({ postId: postId })
+    return {
+      pagesCount: Math.ceil(totalCount / query.pageSize),
+      page: query.pageNumber,
+      pageSize: query.pageSize,
+      totalCount,
+      items: comments.map(comment => commentsQueryRepository.mapCommentResult(comment))
+    }
+  },
 
 }

@@ -1,4 +1,5 @@
 import { BlogViewModel } from "./BlogViewModel"
+import { CommentViewModel } from "./CommentModel"
 import { PostViewModel } from "./PostViewModel"
 import { UserViewModel } from "./UserModel"
 
@@ -23,6 +24,11 @@ export interface PaginatorPostViewModel extends PaginatorModel {
 export interface PaginatorUserViewModel extends PaginatorModel {
   items: UserViewModel[]
 }
+
+export interface PaginatorCommentViewModel extends PaginatorModel {
+  items: CommentViewModel[]
+}
+
 
  interface QueryModel {
   pageSize: number

@@ -1,4 +1,4 @@
-import { body, param, query, ValidationChain } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import { inputErrors } from '../../../global/middlewares/inputErrors';
 import { adminMiddleware } from '../../../global/middlewares/adminMiddleware';
 import { SortDirection } from '../../../models/QueryModel';
@@ -23,6 +23,12 @@ export const blogIdParamValidator = [
   param('blogId')
     .notEmpty()
     .withMessage('Blog ID is required')
+];
+
+export const postIdParamValidator = [
+  param('postId')
+    .notEmpty()
+    .withMessage('Post ID is required')
 ];
 
 export const postInBlogValidator = [
