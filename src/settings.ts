@@ -9,12 +9,15 @@ export const SETTINGS = {
     BLOG_COLLECTION_NAME: process.env.BLOG_COLLECTION_NAME || 'blogs',
     POST_COLLECTION_NAME: process.env.POST_COLLECTION_NAME || 'posts',
     USER_COLLECTION_NAME: process.env.USER_COLLECTION_NAME || 'users',
+    COMMENT_COLLECTION_NAME: process.env.COMMENT_COLLECTION_NAME || 'comments',
     PORT: process.env.PORT || 3003,
+    JWT_SECRET: process.env.JWT_SECRET || '256',
     PATH: {
         BLOGS: '/blogs',
         POSTS: '/posts',
         USERS: '/users',
-        AUTH: '/auth/login',
+        AUTH: '/auth',
+        COMMENTS: '/comments',
         TEST: '/testing/all-data'
     },
 }

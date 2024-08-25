@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { usersService } from '../../../domains/users-service';
-import { UserViewModel } from '../../../models/UserViewModel';
-import { UserInputModel } from '../../../models/UserInputModel';
+import { UserInputModel, UserViewModel } from '../../../models/UserModel';
 import { usersQueryRepository } from '../../../repositories/usersQueryRepository';
 import { usersDBRepository } from '../../../repositories/usersDBRepository';
 

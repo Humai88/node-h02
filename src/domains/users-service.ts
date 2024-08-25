@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { UserDBViewModel } from "../models/DBModel";
-import { LoginInputModel, UserInputModel } from "../models/UserInputModel";
+import { LoginInputModel, UserInputModel } from "../models/UserModel";
 import { usersDBRepository } from "../repositories/usersDBRepository";
 import bcrypt from "bcrypt";
 
@@ -23,17 +23,18 @@ export const usersService = {
     return userMongoDbResult._id.toString()
   },
 
-  async checkCredentials(login: LoginInputModel): Promise<boolean> {
+  async checkCredentials(login: LoginInputModel): Promise<UserDBViewModel | null> {
     const user = await usersDBRepository.findUserByLoginOrEmail(login.loginOrEmail);
     if (!user) {
-      return false
-    }
-    const passwordHash = await this.generateHash(login.password, user.passwordSalt)
-    if (user.passwordHash !== passwordHash) {
-      return false
-    } 
-    else {
-      return true
+      return null
+    } else {
+      const passwordHash = await this.generateHash(login.password, user.passwordSalt);
+      if (user.passwordHash !== passwordHash) {
+        return null
+      }
+      else {
+        return user
+      }
     }
   },
 

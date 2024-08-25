@@ -1,7 +1,9 @@
 import { ObjectId} from "mongodb";
-import { blogsCollection, postsCollection } from "../db/mongo-db"
+import { blogsCollection, commentsCollection, postsCollection } from "../db/mongo-db"
 import { PostInputModel } from "../models/PostInputModel"
-import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
+import { BlogDBViewModel, CommentDBViewModel, PostDBViewModel } from "../models/DBModel";
+import { CommentInputModel } from "../models/CommentModel";
+import { UserViewModel } from "../models/UserModel";
 
 export const postsDBRepository = {
     
@@ -29,6 +31,22 @@ export const postsDBRepository = {
     const objectId = new ObjectId(id);
     const result = await postsCollection.deleteOne({ _id: objectId });
     return result.deletedCount === 1
+  },
+
+  async createCommentForPost(postId: string, comment: CommentInputModel, user: UserViewModel| null): Promise<CommentDBViewModel> {
+    const objectId = new ObjectId();
+    const newComment: CommentDBViewModel = {
+      content: comment.content,
+      createdAt: new Date().toISOString(),
+      postId: postId,
+      _id: objectId,
+      commentatorInfo: {  
+        userId: user!.id,
+        userLogin: user!.login
+      }
+    }
+    await commentsCollection.insertOne(newComment)
+    return newComment
   },
 
 }
