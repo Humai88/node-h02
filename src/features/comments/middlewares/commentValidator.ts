@@ -1,6 +1,7 @@
 import { body, query, param } from 'express-validator';
 import { inputErrors } from '../../../global/middlewares/inputErrors';
 import {  SortDirection } from 'mongodb';
+import { authMiddleware } from '../../../global/middlewares/authMiddleware';
 import { validateObjectId } from '../../posts/middlewares/postValidator';
 
 export const commentValidator = [
@@ -9,6 +10,7 @@ export const commentValidator = [
 ];
 
 export const commentIdParamValidator = [
+  authMiddleware,
   validateObjectId('commentId'),
   param('commentId')
     .notEmpty()
