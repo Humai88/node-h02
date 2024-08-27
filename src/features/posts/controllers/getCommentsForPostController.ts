@@ -6,12 +6,13 @@ import { postsQueryRepository } from '../../../repositories/postsQueryRepository
 
 export const getCommentsForPostController = async (req: Request<{ postId: string }, any, any, QueryPostModel>, res: Response<PaginatorCommentViewModel | ErrorResultModel>) => {
   try {
-    const post = await postsQueryRepository.findPost(req.params.postId)
+    const { postId } = req.params;
+    const post = await postsQueryRepository.findPost(postId)
     if (!post) {
       res.status(404).json({ errorsMessages: [{ message: 'Post not found', field: 'postId' }] })
       return
     }
-    const comments = await postsQueryRepository.getComments(req.query, req.params.postId)
+    const comments = await postsQueryRepository.getComments(req.query, postId)
     return res.status(200).json(comments)
 
   } catch (error) {
