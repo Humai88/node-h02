@@ -5,12 +5,12 @@ import { authMiddleware } from '../../../global/middlewares/authMiddleware';
 import { validateObjectId } from '../../posts/middlewares/postValidator';
 
 export const commentValidator = [
+  authMiddleware,
   body('content').trim().isLength({ min: 20, max: 300 }).withMessage('Comment must be between 20 and 300 characters'),
   inputErrors
 ];
 
 export const commentIdParamValidator = [
-  authMiddleware,
   validateObjectId('commentId'),
   param('commentId')
     .notEmpty()

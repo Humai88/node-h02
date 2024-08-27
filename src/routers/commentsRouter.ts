@@ -8,5 +8,5 @@ import { authMiddleware } from '../global/middlewares/authMiddleware'
 export const commentsRouter = Router()
  
 commentsRouter.get('/:id', findCommentController)
-commentsRouter.put('/:commentId', commentIdParamValidator, commentValidator, updateCommentController)
-commentsRouter.delete('/:commentId', commentIdParamValidator, deleteCommentController)
+commentsRouter.put('/:commentId', commentValidator, commentIdParamValidator, updateCommentController)
+commentsRouter.delete('/:commentId', authMiddleware, commentIdParamValidator, deleteCommentController)
