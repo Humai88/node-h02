@@ -10,11 +10,11 @@ export const deleteCommentController = async (req: Request<{ commentId: string }
             res.status(404).json({ errorsMessages: [{ message: 'Comment not found', field: 'commentId' }] })
             return
         }
-        // const isUserAuthorOfComment = await commentsDBRepository.checkIfUserIfAuthorOfComment(req.user!, req.params.commentId)
-        // if (!isUserAuthorOfComment) {
-        //     res.status(403).json({ errorsMessages: [{ message: 'You are not the author of this comment', field: 'userId' }] })
-        //     return
-        // }
+        const isUserAuthorOfComment = await commentsDBRepository.checkIfUserIfAuthorOfComment(req.user!, req.params.commentId)
+        if (!isUserAuthorOfComment) {
+            res.status(403).json({ errorsMessages: [{ message: 'You are not the author of this comment', field: 'userId' }] })
+            return
+        }
         res
             .sendStatus(204)
     
