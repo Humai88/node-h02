@@ -7,20 +7,26 @@ import { usersDBRepository } from '../../../repositories/usersDBRepository';
 
 
 export const createUserController = async (req: Request<any, UserViewModel, UserInputModel>, res: Response<UserViewModel | ErrorResultModel>) => {
-      const isLoginUnique = await usersDBRepository.checkIfLoginIsUnique(req.body.login)
-      const isEmailUnique = await usersDBRepository.checkIfEmailIsUnique(req.body.email)
-      if (!isLoginUnique) {
-            res.status(400).json({ errorsMessages: [{ message: 'Login is already taken', field: 'login' }] })
-            return
+      try {
+            const isLoginUnique = await usersDBRepository.checkIfLoginIsUnique(req.body.login)
+            const isEmailUnique = await usersDBRepository.checkIfEmailIsUnique(req.body.email)
+            if (!isLoginUnique) {
+                  return res.status(400).json({ errorsMessages: [{ message: 'Login is already taken', field: 'login' }] })
+            }
+            if (!isEmailUnique) {
+                 return res.status(400).json({ errorsMessages: [{ message: 'Email is already registered', field: 'email' }] })
+            }
+            const newUserId = await usersService.createUser(req.body)
+            const user = await usersQueryRepository.findUser(newUserId)
+            user && res
+                  .status(201)
+                  .json(user)
+
+      } catch (error) {
+            return res.status(500).json({
+                  errorsMessages: [{ message: 'Internal server error', field: 'server' }]
+            });
       }
-      if (!isEmailUnique) {
-            res.status(400).json({ errorsMessages: [{ message: 'Email is already registered', field: 'email' }] })
-            return
-      }
-      const newUserId = await usersService.createUser(req.body)
-      const user = await usersQueryRepository.findUser(newUserId)
-      user && res
-            .status(201)
-            .json(user)
+
 };
 

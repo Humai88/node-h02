@@ -6,12 +6,21 @@ import { blogsQueryRepository } from '../../../repositories/blogsQueryRepository
 
 
 export const getPostsInBlogController = async (req: Request<{blogId: string}, any, any, QueryPostModel>, res: Response<PaginatorPostViewModel | ErrorResultModel>) => {
-  const blog = await blogsQueryRepository.findBlog(req.params.blogId)
-  if (!blog) {
-    res.status(404).json({ errorsMessages: [{ message: 'Blog not found', field: 'blogId' }] })
-    return
+  try {
+    const {blogId} = req.params
+    const blog = await blogsQueryRepository.findBlog(blogId)
+    if (!blog) {
+      res.status(404).json({ errorsMessages: [{ message: 'Blog not found', field: 'blogId' }] })
+      return
+    }
+    const posts = await postsQueryRepository.getPosts(req.query, blogId)
+    return res.status(200).json(posts)
+                
+  } catch (error) {
+      return res.status(500).json({
+          errorsMessages: [{ message: 'Internal server error', field: 'server' }]
+        });
   }
-  const posts = await postsQueryRepository.getPosts(req.query, req.params.blogId)
-  res.status(200).json(posts)
+
 };
 

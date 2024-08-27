@@ -6,10 +6,19 @@ import { blogsQueryRepository } from '../../../repositories/blogsQueryRepository
 
 
 export const findBlogController = async (req: Request<ParamModel>, res: Response<BlogViewModel | ErrorResultModel>) => {
-  const blog = await blogsQueryRepository.findBlog(req.params.id)
-  if (!blog) {
-    res.status(404).json({ errorsMessages: [{ message: 'Blog not found', field: 'id' }] })
-    return
+  try {
+    const {id} = req.params
+    const blog = await blogsQueryRepository.findBlog(id)
+    if (!blog) {
+      res.status(404).json({ errorsMessages: [{ message: 'Blog not found', field: 'id' }] })
+      return
+    }
+    return res.status(200).json(blog)
+                
+  } catch (error) {
+      return res.status(500).json({
+          errorsMessages: [{ message: 'Internal server error', field: 'server' }]
+        });
   }
-  res.status(200).json(blog)
+
 };

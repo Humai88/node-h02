@@ -8,16 +8,26 @@ import { postsQueryRepository } from '../../../repositories/postsQueryRepository
 
 
 export const createPostInBlogController = async (req: Request<{blogId: string}, PostViewModel, PostInBlogInputModel>, res: Response<PostViewModel | ErrorResultModel>) => {
-  const blog = await blogsQueryRepository.findBlog(req.params.blogId)
-  if (!blog) {
-    res.status(404).json({ errorsMessages: [{ message: 'Blog not found', field: 'blogId' }] })
-    return
-  }
-const newPostId = await blogsService.createPostInBlog(req.params.blogId, req.body)
-const post = await postsQueryRepository.findPost(newPostId)
- post && res
-      .status(201)
-      .json(post)
+      try {
+        const { blogId } = req.params
+        const blog = await blogsQueryRepository.findBlog(blogId)
+        if (!blog) {
+          res.status(404).json({ errorsMessages: [{ message: 'Blog not found', field: 'blogId' }] })
+          return
+        }
+      const newPostId = await blogsService.createPostInBlog(blogId, req.body)
+      const post = await postsQueryRepository.findPost(newPostId)
+       return post && res
+            .status(201)
+            .json(post)
+      
+                
+      } catch (error) {
+          return res.status(500).json({
+              errorsMessages: [{ message: 'Internal server error', field: 'server' }]
+            });
+      }
+
 };
 
 
