@@ -18,7 +18,7 @@ export const createUserController = async (req: Request<any, UserViewModel, User
             }
             const newUserId = await usersService.createUser(req.body)
             const user = await usersQueryRepository.findUser(newUserId)
-            user && res
+            return user && res
                   .status(201)
                   .json(user)
 
@@ -27,6 +27,5 @@ export const createUserController = async (req: Request<any, UserViewModel, User
                   errorsMessages: [{ message: 'Internal server error', field: 'server' }]
             });
       }
-
 };
 
