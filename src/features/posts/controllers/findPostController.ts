@@ -6,10 +6,17 @@ import { postsQueryRepository } from '../../../repositories/postsQueryRepository
 
 
 export const findPostController = async (req: Request<ParamModel>, res: Response<PostViewModel | ErrorResultModel>) => {
-  const post = await postsQueryRepository.findPost(req.params.id)
-  if (!post) {
-    res.status(404).json({ errorsMessages: [{ message: 'Post not found', field: 'id' }] })
-    return
+  try {
+    const { id } = req.params;
+    const post = await postsQueryRepository.findPost(id)
+    if (!post) {
+      res.status(404).json({ errorsMessages: [{ message: 'Post not found', field: 'id' }] })
+      return
+    }
+    return res.status(200).json(post)
+  } catch (error) {
+    return res.status(500).json({
+      errorsMessages: [{ message: 'Internal server error', field: 'server' }]
+    });
   }
-  res.status(200).json(post)
 };

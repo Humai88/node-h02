@@ -7,9 +7,14 @@ import { postsQueryRepository } from '../../../repositories/postsQueryRepository
 
 
 export const createPostController = async (req: Request<any, PostViewModel | ErrorResultModel, PostInputModel>, res: Response<PostViewModel | ErrorResultModel>) => {
-  const newPostId = await postsService.createPost(req.body)
-  const post = await postsQueryRepository.findPost(newPostId)
-  post && res
-       .status(201)
-       .json(post)
+  try {
+    const newPostId = await postsService.createPost(req.body);
+    const post = await postsQueryRepository.findPost(newPostId);
+    return post && res.status(201).json(post);
+  } catch (error) {
+    console.error('Error in createPostController:', error);
+    return res.status(500).json({
+      errorsMessages: [{ message: 'Internal server error', field: 'server' }]
+    });
+  }
 };
