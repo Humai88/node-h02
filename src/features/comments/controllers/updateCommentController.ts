@@ -17,7 +17,7 @@ export const updateCommentController = async (req: Request<{ commentId: string }
             if (!commentToUpdate) {
                 res.status(404).json({ errorsMessages: [{ message: 'Comment not found', field: 'commentId' }] })
                 return
-            }
+            }    
             return res
                 .sendStatus(204)
         }
