@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { commentsService } from '../../../domains/comments-service';
 import { commentsDBRepository } from '../../../repositories/commentsDBRepository';
-
 import { commentsQueryRepository } from '../../../repositories/commentsQueryRepository';
 
 export const deleteCommentController = async (req: Request<{ commentId: string }>, res: Response<null | ErrorResultModel>) => {
