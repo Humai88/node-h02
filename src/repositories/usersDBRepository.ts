@@ -23,6 +23,16 @@ export const usersDBRepository = {
     return  user
   },
 
+  async doesExistByLoginOrEmail(login: string, email: string): Promise<UserDBViewModel | null> {
+    const user = await usersCollection.findOne({ 
+      $or: [
+        { login: { $regex: new RegExp(`^${login}$`, 'i') } },
+        { email: { $regex: new RegExp(`^${email}$`, 'i') } }
+      ]
+    })
+    return  user
+  },
+
   async checkIfLoginIsUnique(login: string): Promise<boolean> {
     const existingUser = await usersCollection.findOne({ login: login });
     return !existingUser;

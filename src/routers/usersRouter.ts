@@ -9,5 +9,5 @@ import { deleteUserController } from '../features/users/controllers/deleteUserCo
 export const usersRouter = Router()
  
 usersRouter.get('/', applyUserQueryDefaults, userQueryValidator, getUsersController)
-usersRouter.post('/', ...userValidator, createUserController)
+usersRouter.post('/', adminMiddleware, ...userValidator, createUserController)
 usersRouter.delete('/:id', adminMiddleware, deleteUserController)

@@ -4,7 +4,6 @@ import { adminMiddleware } from '../../../global/middlewares/adminMiddleware';
 import { SortDirection } from 'mongodb';
 
 export const userValidator = [
-  adminMiddleware,
   body('login').trim().isLength({ min: 3, max: 10 }).withMessage('Login must be between 3 and 10 characters').matches(/^[a-zA-Z0-9_-]*$/).withMessage('Invalid login format'),
   body('password').trim().isLength({ min: 6, max: 20 }).withMessage('Password must be between 6 and 20 characters'),
   body('email').trim().matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).withMessage('Invalid email format'),

@@ -25,3 +25,17 @@ export interface MeViewModel {
   login: string,
   email: string,
 }
+
+export interface RegistrationConfirmationCodeModel {
+  code: string,
+}
+
+export interface RegistrationEmailResendingModel {
+  email: string,
+}
+
+
+export interface EmailConfirmationType {
+    subject: string,
+    body: string,
+}

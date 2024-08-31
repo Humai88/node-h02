@@ -10,7 +10,6 @@ export const setBlogQueryDefaultValues = (query: QueryBlogModel) => {
   }
 }
 
-
 export const setPostQueryDefaultValues = (query:  QueryPostModel) => {
   return {
     pageNumber: query.pageNumber ? +query.pageNumber : 1,

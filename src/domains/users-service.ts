@@ -3,6 +3,9 @@ import { UserDBViewModel } from "../models/DBModel";
 import { LoginInputModel, UserInputModel } from "../models/UserModel";
 import { usersDBRepository } from "../repositories/usersDBRepository";
 import bcrypt from "bcrypt";
+import { randomUUID } from "crypto";
+import { add } from "date-fns";
+import { nodemailerAdapter, emailManager } from "../adapters/nodemailerAdapter";
 
 export const usersService = {
 
@@ -21,6 +24,46 @@ export const usersService = {
     }
     const userMongoDbResult = await usersDBRepository.createUser(newUser);
     return userMongoDbResult._id.toString()
+  },
+
+  async registerUser(user: UserInputModel): Promise<UserDBViewModel | null> {
+    const userExists = await usersDBRepository.doesExistByLoginOrEmail(user.login, user.email);
+    if (userExists) return null;
+    const objectId = new ObjectId();
+    const passwordSalt = await bcrypt.genSalt(10)
+    const passwordHash = await this.generateHash(user.password, passwordSalt)
+
+    const newUser: UserDBViewModel = {
+      login: user.login,
+      email: user.email,
+      createdAt: new Date().toISOString(),
+      passwordHash,
+      passwordSalt,
+      _id: objectId,
+      emailConfirmation: {
+        confirmationCode: randomUUID(),
+        expirationDate: add(new Date(), {
+          hours: 1,
+          minutes: 30,
+        }),
+        isConfirmed: false
+      }
+    }
+    const userMongoDbResult = await usersDBRepository.createUser(newUser);
+
+    if (userMongoDbResult && userMongoDbResult.emailConfirmation) {
+      try {
+        await nodemailerAdapter.sendEmail(
+          userMongoDbResult.email,
+          userMongoDbResult.emailConfirmation.confirmationCode,
+          emailManager.registrationEmail
+        );
+      } catch (e: unknown) {
+        console.error('Send email error', e);
+      }
+    }
+
+    return userMongoDbResult
   },
 
   async checkCredentials(login: LoginInputModel): Promise<UserDBViewModel | null> {
