@@ -1,19 +1,20 @@
 import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
-import { LoginInputModel, LoginSuccessViewModel } from '../../../models/UserModel';
-import { usersService } from '../../../domains/users-service';
-import { jwtService } from '../../../application/jwtService';
+import { RegistrationEmailResendingModel } from '../../../models/UserModel';
+import { authService } from '../../../domains/auth-service';
 
-export const registrationEmailResendingController = async (req: Request<any, null, LoginInputModel>, res: Response<LoginSuccessViewModel | ErrorResultModel>) => {
+
+export const registrationEmailResendingController = async (req: Request<any, any, RegistrationEmailResendingModel>, res: Response<null | ErrorResultModel>) => {
     try {
-        const user = await usersService.checkCredentials(req.body)
-        if (!user) {
-            return res.status(401).json({ errorsMessages: [{ message: 'User not found', field: 'loginOrEmail' }] })
-        } else {
-            const token = await jwtService.generateToken(user)
-            return res
-                .status(200).send(token)
+        const { email } = req.body
+        const result = await authService.resendRegistrationEmail(email)
+        if (!result) {
+            res.status(400).json({ errorsMessages: [{ message: 'User not found', field: 'email' }] })
+            return
         }
+        return res
+            .sendStatus(204)
+
     } catch (error) {
         return res.status(500).json({
             errorsMessages: [{ message: 'Internal server error', field: 'server' }]

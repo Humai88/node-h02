@@ -1,22 +1,21 @@
 import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
-import { usersService } from '../../../domains/users-service';
+import { authService } from '../../../domains/auth-service';
 import { UserInputModel, UserViewModel } from '../../../models/UserModel';
-import { usersQueryRepository } from '../../../repositories/usersQueryRepository';
 import { usersDBRepository } from '../../../repositories/usersDBRepository';
 
 
 export const registrationController = async (req: Request<any, UserViewModel, UserInputModel>, res: Response<UserViewModel | ErrorResultModel>) => {
       try {
-            const isLoginUnique = await usersDBRepository.checkIfLoginIsUnique(req.body.login)
-            const isEmailUnique = await usersDBRepository.checkIfEmailIsUnique(req.body.email)
-            if (!isLoginUnique) {
-                  return res.status(400).json({ errorsMessages: [{ message: 'Login is already taken', field: 'login' }] })
-            }
-            if (!isEmailUnique) {
-                  return res.status(400).json({ errorsMessages: [{ message: 'Email is already registered', field: 'email' }] })
-            }
-            const newUser = await usersService.registerUser(req.body)
+            const { login, email } = req.body;
+            const existingUser  = await usersDBRepository.doesExistByLoginOrEmail(login, email)
+            if (existingUser) {
+                  const field = existingUser.login === login ? 'login' : 'email';
+                  return res.status(400).json({ 
+                    errorsMessages: [{ message: `${field} is already taken`, field }] 
+                  });
+                }
+            const newUser = await authService.registerUser(req.body)
             return newUser && res
                   .sendStatus(204)
 
@@ -26,4 +25,3 @@ export const registrationController = async (req: Request<any, UserViewModel, Us
             });
       }
 };
-

@@ -8,14 +8,14 @@ import { usersDBRepository } from '../../../repositories/usersDBRepository';
 
 export const createUserController = async (req: Request<any, UserViewModel, UserInputModel>, res: Response<UserViewModel | ErrorResultModel>) => {
       try {
-            const isLoginUnique = await usersDBRepository.checkIfLoginIsUnique(req.body.login)
-            const isEmailUnique = await usersDBRepository.checkIfEmailIsUnique(req.body.email)
-            if (!isLoginUnique) {
-                  return res.status(400).json({ errorsMessages: [{ message: 'Login is already taken', field: 'login' }] })
-            }
-            if (!isEmailUnique) {
-                 return res.status(400).json({ errorsMessages: [{ message: 'Email is already registered', field: 'email' }] })
-            }
+            const { login, email } = req.body;
+            const existingUser  = await usersDBRepository.doesExistByLoginOrEmail(login, email)
+            if (existingUser) {
+                  const field = existingUser.login === login ? 'login' : 'email';
+                  return res.status(400).json({ 
+                    errorsMessages: [{ message: `${field} is already taken`, field }] 
+                  });
+                }
             const newUserId = await usersService.createUser(req.body)
             const user = await usersQueryRepository.findUser(newUserId)
             return user && res
