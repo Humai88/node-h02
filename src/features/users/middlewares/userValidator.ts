@@ -10,6 +10,16 @@ export const userValidator = [
   inputErrors
 ];
 
+export const userConfirmationValidator = [
+  body('code').isUUID().withMessage('Invalid confirmation code format'),
+  inputErrors
+];
+
+export const userResendValidator = [
+  body('email').trim().matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).withMessage('Invalid email format'),
+  inputErrors
+];
+
 export const userQueryValidator = [
   adminMiddleware,
   query('pageNumber')

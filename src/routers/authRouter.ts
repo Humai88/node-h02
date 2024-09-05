@@ -5,12 +5,12 @@ import { authMiddleware } from '../global/middlewares/authMiddleware'
 import { registrationController } from '../features/users/controllers/registrationController'
 import { registrationConfirmationController } from '../features/users/controllers/registrationConfirmationController'
 import { registrationEmailResendingController } from '../features/users/controllers/registrationEmailResendingController'
-import { userValidator } from '../features/users/middlewares/userValidator'
+import { userValidator, userConfirmationValidator, userResendValidator } from '../features/users/middlewares/userValidator'
 
 export const authRouter = Router()
  
 authRouter.post('/login', loginController)
 authRouter.get('/me', authMiddleware, getUserInfoController)
 authRouter.post('/registration', ...userValidator, registrationController)
-authRouter.post('/registration-confirmation', registrationConfirmationController)
-authRouter.post('/registration-email-resending', registrationEmailResendingController)
+authRouter.post('/registration-confirmation', userConfirmationValidator, registrationConfirmationController)
+authRouter.post('/registration-email-resending', userResendValidator, registrationEmailResendingController)
