@@ -23,14 +23,32 @@ export const usersDBRepository = {
     return  user
   },
 
-  async checkIfLoginIsUnique(login: string): Promise<boolean> {
-    const existingUser = await usersCollection.findOne({ login: login });
-    return !existingUser;
+  async doesExistByLoginOrEmail(login: string, email: string): Promise<UserDBViewModel | null> {
+    const user = await usersCollection.findOne({ 
+      $or: [
+        { login: { $regex: new RegExp(`^${login}$`, 'i') } },
+        { email: { $regex: new RegExp(`^${email}$`, 'i') } }
+      ]
+    })
+    return  user
   },
 
-  async checkIfEmailIsUnique(email: string): Promise<boolean> {
-    const existingUser = await usersCollection.findOne({ email: email });
-    return !existingUser;
+  async findUserByConfirmationCode(code: string): Promise<UserDBViewModel | null> {
+    const user = await usersCollection.findOne({ 'emailConfirmation.confirmationCode': code })
+    return user
+  },
+
+  async confirmUser(id: string): Promise<UserDBViewModel | null> {
+    const objectUserId = new ObjectId(id);
+    const result = await usersCollection.updateOne(
+      { _id: objectUserId },    
+      { $set: { 'emailConfirmation.isConfirmed': true } }
+    )
+    if (result.modifiedCount === 1) {
+      const confirmedUser = await usersCollection.findOne({ _id: objectUserId });
+      return confirmedUser
+    }
+    return null
   },
 
   async deleteUser(id: string): Promise<boolean> {

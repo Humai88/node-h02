@@ -1,12 +1,11 @@
 import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
-import { usersService } from '../../../domains/users-service';
+import { authService } from '../../../domains/auth-service';
 import { UserInputModel, UserViewModel } from '../../../models/UserModel';
-import { usersQueryRepository } from '../../../repositories/usersQueryRepository';
 import { usersDBRepository } from '../../../repositories/usersDBRepository';
 
 
-export const createUserController = async (req: Request<any, UserViewModel, UserInputModel>, res: Response<UserViewModel | ErrorResultModel>) => {
+export const registrationController = async (req: Request<any, UserViewModel, UserInputModel>, res: Response<UserViewModel | ErrorResultModel>) => {
       try {
             const { login, email } = req.body;
             const existingUser  = await usersDBRepository.doesExistByLoginOrEmail(login, email)
@@ -16,11 +15,9 @@ export const createUserController = async (req: Request<any, UserViewModel, User
                     errorsMessages: [{ message: `${field} is already taken`, field }] 
                   });
                 }
-            const newUserId = await usersService.createUser(req.body)
-            const user = await usersQueryRepository.findUser(newUserId)
-            return user && res
-                  .status(201)
-                  .json(user)
+            const newUser = await authService.registerUser(req.body)
+            return newUser && res
+                  .sendStatus(204)
 
       } catch (error) {
             return res.status(500).json({
@@ -28,4 +25,3 @@ export const createUserController = async (req: Request<any, UserViewModel, User
             });
       }
 };
-

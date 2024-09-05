@@ -35,7 +35,12 @@ export interface UserDBViewModel {
   email: string,
   createdAt: string,
   passwordHash: string,
-  passwordSalt: string
+  passwordSalt: string,
+  emailConfirmation?: {
+    confirmationCode: string,
+    isConfirmed: boolean,
+    expirationDate: Date
+  }
 }
 
 export interface CommentDBViewModel {
