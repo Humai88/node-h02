@@ -100,6 +100,9 @@ export const authService = {
     if (user.emailConfirmation!.isConfirmed) {
       return false
     }
+    if (user.emailConfirmation!.expirationDate > new Date()) {
+      return false
+    }
     try {
       await nodemailerAdapter.sendEmail(
         user.email,
