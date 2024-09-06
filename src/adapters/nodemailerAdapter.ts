@@ -17,7 +17,10 @@ const getEmailBody = (template: string, confirmationCode: string): string => {
 export const nodemailerAdapter = {
   async sendEmail(to: string, confirmationCode: string, emailTemplate: EmailConfirmationType): Promise<void> {
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: {
+        name: 'BLOG',
+        address: process.env.EMAIL_USER as string,
+      },
       to: to,
       subject: emailTemplate.subject,
       html: getEmailBody(emailTemplate.body, confirmationCode)
