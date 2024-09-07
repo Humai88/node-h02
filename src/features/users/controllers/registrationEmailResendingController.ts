@@ -9,7 +9,7 @@ export const registrationEmailResendingController = async (req: Request<any, any
         const { email } = req.body
         const result = await authService.resendRegistrationEmail(email)
         if (!result) {
-            res.status(400).json({ errorsMessages: [{ message: 'User not found', field: 'email' }] })
+            res.status(400).json({ errorsMessages: [{ message: 'Resending email confirmation failed', field: 'email' }] })
             return
         }
         return res

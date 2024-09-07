@@ -9,7 +9,7 @@ export const registrationConfirmationController = async (req: Request<any, any, 
         const { code } = req.body
         const result = await authService.confirmRegistration(code)
         if (!result) {
-            res.status(400).json({ errorsMessages: [{ message: 'Confirmation code is invalid', field: 'code' }] })
+            res.status(400).json({ errorsMessages: [{ message: 'Email confirmation failed', field: 'code' }] })
             return
         }
         return res
