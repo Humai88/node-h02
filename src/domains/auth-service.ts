@@ -80,36 +80,35 @@ export const authService = {
     if (!user) {
       return null
     }
-    if (!user.createdByAdmin &&!user.emailConfirmation!.isConfirmed) {
+    if (!user.createdByAdmin && !user.emailConfirmation!.isConfirmed) {
       return null
     }
     const passwordHash = await this.generateHash(login.password, user.passwordSalt);
     if (user.passwordHash !== passwordHash) {
       return null
     }
-      return user
+    return user
   },
 
   async resendRegistrationEmail(email: string): Promise<boolean> {
+    const user = await usersDBRepository.findUserByLoginOrEmail(email);
     try {
-      const user = await usersDBRepository.findUserByLoginOrEmail(email);
-      if (!user) {
-        return false
+      if (!user || user.emailConfirmation?.isConfirmed) {
+        return false;
       }
-      if (user.emailConfirmation!.isConfirmed) {
-        return false
-      }
+      const newConfirmationCode = randomUUID();
+      await usersDBRepository.updateEmailConfirmation(user.email, newConfirmationCode);
       await nodemailerAdapter.sendEmail(
         user.email,
-        randomUUID(),
+        newConfirmationCode,
         emailManager.registrationEmail
       );
-      await usersDBRepository.updateEmailExpirationDate(email);
-      return true
+
+      return true;
     } catch (error) {
       console.error('Resend email error:', error);
-      return false
-    } 
+      throw error;
+    }
   },
 
   async generateHash(password: string, salt: string) {

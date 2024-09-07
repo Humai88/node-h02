@@ -39,10 +39,19 @@ export const usersDBRepository = {
     return user
   },
 
-  
-  async updateEmailExpirationDate(email: string): Promise<UserDBViewModel | null> {
-    const result = await usersCollection.updateOne({ email: email }, { $set: { 'emailConfirmation.expirationDate': add(new Date(), { hours: 1, minutes: 30 }) } });
-    return result.modifiedCount === 1 ? await usersCollection .findOne({ email: email }) : null
+
+  async updateEmailConfirmation(email: string, newConfirmationCode: string): Promise<boolean> {
+    const result = await usersCollection.updateOne(
+      { email: email },
+      {
+        $set: {
+          'emailConfirmation.confirmationCode': newConfirmationCode,
+          'emailConfirmation.expirationDate': add(new Date(), { hours: 1, minutes: 30 }),
+        }
+      }
+    );
+
+    return result.modifiedCount === 1;
   },
 
   async confirmUser(id: string): Promise<UserDBViewModel | null> {
