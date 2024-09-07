@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 
 
 const getEmailBody = (template: string, confirmationCode: string): string => {
-  return template.replace('{{confirmationCode}}', confirmationCode);
+  return template.replace('{{your_confirmation_code}}', confirmationCode);
 };
 
 export const nodemailerAdapter = {
@@ -41,9 +41,10 @@ export const emailManager = {
   registrationEmail: {
     subject: 'Confirm Your Registration',
     body: `
-      <h1>Thank you for registering!</h1>
-      <p>Please confirm your email by clicking on the following link:</p>
-      <a href="http://yourdomain.com/confirm/{{confirmationCode}}">Confirm your Account</a>
+   <h1>Thank for your registration</h1>
+      <p>To finish registration please follow the link below:
+      <a href='https://somesite.com/confirm-email?code={{your_confirmation_code}}'>complete registration</a>
+   </p>
     `
   }
 };

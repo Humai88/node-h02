@@ -23,9 +23,6 @@ export const authService = {
       return createdUser;
     } catch (error) {
       console.error('User registration error:', error);
-      if (newUser._id) {
-        await usersDBRepository.deleteUser(newUser._id.toString());
-      }
       return null;
     }
   },
@@ -42,6 +39,7 @@ export const authService = {
       passwordHash,
       passwordSalt,
       _id: objectId,
+      createdByAdmin: false,
       emailConfirmation: {
         confirmationCode: randomUUID(),
         expirationDate: add(new Date(), { hours: 1, minutes: 30 }),
@@ -82,7 +80,7 @@ export const authService = {
     if (!user) {
       return null
     }
-    if (!user.emailConfirmation!.isConfirmed) {
+    if (!user.createdByAdmin &&!user.emailConfirmation!.isConfirmed) {
       return null
     }
     const passwordHash = await this.generateHash(login.password, user.passwordSalt);
@@ -93,22 +91,20 @@ export const authService = {
   },
 
   async resendRegistrationEmail(email: string): Promise<boolean> {
-    const user = await usersDBRepository.findUserByLoginOrEmail(email);
-    if (!user) {
-      return false
-    }
-    if (user.emailConfirmation!.isConfirmed) {
-      return false
-    }
-    if (user.emailConfirmation!.expirationDate > new Date()) {
-      return false
-    }
     try {
+      const user = await usersDBRepository.findUserByLoginOrEmail(email);
+      if (!user) {
+        return false
+      }
+      if (user.emailConfirmation!.isConfirmed) {
+        return false
+      }
       await nodemailerAdapter.sendEmail(
         user.email,
-        user.emailConfirmation!.confirmationCode,
+        randomUUID(),
         emailManager.registrationEmail
       );
+      await usersDBRepository.updateEmailExpirationDate(email);
       return true
     } catch (error) {
       console.error('Resend email error:', error);

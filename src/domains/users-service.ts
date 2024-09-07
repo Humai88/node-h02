@@ -18,6 +18,7 @@ export const usersService = {
       passwordHash,
       passwordSalt,
       _id: objectId,
+      createdByAdmin: true,
     }
     const userMongoDbResult = await usersDBRepository.createUser(newUser);
     return userMongoDbResult._id.toString()

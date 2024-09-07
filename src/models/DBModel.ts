@@ -36,6 +36,7 @@ export interface UserDBViewModel {
   createdAt: string,
   passwordHash: string,
   passwordSalt: string,
+  createdByAdmin: boolean,
   emailConfirmation?: {
     confirmationCode: string,
     isConfirmed: boolean,

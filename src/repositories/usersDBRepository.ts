@@ -1,6 +1,7 @@
 import { usersCollection } from "../db/mongo-db"
 import { ObjectId } from "mongodb";
 import { UserDBViewModel } from "../models/DBModel";
+import { add } from "date-fns";
 
 export const usersDBRepository = {
 
@@ -36,6 +37,12 @@ export const usersDBRepository = {
   async findUserByConfirmationCode(code: string): Promise<UserDBViewModel | null> {
     const user = await usersCollection.findOne({ 'emailConfirmation.confirmationCode': code })
     return user
+  },
+
+  
+  async updateEmailExpirationDate(email: string): Promise<UserDBViewModel | null> {
+    const result = await usersCollection.updateOne({ email: email }, { $set: { 'emailConfirmation.expirationDate': add(new Date(), { hours: 1, minutes: 30 }) } });
+    return result.modifiedCount === 1 ? await usersCollection .findOne({ email: email }) : null
   },
 
   async confirmUser(id: string): Promise<UserDBViewModel | null> {
