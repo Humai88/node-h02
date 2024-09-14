@@ -29,7 +29,6 @@ export const refreshTokensController = async (req: Request<any>, res: Response<L
         res.cookie('refreshToken', newRefreshToken, {
           httpOnly: true,
           secure: true,
-          maxAge: 20000
       });
         return res.status(200).send(newAccessToken);
 

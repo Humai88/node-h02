@@ -18,7 +18,6 @@ export const loginController = async (req: Request<any, null, LoginInputModel>, 
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
                 secure: true,
-                maxAge: 20000
             });
             return res
                 .status(200).send(token)
