@@ -1,9 +1,8 @@
 import { UserDBViewModel } from "../models/DBModel"
-import {UserViewModel} from "../models/UserModel"
 import jwt from "jsonwebtoken"
 import { SETTINGS } from "../settings";
 import { ObjectId } from "mongodb";
-import { usersDBRepository } from '../repositories/usersDBRepository';
+
 
 export const jwtService = {
   async generateToken(user: UserDBViewModel): Promise<any> {

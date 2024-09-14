@@ -1,12 +1,11 @@
 import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
-import { LoginSuccessViewModel } from '../../../models/UserModel';
 import { jwtService } from '../../../application/jwtService';
 import { authService } from '../../../domains/auth-service';
 import { usersDBRepository } from '../../../repositories/usersDBRepository';
 
 
-export const refreshTokensController = async (req: Request<any>, res: Response<LoginSuccessViewModel | ErrorResultModel>) => {
+export const refreshTokensController = async (req: Request<any>, res: Response<null | ErrorResultModel>) => {
     try {
         const refreshToken = req.cookies.refreshToken;
         if (!refreshToken) {

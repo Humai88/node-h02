@@ -120,6 +120,10 @@ export const authService = {
     return await usersDBRepository.updateRefreshToken(userId, refreshToken);
   },
 
+  async invalidateRefreshToken(userId: string): Promise<boolean> {
+    return await usersDBRepository.invalidateRefreshToken(userId);
+  },
+
   async generateHash(password: string, salt: string) {
     const hash = await bcrypt.hash(password, salt);
     return hash

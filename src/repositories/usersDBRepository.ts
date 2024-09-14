@@ -90,6 +90,14 @@ export const usersDBRepository = {
     return result.modifiedCount === 1
   },
 
+  async invalidateRefreshToken(id: string): Promise<boolean> {
+    const objectUserId = new ObjectId(id);
+    const result = await usersCollection.updateOne(
+      { _id: objectUserId },
+      { $set: { refreshToken: '' } }
+    ) 
+    return result.modifiedCount === 1
+  },
   
   async deleteUser(id: string): Promise<boolean> {
     const objectBlogId = new ObjectId(id);

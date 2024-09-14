@@ -1,18 +1,32 @@
 import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
-import {  LoginSuccessViewModel } from '../../../models/UserModel';
+import { authService } from '../../../domains/auth-service';
 import { jwtService } from '../../../application/jwtService';
 
 export const logoutController = async (req: Request<any>, res: Response<null | ErrorResultModel>) => {
     try {
-            // const token = await jwtService.generateToken(req.user)
-            // return res
-            //     .status(200).send(token) 
-            return null
-    } catch (error) {
+        const refreshToken = req.cookies.refreshToken;
+        if (!refreshToken) {
+          res.sendStatus(204);
+          return;
+        }
+        const userId = await jwtService.getUserIdByRefreshToken(refreshToken);
+  
+        if (userId) {
+          await authService.invalidateRefreshToken(userId.toString());
+        }
+  
+        res.clearCookie('refreshToken', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict'
+        });
+  
+        return res.sendStatus(204); 
+      } catch (error) {
         return res.status(500).json({
             errorsMessages: [{ message: 'Internal server error', field: 'server' }]
         });
-    }
+      }
 
 };

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { jwtService } from '../../application/jwtService';
 import { usersQueryRepository } from '../../repositories/usersQueryRepository';
+import jwt from 'jsonwebtoken';
 
 export const authRefreshTokenMiddleware: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   const refreshToken = req.cookies.refreshToken;
@@ -12,7 +13,7 @@ export const authRefreshTokenMiddleware: RequestHandler = async (req: Request, r
   }
 
   try {
-    const userId = jwtService.getUserIdByRefreshToken(refreshToken);
+    const userId = await jwtService.getUserIdByRefreshToken(refreshToken);
     if (!userId) {
       return res.status(401).json({
         errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]  
@@ -30,8 +31,19 @@ export const authRefreshTokenMiddleware: RequestHandler = async (req: Request, r
     next();
     return
   } catch (error) {
-    return res.status(401).json({
-      errorsMessages: [{ message: 'Invalid or expired refresh token', field: 'refreshToken' }]  
-    });
+    console.error('Refresh token error:', error);
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({
+        errorsMessages: [{ message: 'Refresh token expired', field: 'refreshToken' }]  
+      });
+    } else if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(401).json({
+        errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]  
+      });
+    } else {
+      return res.status(500).json({
+        errorsMessages: [{ message: 'Internal server error', field: 'server' }]  
+      });
+    }
   }
 };
