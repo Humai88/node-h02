@@ -7,7 +7,7 @@ export const logoutController = async (req: Request<any>, res: Response<null | E
     try {
         const refreshToken = req.cookies.refreshToken;
         if (!refreshToken) {
-          res.sendStatus(204);
+          res.sendStatus(401);
           return;
         }
         const userId = await jwtService.getUserIdByRefreshToken(refreshToken);
