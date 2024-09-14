@@ -3,9 +3,10 @@ import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { jwtService } from '../../../application/jwtService';
 import { authService } from '../../../domains/auth-service';
 import { usersDBRepository } from '../../../repositories/usersDBRepository';
+import { LoginSuccessViewModel } from '../../../models/UserModel';
 
 
-export const refreshTokensController = async (req: Request<any>, res: Response<null | ErrorResultModel>) => {
+export const refreshTokensController = async (req: Request<any>, res: Response<LoginSuccessViewModel | ErrorResultModel>) => {
     try {
         const refreshToken = req.cookies.refreshToken;
         if (!refreshToken) {
@@ -21,7 +22,7 @@ export const refreshTokensController = async (req: Request<any>, res: Response<n
                 errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]   
             });
         }
-
+        const newAccessToken = await jwtService.generateToken(user)
         const newRefreshToken = await jwtService.generateRefreshToken(user);
         await authService.updateRefreshToken(user._id.toString(), newRefreshToken);
 
@@ -30,7 +31,7 @@ export const refreshTokensController = async (req: Request<any>, res: Response<n
           secure: true,
           maxAge: 20000
       });
-        return res.sendStatus(200)
+        return res.status(200).send(newAccessToken);
 
     } catch (error) {
         return res.status(500).json({
