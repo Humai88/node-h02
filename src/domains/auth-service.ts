@@ -111,6 +111,15 @@ export const authService = {
     }
   },
 
+  async saveRefreshToken(userId: string, refreshToken: string): Promise<boolean> {
+    return await usersDBRepository.saveRefreshToken(userId, refreshToken);
+  },
+
+
+  async updateRefreshToken(userId: string, refreshToken: string): Promise<boolean> {
+    return await usersDBRepository.updateRefreshToken(userId, refreshToken);
+  },
+
   async generateHash(password: string, salt: string) {
     const hash = await bcrypt.hash(password, salt);
     return hash
