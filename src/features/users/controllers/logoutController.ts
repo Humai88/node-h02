@@ -19,7 +19,6 @@ export const logoutController = async (req: Request<any>, res: Response<null | E
         res.clearCookie('refreshToken', {
           httpOnly: true,
           secure: true,
-          sameSite: 'strict'
         });
   
         return res.sendStatus(204); 

@@ -11,7 +11,7 @@ export const loginController = async (req: Request<any, null, LoginInputModel>, 
         if (!user) {
             return res.status(401).json({ errorsMessages: [{ message: 'User not found', field: 'loginOrEmail' }] })
         } else {
-            const token = await jwtService.generateToken(user)
+            const accessToken = await jwtService.generateToken(user)
             const refreshToken = await jwtService.generateRefreshToken(user);
             await authService.saveRefreshToken(user._id.toString(), refreshToken);
 
@@ -20,7 +20,7 @@ export const loginController = async (req: Request<any, null, LoginInputModel>, 
                 secure: true,
             });
             return res
-                .status(200).send(token)
+                .status(200).send(accessToken)
         }
     } catch (error) {
         return res.status(500).json({
