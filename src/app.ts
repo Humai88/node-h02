@@ -7,10 +7,12 @@ import { blogsRouter } from './routers/blogsRouter'
 import { usersRouter } from './routers/usersRouter'
 import { authRouter } from './routers/authRouter'
 import { commentsRouter } from './routers/commentsRouter'
+import cookieParser from 'cookie-parser';
  
 export const app = express()
 app.use(express.json())
 app.use(cors())
+app.use(cookieParser());
  
 app.get('/', (req, res) => {
     res.status(200).json({version: '1.0'})

@@ -10,8 +10,10 @@
     "jest:coverage": "jest -i --coverage"
   },
   "dependencies": {
+    "@types/cookie-parser": "^1.4.7",
     "@types/uuid": "^10.0.0",
     "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",

@@ -37,6 +37,7 @@ export interface UserDBViewModel {
   passwordHash: string,
   passwordSalt: string,
   createdByAdmin: boolean,
+  refreshToken?: string,
   emailConfirmation?: {
     confirmationCode: string,
     isConfirmed: boolean,

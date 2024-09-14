@@ -39,6 +39,11 @@ export const usersDBRepository = {
     return user
   },
 
+  async findUserById(id: string): Promise<UserDBViewModel | null> {
+    const objectUserId = new ObjectId(id);
+    const user = await usersCollection.findOne({ _id: objectUserId })
+    return user
+  },
 
   async updateEmailConfirmation(email: string, newConfirmationCode: string): Promise<boolean> {
     const result = await usersCollection.updateOne(
@@ -67,6 +72,33 @@ export const usersDBRepository = {
     return null
   },
 
+  async saveRefreshToken(id: string, refreshToken: string): Promise<boolean> {
+    const objectUserId = new ObjectId(id);
+    const result = await usersCollection.updateOne(
+      { _id: objectUserId },
+      { $set: { refreshToken: refreshToken } }
+    )
+    return result.modifiedCount === 1
+  },
+
+  async updateRefreshToken(id: string, refreshToken: string): Promise<boolean> {
+    const objectUserId = new ObjectId(id);
+    const result = await usersCollection.updateOne(
+      { _id: objectUserId },
+      { $set: { refreshToken: refreshToken } }
+    )
+    return result.modifiedCount === 1
+  },
+
+  async invalidateRefreshToken(id: string): Promise<boolean> {
+    const objectUserId = new ObjectId(id);
+    const result = await usersCollection.updateOne(
+      { _id: objectUserId },
+      { $set: { refreshToken: '' } }
+    ) 
+    return result.modifiedCount === 1
+  },
+  
   async deleteUser(id: string): Promise<boolean> {
     const objectBlogId = new ObjectId(id);
     const result = await usersCollection.deleteOne({ _id: objectBlogId });
