@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import { UserDBViewModel } from "../models/DBModel";
 import { LoginInputModel, UserInputModel } from "../models/UserModel";
 import { usersDBRepository } from "../repositories/usersDBRepository";
+import {tokenBlacklistRepository} from "../repositories/tokenBlacklistRepository";
 import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
@@ -120,9 +121,10 @@ export const authService = {
     return await usersDBRepository.updateRefreshToken(userId, refreshToken);
   },
 
-  async invalidateRefreshToken(userId: string): Promise<boolean> {
-    return await usersDBRepository.invalidateRefreshToken(userId);
+  async invalidateRefreshToken(token: string): Promise<void> {
+    await tokenBlacklistRepository.addToBlacklist(token);
   },
+
 
   async generateHash(password: string, salt: string) {
     const hash = await bcrypt.hash(password, salt);

@@ -9,6 +9,7 @@ export const SETTINGS = {
     BLOG_COLLECTION_NAME: process.env.BLOG_COLLECTION_NAME || 'blogs',
     POST_COLLECTION_NAME: process.env.POST_COLLECTION_NAME || 'posts',
     USER_COLLECTION_NAME: process.env.USER_COLLECTION_NAME || 'users',
+    BLACKLIST_COLLECTION_NAME: process.env.BLACKLIST_COLLECTION_NAME || 'blacklist',
     COMMENT_COLLECTION_NAME: process.env.COMMENT_COLLECTION_NAME || 'comments',
     PORT: process.env.PORT || 3003,
     JWT_SECRET: process.env.JWT_SECRET || '256',

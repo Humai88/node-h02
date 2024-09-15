@@ -21,13 +21,13 @@ export const refreshTokensController = async (req: Request<any>, res: Response<L
                 errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]   
             });
         }
-        const user = await usersDBRepository.findUserById(userId!.toString());
+        const user = await usersDBRepository.findUserById(userId.toString());
         if (!user) {
             return res.status(401).json({
                 errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]   
             });
         }
-        await authService.invalidateRefreshToken(userId.toString());
+        await authService.invalidateRefreshToken(refreshToken);
         const newAccessToken = await jwtService.generateToken(user)
         const newRefreshToken = await jwtService.generateRefreshToken(user);
         await authService.updateRefreshToken(user._id.toString(), newRefreshToken);

@@ -11,6 +11,7 @@ export const blogsCollection: Collection<BlogDBViewModel> = db.collection<BlogDB
 export const postsCollection: Collection<PostDBViewModel> = db.collection<PostDBViewModel>(SETTINGS.POST_COLLECTION_NAME)
 export const usersCollection: Collection<UserDBViewModel> = db.collection<UserDBViewModel>(SETTINGS.USER_COLLECTION_NAME)
 export const commentsCollection: Collection<CommentDBViewModel> = db.collection<CommentDBViewModel>(SETTINGS.COMMENT_COLLECTION_NAME)
+export const blacklistCollection: Collection<{ token: string, createdAt: Date }> = db.collection<{ token: string, createdAt: Date }>(SETTINGS.BLACKLIST_COLLECTION_NAME)
  
 // проверка подключения к бд
 export const runDB = async () => {

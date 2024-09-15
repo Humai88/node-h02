@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { jwtService } from '../../application/jwtService';
 import { usersQueryRepository } from '../../repositories/usersQueryRepository';
+import {tokenBlacklistRepository} from '../../repositories/tokenBlacklistRepository';
 import jwt from 'jsonwebtoken';
 
 export const authRefreshTokenMiddleware: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
@@ -10,6 +11,12 @@ export const authRefreshTokenMiddleware: RequestHandler = async (req: Request, r
     return res.status(401).json({
       errorsMessages: [{ message: 'No refresh token provided', field: 'refreshToken' }]  
     });
+  }
+  const isTokenBlacklisted = await tokenBlacklistRepository.isBlacklisted(refreshToken);
+  if (isTokenBlacklisted) {
+    return res.status(401).json({
+      errorsMessages: [{ message: 'Refresh token blacklisted', field: 'refreshToken' }]  
+    }); 
   }
 
   try {
