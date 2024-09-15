@@ -72,15 +72,6 @@ export const usersDBRepository = {
     return null
   },
 
-  async saveRefreshToken(id: string, refreshToken: string): Promise<boolean> {
-    const objectUserId = new ObjectId(id);
-    const result = await usersCollection.updateOne(
-      { _id: objectUserId },
-      { $set: { refreshToken: refreshToken } }
-    )
-    return result.modifiedCount === 1
-  },
-
   async updateRefreshToken(id: string, refreshToken: string): Promise<boolean> {
     const objectUserId = new ObjectId(id);
     const result = await usersCollection.updateOne(

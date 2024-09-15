@@ -13,7 +13,6 @@ export const loginController = async (req: Request<any, null, LoginInputModel>, 
         } else {
             const accessToken = await jwtService.generateToken(user)
             const refreshToken = await jwtService.generateRefreshToken(user);
-            await authService.saveRefreshToken(user._id.toString(), refreshToken);
 
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
