@@ -16,6 +16,11 @@ export const refreshTokensController = async (req: Request<any>, res: Response<L
         }
 
         const userId = await jwtService.getUserIdByRefreshToken(refreshToken);
+        if (!userId) {
+            return res.status(401).json({
+                errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]   
+            });
+        }
         const user = await usersDBRepository.findUserById(userId!.toString());
         if (!user) {
             return res.status(401).json({
