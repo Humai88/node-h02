@@ -1,6 +1,6 @@
 import { ObjectId} from "mongodb";
 import { blogsCollection, commentsCollection, postsCollection } from "../db/mongo-db"
-import { PostInputModel } from "../models/PostInputModel"
+import { PostInputModel } from "../models/PostModel"
 import { BlogDBViewModel, CommentDBViewModel, PostDBViewModel } from "../models/DBModel";
 import { CommentInputModel } from "../models/CommentModel";
 import { UserViewModel } from "../models/UserModel";

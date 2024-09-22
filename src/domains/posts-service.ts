@@ -1,5 +1,5 @@
 import { CommentInputModel } from "../models/CommentModel"
-import { PostInputModel } from "../models/PostInputModel"
+import { PostInputModel } from "../models/PostModel"
 import { UserViewModel } from "../models/UserModel"
 import { postsDBRepository } from "../repositories/postsDBRepository"
 

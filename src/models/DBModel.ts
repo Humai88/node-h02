@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb"
-import { BlogViewModel } from "./BlogViewModel"
-import { PostViewModel } from "./PostViewModel"
+import { BlogViewModel } from "./BlogModel"
+import { PostViewModel } from "./PostModel"
 import { CommentatorInfoModel } from "./CommentModel"
 
 export type DBModel = {

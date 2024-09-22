@@ -1,5 +1,5 @@
 import { blogsCollection } from "../db/mongo-db"
-import { BlogViewModel } from "../models/BlogViewModel";
+import { BlogViewModel } from "../models/BlogModel";
 import { BlogDBViewModel } from "../models/DBModel";
 import { PaginatorBlogViewModel, QueryBlogModel } from "../models/QueryModel";
 import { blogsDBRepository } from "./blogsDBRepository";
