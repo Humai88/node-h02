@@ -7,6 +7,9 @@ import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
 import { nodemailerAdapter, emailManager } from "../adapters/nodemailerAdapter";
+import { Request } from 'express';
+import {parseUserAgent} from "../helpers/authHelper";
+import {jwtService} from "../application/jwtService";
 
 export const authService = {
 
@@ -112,12 +115,30 @@ export const authService = {
     }
   },
 
-  async updateRefreshToken(userId: string, refreshToken: string): Promise<boolean> {
-    return await usersDBRepository.updateRefreshToken(userId, refreshToken);
+  async updateRefreshToken(refreshToken: string): Promise<boolean> {
+    return await usersDBRepository.updateRefreshToken(refreshToken);
   },
 
   async invalidateRefreshToken(token: string): Promise<void> {
     await tokenBlacklistRepository.addToBlacklist(token);
+  },
+
+  async saveDeviceSession (userId: string, req: Request ): Promise<boolean> {
+    const objectId = new ObjectId();
+    const userAgent = req.get('User-Agent') || 'Unknown Device';
+    const ip = req.ip || req.socket.remoteAddress || 'Unknown IP'; 
+    const title = parseUserAgent(userAgent);
+    const decoded = await jwtService.verifyRefreshToken(req.cookies.refreshToken);
+
+    const newSession = {
+      userId: userId,
+      ip: ip,
+      title: title,
+      lastActiveDate: new Date(decoded!.iat * 1000).toISOString(),
+      _id: objectId,
+      expiredAt: new Date(decoded!.exp * 1000).toISOString(),
+    }
+    return await usersDBRepository.saveDeviceSession(newSession);
   },
 
 

@@ -15,13 +15,13 @@ export const refreshTokensController = async (req: Request<any>, res: Response<L
             });
         }
 
-        const userId = await jwtService.getUserIdByRefreshToken(refreshToken);
-        if (!userId) {
+        const decoded  = await jwtService.verifyRefreshToken(refreshToken);
+        if (!decoded!.userId || !decoded!.deviceId) {
             return res.status(401).json({
                 errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]   
             });
         }
-        const user = await usersDBRepository.findUserById(userId.toString());
+        const user = await usersDBRepository.findUserById(decoded!.userId);
         if (!user) {
             return res.status(401).json({
                 errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]   
@@ -29,8 +29,8 @@ export const refreshTokensController = async (req: Request<any>, res: Response<L
         }
         await authService.invalidateRefreshToken(refreshToken);
         const newAccessToken = await jwtService.generateToken(user)
-        const newRefreshToken = await jwtService.generateRefreshToken(user);
-        await authService.updateRefreshToken(user._id.toString(), newRefreshToken);
+        const newRefreshToken = await jwtService.generateRefreshToken(user, decoded!.deviceId);
+        await authService.updateRefreshToken(newRefreshToken);
 
         res.cookie('refreshToken', newRefreshToken, {
           httpOnly: true,

@@ -37,6 +37,7 @@ export interface UserDBViewModel {
   passwordHash: string,
   passwordSalt: string,
   createdByAdmin: boolean,
+  refreshToken?: string,
   emailConfirmation?: {
     confirmationCode: string,
     isConfirmed: boolean,
@@ -50,4 +51,13 @@ export interface CommentDBViewModel {
   createdAt: string,  
   commentatorInfo: CommentatorInfoModel,
   postId: string
+}
+
+export interface DeviceDBViewModel {
+  _id: ObjectId,
+  ip: string
+  title: string
+  lastActiveDate: string
+  expiredAt: string
+  userId: string
 }

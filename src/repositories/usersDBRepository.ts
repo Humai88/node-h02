@@ -2,6 +2,9 @@ import { usersCollection } from "../db/mongo-db"
 import { ObjectId } from "mongodb";
 import { UserDBViewModel } from "../models/DBModel";
 import { add } from "date-fns";
+import { deviceSessionsCollection } from "../db/mongo-db"
+import { DeviceDBViewModel } from "../models/DBModel"
+import { jwtService } from '../application/jwtService';
 
 export const usersDBRepository = {
 
@@ -72,11 +75,14 @@ export const usersDBRepository = {
     return null
   },
 
-  async updateRefreshToken(id: string, refreshToken: string): Promise<boolean> {
-    const objectUserId = new ObjectId(id);
-    const result = await usersCollection.updateOne(
-      { _id: objectUserId },
-      { $set: { refreshToken: refreshToken } }
+  async updateRefreshToken(refreshToken: string): Promise<boolean> {
+    const decoded = await jwtService.verifyRefreshToken(refreshToken);
+    const result = await deviceSessionsCollection.updateOne(
+      { 
+        userId: decoded!.userId,
+        deviceId: decoded!.deviceId
+      },
+      { $set: { lastActiveDate:  new Date(decoded!.iat * 1000).toISOString() } }
     )
     return result.modifiedCount === 1
   },
@@ -94,6 +100,22 @@ export const usersDBRepository = {
     const objectBlogId = new ObjectId(id);
     const result = await usersCollection.deleteOne({ _id: objectBlogId });
     return result.deletedCount === 1
+  },
+
+  
+  async saveDeviceSession(session: DeviceDBViewModel ): Promise<any> {
+    const result = await deviceSessionsCollection.insertOne(session)
+    return result
+
+  },
+
+  
+  async findSessionByDeviceId(userId: string, deviceId: string): Promise<DeviceDBViewModel | null> {
+    const session = await deviceSessionsCollection.findOne({ 
+      userId: userId,
+      deviceId: deviceId
+    });
+    return session;
   },
 
 }

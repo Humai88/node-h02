@@ -7,6 +7,7 @@ import { blogsRouter } from './routers/blogsRouter'
 import { usersRouter } from './routers/usersRouter'
 import { authRouter } from './routers/authRouter'
 import { commentsRouter } from './routers/commentsRouter'
+import {securityDevicesRouter} from './routers/securityDevicesRouter'
 import cookieParser from 'cookie-parser';
  
 export const app = express()
@@ -23,4 +24,5 @@ app.use(SETTINGS.PATH.POSTS, postsRouter)
 app.use(SETTINGS.PATH.USERS, usersRouter)
 app.use(SETTINGS.PATH.AUTH, authRouter)
 app.use(SETTINGS.PATH.COMMENTS, commentsRouter)
+app.use(SETTINGS.PATH.SECURITY_DEVICES, securityDevicesRouter)
 app.use(SETTINGS.PATH.TEST, testRouter)

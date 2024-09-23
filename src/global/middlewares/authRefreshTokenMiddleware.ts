@@ -20,14 +20,14 @@ export const authRefreshTokenMiddleware: RequestHandler = async (req: Request, r
   }
 
   try {
-    const userId = await jwtService.getUserIdByRefreshToken(refreshToken);
-    if (!userId) {
+    const decoded = await jwtService.verifyRefreshToken(refreshToken);
+    if (!decoded!.userId) {
       return res.status(401).json({
         errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]  
       });
     }
 
-    const user = await usersQueryRepository.findUser(userId.toString());
+    const user = await usersQueryRepository.findUser(decoded!.userId);
     if (!user) {
       return res.status(401).json({ 
         errorsMessages: [{ message: 'User not found', field: 'user' }]  
