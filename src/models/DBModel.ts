@@ -57,7 +57,8 @@ export interface DeviceDBViewModel {
   _id: ObjectId,
   ip: string
   title: string
-  lastActiveDate: string
-  expiredAt: string
+  iat: number
+  exp: number
   userId: string
+  deviceId: string
 }

@@ -9,4 +9,5 @@ export const parseUserAgent = (userAgent: string): string => {
   }
   if (userAgent.includes("Mobile")) return "Mobile Device";
   return "Unknown Device";
+  
 }

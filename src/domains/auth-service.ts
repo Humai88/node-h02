@@ -2,14 +2,14 @@ import { ObjectId } from "mongodb";
 import { UserDBViewModel } from "../models/DBModel";
 import { LoginInputModel, UserInputModel } from "../models/UserModel";
 import { usersDBRepository } from "../repositories/usersDBRepository";
-import {tokenBlacklistRepository} from "../repositories/tokenBlacklistRepository";
+import { tokenBlacklistRepository } from "../repositories/tokenBlacklistRepository";
 import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
 import { nodemailerAdapter, emailManager } from "../adapters/nodemailerAdapter";
 import { Request } from 'express';
-import {parseUserAgent} from "../helpers/authHelper";
-import {jwtService} from "../application/jwtService";
+import { parseUserAgent } from "../helpers/authHelper";
+import { jwtService } from "../application/jwtService";
 
 export const authService = {
 
@@ -123,24 +123,29 @@ export const authService = {
     await tokenBlacklistRepository.addToBlacklist(token);
   },
 
-  async saveDeviceSession (userId: string, req: Request ): Promise<boolean> {
-    const objectId = new ObjectId();
-    const userAgent = req.get('User-Agent') || 'Unknown Device';
-    const ip = req.ip || req.socket.remoteAddress || 'Unknown IP'; 
-    const title = parseUserAgent(userAgent);
-    const decoded = await jwtService.verifyRefreshToken(req.cookies.refreshToken);
+  async saveDeviceSession(userId: string, req: Request, deviceId: string, tokenExp: number, tokenIat: number): Promise<boolean> {
+    try {
+      const objectId = new ObjectId();
+      const userAgent = req.get('User-Agent') || 'Unknown Device';
+      const ip = req.ip || req.socket.remoteAddress || 'Unknown IP'; 
+      const title = parseUserAgent(userAgent);
 
-    const newSession = {
-      userId: userId,
-      ip: ip,
-      title: title,
-      lastActiveDate: new Date(decoded!.iat * 1000).toISOString(),
-      _id: objectId,
-      expiredAt: new Date(decoded!.exp * 1000).toISOString(),
-    }
-    return await usersDBRepository.saveDeviceSession(newSession);
+      const newSession = {
+          userId: userId,
+          ip: ip,
+          title: title,
+          deviceId: deviceId,
+          exp: tokenExp,
+          iat: tokenIat,
+          _id: objectId
+      };
+
+      return await usersDBRepository.saveDeviceSession(newSession);
+  } catch (error) {
+      console.error('Error in authService.saveDeviceSession:', error);
+      return false;
+  }
   },
-
 
   async generateHash(password: string, salt: string) {
     const hash = await bcrypt.hash(password, salt);

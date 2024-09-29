@@ -79,20 +79,11 @@ export const usersDBRepository = {
     const decoded = await jwtService.verifyRefreshToken(refreshToken);
     const result = await deviceSessionsCollection.updateOne(
       { 
-        userId: decoded!.userId,
+        iat: decoded!.iat,
         deviceId: decoded!.deviceId
       },
       { $set: { lastActiveDate:  new Date(decoded!.iat * 1000).toISOString() } }
     )
-    return result.modifiedCount === 1
-  },
-
-  async invalidateRefreshToken(id: string): Promise<boolean> {
-    const objectUserId = new ObjectId(id);
-    const result = await usersCollection.updateOne(
-      { _id: objectUserId },
-      { $set: { refreshToken: '' } }
-    ) 
     return result.modifiedCount === 1
   },
   
@@ -103,12 +94,11 @@ export const usersDBRepository = {
   },
 
   
-  async saveDeviceSession(session: DeviceDBViewModel ): Promise<any> {
+  async saveDeviceSession(session: DeviceDBViewModel ): Promise<boolean> {
+    console.log('Attempting to save device session:', session);
     const result = await deviceSessionsCollection.insertOne(session)
-    return result
-
+    return result.acknowledged === true;
   },
-
   
   async findSessionByDeviceId(userId: string, deviceId: string): Promise<DeviceDBViewModel | null> {
     const session = await deviceSessionsCollection.findOne({ 
