@@ -48,17 +48,23 @@ export interface UserDBViewModel {
 export interface CommentDBViewModel {
   _id: ObjectId,
   content: string,
-  createdAt: string,  
+  createdAt: string,
   commentatorInfo: CommentatorInfoModel,
   postId: string
 }
 
 export interface DeviceDBViewModel {
-  _id: ObjectId,
+  _id: ObjectId
   ip: string
   title: string
   iat: number
   exp: number
   userId: string
   deviceId: string
+}
+
+export interface ApiRequestDBViewModel {
+  IP: string
+  URL: string
+  date: Date
 }
