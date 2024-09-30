@@ -8,29 +8,29 @@ import { LoginSuccessViewModel } from '../../../models/UserModel';
 
 export const refreshTokensController = async (req: Request<any>, res: Response<LoginSuccessViewModel | ErrorResultModel>) => {
     try {
-        const refreshToken = req.cookies.refreshToken;
-        if (!refreshToken) {
+        const oldRefreshToken = req.cookies.refreshToken;
+        if (!oldRefreshToken) {
             return res.status(401).json({
                 errorsMessages: [{ message: 'Refresh token is missing', field: 'refreshToken' }]  
             });
         }
 
-        const userId = await jwtService.getUserIdByRefreshToken(refreshToken);
-        if (!userId) {
+        const decoded  = await jwtService.verifyRefreshToken(oldRefreshToken);
+        if (!decoded!.userId || !decoded!.deviceId) {
             return res.status(401).json({
                 errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]   
             });
         }
-        const user = await usersDBRepository.findUserById(userId.toString());
+        const user = await usersDBRepository.findUserById(decoded!.userId);
         if (!user) {
             return res.status(401).json({
                 errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]   
             });
         }
-        await authService.invalidateRefreshToken(refreshToken);
+
         const newAccessToken = await jwtService.generateToken(user)
-        const newRefreshToken = await jwtService.generateRefreshToken(user);
-        await authService.updateRefreshToken(user._id.toString(), newRefreshToken);
+        const newRefreshToken = await jwtService.generateRefreshToken(user, decoded!.deviceId);
+        await authService.updateRefreshToken(oldRefreshToken, newRefreshToken);
 
         res.cookie('refreshToken', newRefreshToken, {
           httpOnly: true,

@@ -1,4 +1,4 @@
-import { PostViewModel } from "../models/PostViewModel"
+import { PostViewModel } from "../models/PostModel"
 import { CommentDBViewModel, PostDBViewModel } from "../models/DBModel";
 import { commentsCollection, postsCollection } from "../db/mongo-db";
 import { PaginatorCommentViewModel, PaginatorPostViewModel, QueryPostModel } from "../models/QueryModel";

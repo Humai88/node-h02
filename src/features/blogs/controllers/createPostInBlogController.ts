@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { PostInBlogInputModel } from '../../../models/BlogInputModel';
+import { PostInBlogInputModel } from '../../../models/BlogModel';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { blogsService } from '../../../domains/blogs-service';
-import { PostViewModel } from '../../../models/PostViewModel';
+import { PostViewModel } from '../../../models/PostModel';
 import { blogsQueryRepository } from '../../../repositories/blogsQueryRepository';
 import { postsQueryRepository } from '../../../repositories/postsQueryRepository';
 

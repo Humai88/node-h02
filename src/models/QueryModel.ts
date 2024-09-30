@@ -1,6 +1,6 @@
-import { BlogViewModel } from "./BlogViewModel"
+import { BlogViewModel } from "./BlogModel"
 import { CommentViewModel } from "./CommentModel"
-import { PostViewModel } from "./PostViewModel"
+import { PostViewModel } from "./PostModel"
 import { UserViewModel } from "./UserModel"
 
 

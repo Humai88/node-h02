@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
-import { PostViewModel } from '../../../models/PostViewModel';
+import { PostViewModel } from '../../../models/PostModel';
 import { ParamModel } from '../../../models/QueryModel';
 import { postsQueryRepository } from '../../../repositories/postsQueryRepository';
 

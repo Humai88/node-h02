@@ -2,11 +2,14 @@ import { ObjectId } from "mongodb";
 import { UserDBViewModel } from "../models/DBModel";
 import { LoginInputModel, UserInputModel } from "../models/UserModel";
 import { usersDBRepository } from "../repositories/usersDBRepository";
-import {tokenBlacklistRepository} from "../repositories/tokenBlacklistRepository";
+import { tokenBlacklistRepository } from "../repositories/tokenBlacklistRepository";
 import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
 import { nodemailerAdapter, emailManager } from "../adapters/nodemailerAdapter";
+import { Request } from 'express';
+import { parseUserAgent } from "../helpers/authHelper";
+import { jwtService } from "../application/jwtService";
 
 export const authService = {
 
@@ -112,18 +115,53 @@ export const authService = {
     }
   },
 
-  async updateRefreshToken(userId: string, refreshToken: string): Promise<boolean> {
-    return await usersDBRepository.updateRefreshToken(userId, refreshToken);
+  async updateRefreshToken(oldRefreshToken: string, newRefreshToken: string): Promise<boolean> {
+    return await usersDBRepository.updateRefreshToken(oldRefreshToken, newRefreshToken);
   },
 
-  async invalidateRefreshToken(token: string): Promise<void> {
-    await tokenBlacklistRepository.addToBlacklist(token);
+  async removeDevice(refreshToken: string): Promise<void> {
+    const decoded = await jwtService.verifyRefreshToken(refreshToken);
+    if (!decoded!.userId || !decoded!.deviceId) {
+      throw new Error('Invalid refresh token');
+    }
+    await usersDBRepository.removeDevice(decoded!.userId, decoded!.deviceId);
   },
 
+  async saveDeviceSession(userId: string, req: Request, deviceId: string, tokenExp: number, tokenIat: number): Promise<boolean> {
+    try {
+      const objectId = new ObjectId();
+      const userAgent = req.get('User-Agent') || 'Unknown Device';
+      const ip = req.ip || req.socket.remoteAddress || 'Unknown IP'; 
+      const title = parseUserAgent(userAgent);
+
+      const newSession = {
+          userId: userId,
+          ip: ip,
+          title: title,
+          deviceId: deviceId,
+          exp: tokenExp,
+          iat: tokenIat,
+          _id: objectId
+      };
+
+      return await usersDBRepository.saveDeviceSession(newSession);
+  } catch (error) {
+      console.error('Error in authService.saveDeviceSession:', error);
+      return false;
+  }
+  },
+
+  async removeOtherDeviceSessions(deviceId: string): Promise<void> {
+    await usersDBRepository.removeOtherDeviceSessions(deviceId);
+  },
 
   async generateHash(password: string, salt: string) {
     const hash = await bcrypt.hash(password, salt);
     return hash
+  },
+  
+  async removeSpecificDeviceSession(deviceId: string): Promise<void> {
+    await usersDBRepository.removeSpecificDeviceSession(deviceId);
   }
 
 }

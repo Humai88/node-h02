@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { BlogInputModel } from '../../../models/BlogInputModel';
-import { BlogViewModel } from '../../../models/BlogViewModel';
+import { BlogInputModel } from '../../../models/BlogModel';
+import { BlogViewModel } from '../../../models/BlogModel';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { blogsService } from '../../../domains/blogs-service';
 import { blogsQueryRepository } from '../../../repositories/blogsQueryRepository';

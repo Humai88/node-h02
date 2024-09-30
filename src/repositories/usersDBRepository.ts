@@ -2,6 +2,9 @@ import { usersCollection } from "../db/mongo-db"
 import { ObjectId } from "mongodb";
 import { UserDBViewModel } from "../models/DBModel";
 import { add } from "date-fns";
+import { deviceSessionsCollection } from "../db/mongo-db"
+import { DeviceDBViewModel } from "../models/DBModel"
+import { jwtService } from '../application/jwtService';
 
 export const usersDBRepository = {
 
@@ -72,21 +75,16 @@ export const usersDBRepository = {
     return null
   },
 
-  async updateRefreshToken(id: string, refreshToken: string): Promise<boolean> {
-    const objectUserId = new ObjectId(id);
-    const result = await usersCollection.updateOne(
-      { _id: objectUserId },
-      { $set: { refreshToken: refreshToken } }
+  async updateRefreshToken(oldRefreshToken: string, newRefreshToken: string): Promise<boolean> {
+    const oldDecoded = await jwtService.verifyRefreshToken(oldRefreshToken);
+    const decoded = await jwtService.verifyRefreshToken(newRefreshToken);
+    const result = await deviceSessionsCollection.updateOne(
+      { 
+        iat: oldDecoded!.iat,
+        deviceId: decoded!.deviceId
+      },
+      { $set: { iat: decoded!.iat} }
     )
-    return result.modifiedCount === 1
-  },
-
-  async invalidateRefreshToken(id: string): Promise<boolean> {
-    const objectUserId = new ObjectId(id);
-    const result = await usersCollection.updateOne(
-      { _id: objectUserId },
-      { $set: { refreshToken: '' } }
-    ) 
     return result.modifiedCount === 1
   },
   
@@ -94,6 +92,45 @@ export const usersDBRepository = {
     const objectBlogId = new ObjectId(id);
     const result = await usersCollection.deleteOne({ _id: objectBlogId });
     return result.deletedCount === 1
+  },
+
+  
+  async saveDeviceSession(session: DeviceDBViewModel ): Promise<boolean> {
+    console.log('Attempting to save device session:', session);
+    const result = await deviceSessionsCollection.insertOne(session)
+    return result.acknowledged === true;
+  },
+  
+  async findSessionByDeviceId(userId: string, deviceId: string): Promise<DeviceDBViewModel | null> {
+    const session = await deviceSessionsCollection.findOne({ 
+      userId: userId,
+      deviceId: deviceId
+    });
+    return session;
+  },
+
+  async removeDevice(userId: string, deviceId: string): Promise<void> {
+    const result = await deviceSessionsCollection.deleteOne({ 
+      userId: userId,
+      deviceId: deviceId
+    });
+    if (result.deletedCount !== 1) {
+      throw new Error('Failed to remove device session');
+    }
+  },
+
+  async removeOtherDeviceSessions(deviceId: string): Promise<void> {
+    const result = await deviceSessionsCollection.deleteMany({ deviceId: { $ne: deviceId } });
+    if (result.deletedCount === 0) {
+      throw new Error('Failed to remove all device sessions');
+    }
+  },
+
+  async removeSpecificDeviceSession(deviceId: string): Promise<void> {
+    const result = await deviceSessionsCollection.deleteOne({ deviceId: deviceId });
+    if (result.deletedCount !== 1) {
+      throw new Error('Failed to remove device session');
+    }
   },
 
 }

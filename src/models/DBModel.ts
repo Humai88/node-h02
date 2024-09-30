@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb"
-import { BlogViewModel } from "./BlogViewModel"
-import { PostViewModel } from "./PostViewModel"
+import { BlogViewModel } from "./BlogModel"
+import { PostViewModel } from "./PostModel"
 import { CommentatorInfoModel } from "./CommentModel"
 
 export type DBModel = {
@@ -37,6 +37,7 @@ export interface UserDBViewModel {
   passwordHash: string,
   passwordSalt: string,
   createdByAdmin: boolean,
+  refreshToken?: string,
   emailConfirmation?: {
     confirmationCode: string,
     isConfirmed: boolean,
@@ -47,7 +48,23 @@ export interface UserDBViewModel {
 export interface CommentDBViewModel {
   _id: ObjectId,
   content: string,
-  createdAt: string,  
+  createdAt: string,
   commentatorInfo: CommentatorInfoModel,
   postId: string
+}
+
+export interface DeviceDBViewModel {
+  _id: ObjectId
+  ip: string
+  title: string
+  iat: number
+  exp: number
+  userId: string
+  deviceId: string
+}
+
+export interface ApiRequestDBViewModel {
+  IP: string
+  URL: string
+  date: Date
 }

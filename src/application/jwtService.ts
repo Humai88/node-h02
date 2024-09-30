@@ -2,6 +2,7 @@ import { UserDBViewModel } from "../models/DBModel"
 import jwt from "jsonwebtoken"
 import { SETTINGS } from "../settings";
 import { ObjectId } from "mongodb";
+import {RefreshTokenPayload} from "../models/TokenModel"
 
 
 export const jwtService = {
@@ -12,17 +13,22 @@ export const jwtService = {
     }
   },
 
-  async generateRefreshToken(user: UserDBViewModel): Promise<string> {
-    const refreshToken = jwt.sign({ userId: user._id }, SETTINGS.REFRESH_TOKEN_SECRET, { expiresIn: '20s' });
+  async generateRefreshToken(user: UserDBViewModel, deviceId: string): Promise<string> {
+    const refreshToken = jwt.sign({ userId: user._id.toString(), deviceId: deviceId }, SETTINGS.REFRESH_TOKEN_SECRET, { expiresIn: '20s' });
     return refreshToken
   },
 
-  async getUserIdByRefreshToken(token: string): Promise<ObjectId | null> {
+  async verifyRefreshToken(token: string): Promise<RefreshTokenPayload | null> {
     try {
-      const result: any = jwt.verify(token, SETTINGS.REFRESH_TOKEN_SECRET);
-      return new ObjectId(result.userId)
+      const decoded = jwt.verify(token, SETTINGS.REFRESH_TOKEN_SECRET) as RefreshTokenPayload;
+      
+      if (!decoded.userId || !decoded.deviceId) {
+        throw new Error('Invalid token payload');
+      }
+      return decoded;
     } catch (error) {
-      return null
+      console.error('Error verifying refresh token:', error);
+      return null;
     }
   },
 

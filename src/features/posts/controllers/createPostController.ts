@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
-import { PostInputModel } from '../../../models/PostInputModel';
-import { PostViewModel } from '../../../models/PostViewModel';
+import { PostInputModel } from '../../../models/PostModel';
+import { PostViewModel } from '../../../models/PostModel';
 import { postsService } from '../../../domains/posts-service';
 import { postsQueryRepository } from '../../../repositories/postsQueryRepository';
 

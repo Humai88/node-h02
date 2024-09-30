@@ -1,5 +1,5 @@
 import { blogsCollection, postsCollection } from "../db/mongo-db"
-import { BlogInputModel, PostInBlogInputModel } from "../models/BlogInputModel"
+import { BlogInputModel, PostInBlogInputModel } from "../models/BlogModel"
 import {  ObjectId } from "mongodb";
 import { BlogDBViewModel, PostDBViewModel } from "../models/DBModel";
 
