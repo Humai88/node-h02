@@ -4,7 +4,6 @@ declare global {
   namespace Express {
       export interface Request {
           user: UserViewModel | null
-          postmanLogs?: string[];
       }
   }
 }

@@ -75,14 +75,15 @@ export const usersDBRepository = {
     return null
   },
 
-  async updateRefreshToken(refreshToken: string): Promise<boolean> {
-    const decoded = await jwtService.verifyRefreshToken(refreshToken);
+  async updateRefreshToken(oldRefreshToken: string, newRefreshToken: string): Promise<boolean> {
+    const oldDecoded = await jwtService.verifyRefreshToken(oldRefreshToken);
+    const decoded = await jwtService.verifyRefreshToken(newRefreshToken);
     const result = await deviceSessionsCollection.updateOne(
       { 
-        iat: decoded!.iat,
+        iat: oldDecoded!.iat,
         deviceId: decoded!.deviceId
       },
-      { $set: { lastActiveDate:  new Date(decoded!.iat * 1000).toISOString() } }
+      { $set: { iat: decoded!.iat} }
     )
     return result.modifiedCount === 1
   },
@@ -106,6 +107,30 @@ export const usersDBRepository = {
       deviceId: deviceId
     });
     return session;
+  },
+
+  async removeDevice(userId: string, deviceId: string): Promise<void> {
+    const result = await deviceSessionsCollection.deleteOne({ 
+      userId: userId,
+      deviceId: deviceId
+    });
+    if (result.deletedCount !== 1) {
+      throw new Error('Failed to remove device session');
+    }
+  },
+
+  async removeOtherDeviceSessions(deviceId: string): Promise<void> {
+    const result = await deviceSessionsCollection.deleteMany({ deviceId: { $ne: deviceId } });
+    if (result.deletedCount === 0) {
+      throw new Error('Failed to remove all device sessions');
+    }
+  },
+
+  async removeSpecificDeviceSession(deviceId: string): Promise<void> {
+    const result = await deviceSessionsCollection.deleteOne({ deviceId: deviceId });
+    if (result.deletedCount !== 1) {
+      throw new Error('Failed to remove device session');
+    }
   },
 
 }

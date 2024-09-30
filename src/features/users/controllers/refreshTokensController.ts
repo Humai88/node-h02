@@ -8,14 +8,14 @@ import { LoginSuccessViewModel } from '../../../models/UserModel';
 
 export const refreshTokensController = async (req: Request<any>, res: Response<LoginSuccessViewModel | ErrorResultModel>) => {
     try {
-        const refreshToken = req.cookies.refreshToken;
-        if (!refreshToken) {
+        const oldRefreshToken = req.cookies.refreshToken;
+        if (!oldRefreshToken) {
             return res.status(401).json({
                 errorsMessages: [{ message: 'Refresh token is missing', field: 'refreshToken' }]  
             });
         }
 
-        const decoded  = await jwtService.verifyRefreshToken(refreshToken);
+        const decoded  = await jwtService.verifyRefreshToken(oldRefreshToken);
         if (!decoded!.userId || !decoded!.deviceId) {
             return res.status(401).json({
                 errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]   
@@ -27,10 +27,10 @@ export const refreshTokensController = async (req: Request<any>, res: Response<L
                 errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]   
             });
         }
-        await authService.invalidateRefreshToken(refreshToken);
+
         const newAccessToken = await jwtService.generateToken(user)
         const newRefreshToken = await jwtService.generateRefreshToken(user, decoded!.deviceId);
-        await authService.updateRefreshToken(newRefreshToken);
+        await authService.updateRefreshToken(oldRefreshToken, newRefreshToken);
 
         res.cookie('refreshToken', newRefreshToken, {
           httpOnly: true,

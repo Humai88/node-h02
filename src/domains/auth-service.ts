@@ -115,12 +115,16 @@ export const authService = {
     }
   },
 
-  async updateRefreshToken(refreshToken: string): Promise<boolean> {
-    return await usersDBRepository.updateRefreshToken(refreshToken);
+  async updateRefreshToken(oldRefreshToken: string, newRefreshToken: string): Promise<boolean> {
+    return await usersDBRepository.updateRefreshToken(oldRefreshToken, newRefreshToken);
   },
 
-  async invalidateRefreshToken(token: string): Promise<void> {
-    await tokenBlacklistRepository.addToBlacklist(token);
+  async removeDevice(refreshToken: string): Promise<void> {
+    const decoded = await jwtService.verifyRefreshToken(refreshToken);
+    if (!decoded!.userId || !decoded!.deviceId) {
+      throw new Error('Invalid refresh token');
+    }
+    await usersDBRepository.removeDevice(decoded!.userId, decoded!.deviceId);
   },
 
   async saveDeviceSession(userId: string, req: Request, deviceId: string, tokenExp: number, tokenIat: number): Promise<boolean> {
@@ -147,9 +151,17 @@ export const authService = {
   }
   },
 
+  async removeOtherDeviceSessions(deviceId: string): Promise<void> {
+    await usersDBRepository.removeOtherDeviceSessions(deviceId);
+  },
+
   async generateHash(password: string, salt: string) {
     const hash = await bcrypt.hash(password, salt);
     return hash
+  },
+  
+  async removeSpecificDeviceSession(deviceId: string): Promise<void> {
+    await usersDBRepository.removeSpecificDeviceSession(deviceId);
   }
 
 }

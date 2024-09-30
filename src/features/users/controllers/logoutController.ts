@@ -18,7 +18,7 @@ export const logoutController = async (req: Request<any>, res: Response<null | E
       });
     }
 
-    await authService.invalidateRefreshToken(refreshToken);
+    await authService.removeDevice(refreshToken);
 
     res.clearCookie('refreshToken', {
       httpOnly: true,
