@@ -11,10 +11,14 @@ export const logoutController = async (req: Request<any>, res: Response<null | E
         errorsMessages: [{ message: 'Refresh token is missing', field: 'refreshToken' }]
       });
     }
-    const decoded = await jwtService.verifyRefreshToken(refreshToken);
-    if (!decoded!.userId || !decoded!.deviceId) {
+    try {
+      const decoded = await jwtService.verifyRefreshToken(refreshToken);
+      if (!decoded!.userId || !decoded!.deviceId) {
+        throw new Error('Invalid token payload');
+      }
+    } catch (tokenError) {
       return res.status(401).json({
-        errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]
+        errorsMessages: [{ message: 'Invalid or expired refresh token', field: 'refreshToken' }]
       });
     }
 
