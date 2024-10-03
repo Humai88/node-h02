@@ -83,7 +83,7 @@ export const usersDBRepository = {
         iat: oldDecoded!.iat,
         deviceId: decoded!.deviceId
       },
-      { $set: { iat: decoded!.iat} }
+      { $set: { iat: decoded!.iat, exp: decoded!.exp} }
     )
     return result.modifiedCount === 1
   },
