@@ -20,7 +20,7 @@ export const terminateSpecificDeviceSessionController = async (req: Request<{ de
         errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]
       });
     }
-    const sessionToRemove = await usersDBRepository.findSessionByDeviceId(decoded!.userId, deviceId);
+    const sessionToRemove = await usersDBRepository.findSessionByDeviceId(deviceId);
     if (!sessionToRemove) {
       return res.status(404).json({
         errorsMessages: [{ message: 'Session not found', field: 'deviceId' }]

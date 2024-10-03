@@ -101,9 +101,8 @@ export const usersDBRepository = {
     return result.acknowledged === true;
   },
   
-  async findSessionByDeviceId(userId: string, deviceId: string): Promise<DeviceDBViewModel | null> {
+  async findSessionByDeviceId(deviceId: string): Promise<DeviceDBViewModel | null> {
     const session = await deviceSessionsCollection.findOne({ 
-      userId: userId,
       deviceId: deviceId
     });
     return session;
