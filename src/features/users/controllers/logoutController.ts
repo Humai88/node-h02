@@ -11,6 +11,7 @@ export const logoutController = async (req: Request<any>, res: Response<null | E
         errorsMessages: [{ message: 'Refresh token is missing', field: 'refreshToken' }]
       });
     }
+    
     try {
       const decoded = await jwtService.verifyRefreshToken(refreshToken);
       if (!decoded!.userId || !decoded!.deviceId) {

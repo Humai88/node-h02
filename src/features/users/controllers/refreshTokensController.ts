@@ -11,32 +11,31 @@ export const refreshTokensController = async (req: Request<any>, res: Response<L
         const oldRefreshToken = req.cookies.refreshToken;
         if (!oldRefreshToken) {
             return res.status(401).json({
-                errorsMessages: [{ message: 'Refresh token is missing', field: 'refreshToken' }]  
+                errorsMessages: [{ message: 'Refresh token is missing', field: 'refreshToken' }]
             });
         }
 
-        const decoded  = await jwtService.verifyRefreshToken(oldRefreshToken);
-        if (!decoded!.userId || !decoded!.deviceId) {
+        try {
+            const decoded = await jwtService.verifyRefreshToken(oldRefreshToken);
+            if (!decoded!.userId || !decoded!.deviceId) {
+                throw new Error('Invalid token payload');
+            }
+            const user = await usersDBRepository.findUserById(decoded!.userId);
+            const newAccessToken = await jwtService.generateToken(user!)
+            const newRefreshToken = await jwtService.generateRefreshToken(user!, decoded!.deviceId);
+            await authService.updateRefreshToken(oldRefreshToken, newRefreshToken);
+
+            res.cookie('refreshToken', newRefreshToken, {
+                httpOnly: true,
+                secure: true,
+            });
+            return res.status(200).send(newAccessToken);
+        } catch (tokenError) {
             return res.status(401).json({
-                errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]   
-            });
-        }
-        const user = await usersDBRepository.findUserById(decoded!.userId);
-        if (!user) {
-            return res.status(401).json({
-                errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]   
+                errorsMessages: [{ message: 'Invalid or expired refresh token', field: 'refreshToken' }]
             });
         }
 
-        const newAccessToken = await jwtService.generateToken(user)
-        const newRefreshToken = await jwtService.generateRefreshToken(user, decoded!.deviceId);
-        await authService.updateRefreshToken(oldRefreshToken, newRefreshToken);
-
-        res.cookie('refreshToken', newRefreshToken, {
-          httpOnly: true,
-          secure: true,
-      });
-        return res.status(200).send(newAccessToken);
 
     } catch (error) {
         return res.status(500).json({
