@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { jwtService } from '../../../application/jwtService';
 import { authService } from '../../../domains/auth-service';
-import { usersDBRepository } from '../../../repositories/usersDBRepository';
 import { LoginSuccessViewModel } from '../../../models/UserModel';
 import {tokenBlacklistRepository} from '../../../repositories/tokenBlacklistRepository';
 
@@ -26,11 +25,10 @@ export const refreshTokensController = async (req: Request<any>, res: Response<L
                 errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]   
             });
         }
+        await tokenBlacklistRepository.addToBlacklist(oldRefreshToken);
 
-        // const user = await usersDBRepository.findUserById(decoded!.userId);
         const newAccessToken = await jwtService.generateToken(decoded!.userId);
         const newRefreshToken = await jwtService.generateRefreshToken(decoded!.userId, decoded!.deviceId);
-        await tokenBlacklistRepository.addToBlacklist(oldRefreshToken);
         await authService.updateRefreshToken(newRefreshToken);
 
         res.cookie('refreshToken', newRefreshToken, {
