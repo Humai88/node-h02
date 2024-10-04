@@ -23,7 +23,7 @@ export const logoutController = async (req: Request<any>, res: Response<null | E
 
     try {
       const decoded = await jwtService.verifyRefreshToken(refreshToken);
-      // const session = await usersDBRepository.findSessionByDeviceId(decoded!.deviceId)
+      const session = await usersDBRepository.findSessionByDeviceId(decoded!.deviceId)
       // if (!isTokenBlacklisted && !session) {
       //   return res.status(401).json({
       //     errorsMessages: [{ message: 'Session does not exist', field: 'refreshToken' }]
