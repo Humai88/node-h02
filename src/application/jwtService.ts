@@ -6,15 +6,15 @@ import {RefreshTokenPayload} from "../models/TokenModel"
 
 
 export const jwtService = {
-  async generateToken(user: UserDBViewModel): Promise<any> {
-    const token = jwt.sign({ userId: user._id }, SETTINGS.JWT_SECRET, { expiresIn: '10s' });
+  async generateToken(userId: string): Promise<any> {
+    const token = jwt.sign({ userId: userId }, SETTINGS.JWT_SECRET, { expiresIn: '10s' });
     return {
       accessToken: token
     }
   },
 
-  async generateRefreshToken(user: UserDBViewModel, deviceId: string): Promise<string> {
-    const refreshToken = jwt.sign({ userId: user._id.toString(), deviceId: deviceId }, SETTINGS.REFRESH_TOKEN_SECRET, { expiresIn: '20s' });
+  async generateRefreshToken(userId: string, deviceId: string): Promise<string> {
+    const refreshToken = jwt.sign({ userId: userId, deviceId: deviceId }, SETTINGS.REFRESH_TOKEN_SECRET, { expiresIn: '20s' });
     return refreshToken
   },
 

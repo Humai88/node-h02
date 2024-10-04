@@ -13,8 +13,8 @@ export const loginController = async (req: Request<any, null, LoginInputModel>, 
             return res.status(401).json({ errorsMessages: [{ message: 'User not found', field: 'loginOrEmail' }] })
         } else {
             const deviceId = uuidv4();
-            const accessToken = await jwtService.generateToken(user)
-            const refreshToken = await jwtService.generateRefreshToken(user, deviceId);
+            const accessToken = await jwtService.generateToken(user._id.toString());
+            const refreshToken = await jwtService.generateRefreshToken(user._id.toString(), deviceId);
             const decoded = await jwtService.verifyRefreshToken(refreshToken);
             const sessionSaved = await authService.saveDeviceSession(user._id.toString(), req, deviceId, decoded!.exp, decoded!.iat);
 

@@ -27,9 +27,9 @@ export const refreshTokensController = async (req: Request<any>, res: Response<L
             });
         }
 
-        const user = await usersDBRepository.findUserById(decoded!.userId);
-        const newAccessToken = await jwtService.generateToken(user!)
-        const newRefreshToken = await jwtService.generateRefreshToken(user!, decoded!.deviceId);
+        // const user = await usersDBRepository.findUserById(decoded!.userId);
+        const newAccessToken = await jwtService.generateToken(decoded!.userId);
+        const newRefreshToken = await jwtService.generateRefreshToken(decoded!.userId, decoded!.deviceId);
         await tokenBlacklistRepository.addToBlacklist(oldRefreshToken);
         await authService.updateRefreshToken(newRefreshToken);
 
