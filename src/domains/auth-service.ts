@@ -115,8 +115,8 @@ export const authService = {
     }
   },
 
-  async updateRefreshToken(oldRefreshToken: string, newRefreshToken: string): Promise<boolean> {
-    return await usersDBRepository.updateRefreshToken(oldRefreshToken, newRefreshToken);
+  async updateRefreshToken( newRefreshToken: string): Promise<boolean> {
+    return await usersDBRepository.updateRefreshToken(newRefreshToken);
   },
 
   async removeDevice(refreshToken: string): Promise<void> {

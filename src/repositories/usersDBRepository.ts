@@ -75,12 +75,10 @@ export const usersDBRepository = {
     return null
   },
 
-  async updateRefreshToken(oldRefreshToken: string, newRefreshToken: string): Promise<boolean> {
-    const oldDecoded = await jwtService.verifyRefreshToken(oldRefreshToken);
+  async updateRefreshToken(newRefreshToken: string): Promise<boolean> {
     const decoded = await jwtService.verifyRefreshToken(newRefreshToken);
     const result = await deviceSessionsCollection.updateOne(
       { 
-        iat: oldDecoded!.iat,
         deviceId: decoded!.deviceId
       },
       { $set: { iat: decoded!.iat, exp: decoded!.exp} }
@@ -104,6 +102,13 @@ export const usersDBRepository = {
   async findSessionByDeviceId(deviceId: string): Promise<DeviceDBViewModel | null> {
     const session = await deviceSessionsCollection.findOne({ 
       deviceId: deviceId
+    });
+    return session;
+  },
+  async findSessionByDeviceIdAndIat(deviceId: string, iat: number): Promise<DeviceDBViewModel | null> {
+    const session = await deviceSessionsCollection.findOne({ 
+      deviceId: deviceId,
+      iat: iat
     });
     return session;
   },

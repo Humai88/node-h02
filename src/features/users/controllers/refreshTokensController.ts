@@ -4,7 +4,7 @@ import { jwtService } from '../../../application/jwtService';
 import { authService } from '../../../domains/auth-service';
 import { usersDBRepository } from '../../../repositories/usersDBRepository';
 import { LoginSuccessViewModel } from '../../../models/UserModel';
-
+import {tokenBlacklistRepository} from '../../../repositories/tokenBlacklistRepository';
 
 export const refreshTokensController = async (req: Request<any>, res: Response<LoginSuccessViewModel | ErrorResultModel>) => {
     try {
@@ -25,7 +25,8 @@ export const refreshTokensController = async (req: Request<any>, res: Response<L
         const user = await usersDBRepository.findUserById(decoded!.userId);
         const newAccessToken = await jwtService.generateToken(user!)
         const newRefreshToken = await jwtService.generateRefreshToken(user!, decoded!.deviceId);
-        await authService.updateRefreshToken(oldRefreshToken, newRefreshToken);
+        await tokenBlacklistRepository.addToBlacklist(oldRefreshToken);
+        await authService.updateRefreshToken(newRefreshToken);
 
         res.cookie('refreshToken', newRefreshToken, {
           httpOnly: true,
