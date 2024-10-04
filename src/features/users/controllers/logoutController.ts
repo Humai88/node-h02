@@ -38,6 +38,7 @@ export const logoutController = async (req: Request<any>, res: Response<null | E
       });
     }
 
+    await tokenBlacklistRepository.addToBlacklist(refreshToken);
     await authService.removeDevice(refreshToken);
 
     res.clearCookie('refreshToken', {
