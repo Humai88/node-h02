@@ -13,22 +13,9 @@ export const logoutController = async (req: Request<any>, res: Response<null | E
         errorsMessages: [{ message: 'Refresh token is missing', field: 'refreshToken' }]
       });
     }
-    const isTokenBlacklisted = await tokenBlacklistRepository.isBlacklisted(refreshToken);
-    if (isTokenBlacklisted) {
-      return res.status(401).json({
-        errorsMessages: [{ message: 'Refresh token blacklisted', field: 'refreshToken' }]
-      });
-    }
-
 
     try {
       const decoded = await jwtService.verifyRefreshToken(refreshToken);
-      const session = await usersDBRepository.findSessionByDeviceId(decoded!.deviceId)
-      if (!isTokenBlacklisted && !session) {
-        return res.status(401).json({
-          errorsMessages: [{ message: 'Session does not exist', field: 'refreshToken' }]
-        });
-      }
       if (!decoded!.userId || !decoded!.deviceId) {
         throw new Error('Invalid token payload');
       }
