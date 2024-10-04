@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { authService } from '../../../domains/auth-service';
 import { jwtService } from '../../../application/jwtService';
-import {tokenBlacklistRepository} from '../../../repositories/tokenBlacklistRepository';
+import { tokenBlacklistRepository } from '../../../repositories/tokenBlacklistRepository';
+import { usersDBRepository } from '../../../repositories/usersDBRepository';
 
 export const logoutController = async (req: Request<any>, res: Response<null | ErrorResultModel>) => {
   try {
@@ -15,12 +16,19 @@ export const logoutController = async (req: Request<any>, res: Response<null | E
     const isTokenBlacklisted = await tokenBlacklistRepository.isBlacklisted(refreshToken);
     if (isTokenBlacklisted) {
       return res.status(401).json({
-        errorsMessages: [{ message: 'Refresh token blacklisted', field: 'refreshToken' }]  
-      }); 
+        errorsMessages: [{ message: 'Refresh token blacklisted', field: 'refreshToken' }]
+      });
     }
-    
+
+
     try {
       const decoded = await jwtService.verifyRefreshToken(refreshToken);
+      const session = await usersDBRepository.findSessionByDeviceId(decoded!.deviceId)
+      if (!isTokenBlacklisted && !session) {
+        return res.status(401).json({
+          errorsMessages: [{ message: 'Session does not exist', field: 'refreshToken' }]
+        });
+      }
       if (!decoded!.userId || !decoded!.deviceId) {
         throw new Error('Invalid token payload');
       }
