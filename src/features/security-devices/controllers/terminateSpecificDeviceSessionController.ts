@@ -3,6 +3,7 @@ import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { authService } from '../../../domains/auth-service';
 import { jwtService } from '../../../application/jwtService';
 import { usersDBRepository } from '../../../repositories/usersDBRepository';
+import {tokenBlacklistRepository} from '../../../repositories/tokenBlacklistRepository';
 
 export const terminateSpecificDeviceSessionController = async (req: Request<{ deviceId: string }>, res: Response<null | ErrorResultModel>) => {
   try {
@@ -32,6 +33,7 @@ export const terminateSpecificDeviceSessionController = async (req: Request<{ de
       });
     }
 
+    await tokenBlacklistRepository.addToBlacklist(refreshToken);
     await authService.removeSpecificDeviceSession(deviceId);
     return res.sendStatus(204);
 
