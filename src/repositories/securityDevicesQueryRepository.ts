@@ -5,7 +5,7 @@ import {DeviceDBViewModel} from '../models/DBModel'
 
 export const securityDevicesQueryRepository = {
 
-  async gerSessions(): Promise<DeviceViewModel[]> {
+  async getSessions(): Promise<DeviceViewModel[]> {
     const sessions = await deviceSessionsCollection.find({}).toArray()
     return sessions.map(session => this.mapCommentResult(session))
   },
@@ -19,11 +19,6 @@ export const securityDevicesQueryRepository = {
     }
     return sessionForOutput
   },
-
-  convertIatToString(iat: number): string {
-    const date = new Date(iat * 1000);
-    return date.toISOString();
-  }
 
 }
 

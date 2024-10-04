@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { authService } from '../../../domains/auth-service';
 import { jwtService } from '../../../application/jwtService';
+import {tokenBlacklistRepository} from '../../../repositories/tokenBlacklistRepository';
 
 export const logoutController = async (req: Request<any>, res: Response<null | ErrorResultModel>) => {
   try {
@@ -10,6 +11,12 @@ export const logoutController = async (req: Request<any>, res: Response<null | E
       return res.status(401).json({
         errorsMessages: [{ message: 'Refresh token is missing', field: 'refreshToken' }]
       });
+    }
+    const isTokenBlacklisted = await tokenBlacklistRepository.isBlacklisted(refreshToken);
+    if (isTokenBlacklisted) {
+      return res.status(401).json({
+        errorsMessages: [{ message: 'Refresh token blacklisted', field: 'refreshToken' }]  
+      }); 
     }
     
     try {

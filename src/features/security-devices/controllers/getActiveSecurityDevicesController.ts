@@ -5,7 +5,7 @@ import {securityDevicesQueryRepository} from '../../../repositories/securityDevi
 
 export const getActiveSecurityDevicesController = async (req: Request<any>, res: Response<DeviceViewModel[] | ErrorResultModel>) => {
     try {
-        const sessions = await securityDevicesQueryRepository.gerSessions()
+        const sessions = await securityDevicesQueryRepository.getSessions()
         return res
           .status(200)
           .json(sessions)

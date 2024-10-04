@@ -18,23 +18,23 @@ export const usersDBRepository = {
   },
 
   async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDBViewModel | null> {
-    const user = await usersCollection.findOne({
+    const user = await usersCollection.findOne({ 
       $or: [
         { login: { $regex: new RegExp(`^${loginOrEmail}$`, 'i') } },
         { email: { $regex: new RegExp(`^${loginOrEmail}$`, 'i') } }
       ]
     })
-    return user
+    return  user
   },
 
   async doesExistByLoginOrEmail(login: string, email: string): Promise<UserDBViewModel | null> {
-    const user = await usersCollection.findOne({
+    const user = await usersCollection.findOne({ 
       $or: [
         { login: { $regex: new RegExp(`^${login}$`, 'i') } },
         { email: { $regex: new RegExp(`^${email}$`, 'i') } }
       ]
     })
-    return user
+    return  user
   },
 
   async findUserByConfirmationCode(code: string): Promise<UserDBViewModel | null> {
@@ -65,7 +65,7 @@ export const usersDBRepository = {
   async confirmUser(id: string): Promise<UserDBViewModel | null> {
     const objectUserId = new ObjectId(id);
     const result = await usersCollection.updateOne(
-      { _id: objectUserId },
+      { _id: objectUserId },    
       { $set: { 'emailConfirmation.isConfirmed': true } }
     )
     if (result.modifiedCount === 1) {
@@ -78,44 +78,40 @@ export const usersDBRepository = {
   async updateRefreshToken(newRefreshToken: string): Promise<boolean> {
     const decoded = await jwtService.verifyRefreshToken(newRefreshToken);
     const result = await deviceSessionsCollection.updateOne(
-      {
+      { 
         deviceId: decoded!.deviceId
       },
-      {
-        $set: {
-          iat: decoded!.iat,
-          exp: decoded!.exp,
-          lastActiveDate: new Date()
-        }
-      }
+      { $set: { iat: decoded!.iat, 
+        exp: decoded!.exp,
+        lastActiveDate: new Date()} }
     )
-    if (result.modifiedCount === 0) {
+   if (result.modifiedCount === 0) {
       console.warn(`Failed to update refresh token for device ${decoded!.deviceId}`);
-    }
+  }
     return result.modifiedCount === 1
   },
-
+  
   async deleteUser(id: string): Promise<boolean> {
     const objectBlogId = new ObjectId(id);
     const result = await usersCollection.deleteOne({ _id: objectBlogId });
     return result.deletedCount === 1
   },
 
-
-  async saveDeviceSession(session: DeviceDBViewModel): Promise<boolean> {
+  
+  async saveDeviceSession(session: DeviceDBViewModel ): Promise<boolean> {
     console.log('Attempting to save device session:', session);
     const result = await deviceSessionsCollection.insertOne(session)
     return result.acknowledged === true;
   },
-
+  
   async findSessionByDeviceId(deviceId: string): Promise<DeviceDBViewModel | null> {
-    const session = await deviceSessionsCollection.findOne({
+    const session = await deviceSessionsCollection.findOne({ 
       deviceId: deviceId
     });
     return session;
   },
   async findSessionByDeviceIdAndIat(deviceId: string, iat: number): Promise<DeviceDBViewModel | null> {
-    const session = await deviceSessionsCollection.findOne({
+    const session = await deviceSessionsCollection.findOne({ 
       deviceId: deviceId,
       iat: iat
     });
@@ -123,7 +119,7 @@ export const usersDBRepository = {
   },
 
   async removeDevice(userId: string, deviceId: string): Promise<void> {
-    const result = await deviceSessionsCollection.deleteOne({
+    const result = await deviceSessionsCollection.deleteOne({ 
       userId: userId,
       deviceId: deviceId
     });
@@ -139,12 +135,28 @@ export const usersDBRepository = {
     }
   },
 
-  async removeSpecificDeviceSession(deviceId: string): Promise<void> {
+  // async removeSpecificDeviceSession(deviceId: string): Promise<void> {
+  //   const result = await deviceSessionsCollection.deleteOne({ deviceId: deviceId });
+  //   if (result.deletedCount !== 1) {
+  //     throw new Error('Failed to remove device session');
+  //   }
+  // },
+
+  async removeSpecificDeviceSession(deviceId: string): Promise<boolean> {
+    console.log(`Attempting to remove device session with ID: ${deviceId}`);
+    
     const result = await deviceSessionsCollection.deleteOne({ deviceId: deviceId });
-    if (result.deletedCount !== 1) {
-      throw new Error('Failed to remove device session');
+    
+    console.log(`Delete operation result:`, result);
+    
+    if (result.deletedCount === 1) {
+        console.log(`Successfully removed device session with ID: ${deviceId}`);
+        return true;
+    } else {
+        console.warn(`Failed to remove device session with ID: ${deviceId}. DeletedCount: ${result.deletedCount}`);
+        return false;
     }
-  },
+}
 
 }
 
