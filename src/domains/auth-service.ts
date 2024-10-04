@@ -141,7 +141,8 @@ export const authService = {
           deviceId: deviceId,
           exp: tokenExp,
           iat: tokenIat,
-          _id: objectId
+          _id: objectId,
+          lastActiveDate: new Date()
       };
 
       return await usersDBRepository.saveDeviceSession(newSession);

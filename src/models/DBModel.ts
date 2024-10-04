@@ -60,6 +60,7 @@ export interface DeviceDBViewModel {
   exp: number
   userId: string
   deviceId: string
+  lastActiveDate: Date
 }
 
 export interface ApiRequestDBViewModel {

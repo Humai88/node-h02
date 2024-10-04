@@ -15,7 +15,7 @@ export const securityDevicesQueryRepository = {
       deviceId: session.deviceId,
       title: session.title,
       ip: session.ip,
-      lastActiveDate: this.convertIatToString(session.iat),
+      lastActiveDate: session.lastActiveDate.toISOString(),
     }
     return sessionForOutput
   },
