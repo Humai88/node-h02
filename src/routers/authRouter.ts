@@ -9,16 +9,16 @@ import { registrationEmailResendingController } from '../features/users/controll
 import { refreshTokensController } from '../features/users/controllers/refreshTokensController'
 import { logoutController } from '../features/users/controllers/logoutController'
 import { userValidator, userResendValidator, userConfirmationValidator } from '../features/users/middlewares/userValidator'
-import {rateLimiter} from '../global/middlewares/rateLimiterMiddleware'
+import {loginRateLimiter, registrationRateLimiter, registrationConfirmationRateLimiter, registrationEmailResendingRateLimiter} from '../global/middlewares/rateLimiterMiddleware'
 
 
 export const authRouter = Router()
  
-authRouter.post('/login', rateLimiter, loginController)
+authRouter.post('/login', loginRateLimiter, loginController)
 authRouter.get('/me', authMiddleware, getUserInfoController)
-authRouter.post('/registration', rateLimiter, ...userValidator, registrationController)
-authRouter.post('/registration-confirmation', rateLimiter, userConfirmationValidator, registrationConfirmationController)
-authRouter.post('/registration-email-resending', rateLimiter, userResendValidator, registrationEmailResendingController)
+authRouter.post('/registration', registrationRateLimiter, ...userValidator, registrationController)
+authRouter.post('/registration-confirmation', registrationConfirmationRateLimiter, userConfirmationValidator, registrationConfirmationController)
+authRouter.post('/registration-email-resending', registrationEmailResendingRateLimiter, userResendValidator, registrationEmailResendingController)
 authRouter.post('/refresh-token', authRefreshTokenMiddleware, refreshTokensController)
 authRouter.post('/logout', authRefreshTokenMiddleware, logoutController)
 
