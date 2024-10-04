@@ -14,7 +14,12 @@ export const refreshTokensController = async (req: Request<any>, res: Response<L
                 errorsMessages: [{ message: 'Refresh token is missing', field: 'refreshToken' }]  
             });
         }
-
+        const isTokenBlacklisted = await tokenBlacklistRepository.isBlacklisted(oldRefreshToken);
+        if (isTokenBlacklisted) {
+          return res.status(401).json({
+            errorsMessages: [{ message: 'Refresh token blacklisted', field: 'refreshToken' }]  
+          }); 
+        }
         const decoded  = await jwtService.verifyRefreshToken(oldRefreshToken);
         if (!decoded!.userId || !decoded!.deviceId) {
             return res.status(401).json({
