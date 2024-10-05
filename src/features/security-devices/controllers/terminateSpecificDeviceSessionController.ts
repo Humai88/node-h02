@@ -33,7 +33,6 @@ export const terminateSpecificDeviceSessionController = async (req: Request<{ de
       });
     }
 
-    await tokenBlacklistRepository.addToBlacklist(refreshToken);
     await authService.removeSpecificDeviceSession(deviceId);
     return res.sendStatus(204);
 
