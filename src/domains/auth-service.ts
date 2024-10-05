@@ -151,8 +151,8 @@ export const authService = {
     return hash
   },
 
-  async removeSpecificDeviceSession(deviceId: string): Promise<boolean> {
-    return deviceSessionsDBRepository.removeSpecificDeviceSession(deviceId);
+  async removeSpecificDeviceSession(deviceId: string): Promise<void> {
+    await deviceSessionsDBRepository.removeSpecificDeviceSession(deviceId);
   }
 
 }

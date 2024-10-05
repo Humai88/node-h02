@@ -11,7 +11,6 @@ export const terminateAllDevicesSessionsController = async (req: Request<any>, r
     await authService.removeOtherDeviceSessions(payload!.deviceId);
     return res.sendStatus(204);
 
-
   } catch (error) {
     return res.status(500).json({
       errorsMessages: [{ message: 'Internal server error', field: 'server' }]
