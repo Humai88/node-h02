@@ -1,9 +1,9 @@
-import { UserDBViewModel } from "../models/DBModel"
 import jwt from "jsonwebtoken"
 import { SETTINGS } from "../settings";
 import { ObjectId } from "mongodb";
 import {RefreshTokenPayload} from "../models/TokenModel"
-
+import {TokenVerificationResult} from "../models/TokenModel"
+import { TokenExpiredError } from 'jsonwebtoken';
 
 export const jwtService = {
   async generateToken(userId: string): Promise<any> {
@@ -18,17 +18,20 @@ export const jwtService = {
     return refreshToken
   },
 
-  async verifyRefreshToken(token: string): Promise<RefreshTokenPayload | null> {
+  async verifyRefreshToken(token: string): Promise<TokenVerificationResult> {
     try {
       const decoded = jwt.verify(token, SETTINGS.REFRESH_TOKEN_SECRET) as RefreshTokenPayload;
       
       if (!decoded.userId || !decoded.deviceId) {
-        throw new Error('Invalid token payload');
+        return { isValid: false, isExpired: false, payload: null };
       }
-      return decoded;
+      return { isValid: true, isExpired: false, payload: decoded };
     } catch (error) {
       console.error('Error verifying refresh token:', error);
-      return null;
+      if (error instanceof TokenExpiredError) {
+        return { isValid: false, isExpired: true, payload: null };
+      }
+      return { isValid: false, isExpired: false, payload: null };
     }
   },
 

@@ -53,7 +53,7 @@ export interface CommentDBViewModel {
 }
 
 export interface DeviceDBViewModel {
-  _id: ObjectId
+  _id?: ObjectId
   ip: string
   title: string
   iat: number

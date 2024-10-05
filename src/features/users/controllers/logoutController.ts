@@ -2,8 +2,6 @@ import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { authService } from '../../../domains/auth-service';
 import { jwtService } from '../../../application/jwtService';
-import { tokenBlacklistRepository } from '../../../repositories/tokenBlacklistRepository';
-import { usersDBRepository } from '../../../repositories/usersDBRepository';
 
 export const logoutController = async (req: Request<any>, res: Response<null | ErrorResultModel>) => {
   try {
@@ -14,18 +12,27 @@ export const logoutController = async (req: Request<any>, res: Response<null | E
       });
     }
 
-    try {
-      const decoded = await jwtService.verifyRefreshToken(refreshToken);
-      if (!decoded!.userId || !decoded!.deviceId) {
-        throw new Error('Invalid token payload');
+    const verificationResult = await jwtService.verifyRefreshToken(refreshToken);
+
+    if (!verificationResult.isValid) {
+      if (verificationResult.isExpired) {
+        return res.status(401).json({
+          errorsMessages: [{ message: 'Refresh token has expired', field: 'refreshToken' }]
+        });
       }
-    } catch (tokenError) {
       return res.status(401).json({
-        errorsMessages: [{ message: 'Invalid or expired refresh token', field: 'refreshToken' }]
+        errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]
       });
     }
-
-    await tokenBlacklistRepository.addToBlacklist(refreshToken);
+  
+    const { payload } = verificationResult;
+  
+    if (!payload?.userId || !payload?.deviceId) {
+      return res.status(401).json({
+        errorsMessages: [{ message: 'Invalid token payload', field: 'refreshToken' }]
+      });
+    }
+    // await tokenBlacklistRepository.addToBlacklist(refreshToken);
     await authService.removeDevice(refreshToken);
 
     res.clearCookie('refreshToken', {

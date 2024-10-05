@@ -8,3 +8,9 @@ export type RefreshTokenPayload = {
   version?: number;
   aud?: string;  
 }
+
+export type TokenVerificationResult = {
+  isValid: boolean;
+  isExpired: boolean;
+  payload: RefreshTokenPayload | null;
+};

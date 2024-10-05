@@ -115,41 +115,40 @@ export const authService = {
     }
   },
 
-  async updateRefreshToken( newRefreshToken: string): Promise<boolean> {
+  async updateRefreshToken(newRefreshToken: string): Promise<boolean> {
     return await deviceSessionsDBRepository.updateRefreshToken(newRefreshToken);
   },
 
   async removeDevice(refreshToken: string): Promise<void> {
-    const decoded = await jwtService.verifyRefreshToken(refreshToken);
-    if (!decoded!.userId || !decoded!.deviceId) {
+    const verificationResult = await jwtService.verifyRefreshToken(refreshToken);
+    const { payload } = verificationResult
+    if (!payload!.userId || !payload!.deviceId) {
       throw new Error('Invalid refresh token');
     }
-    await deviceSessionsDBRepository.removeDevice(decoded!.userId, decoded!.deviceId);
+    await deviceSessionsDBRepository.removeDevice(payload!.userId, payload!.deviceId);
   },
 
   async saveDeviceSession(userId: string, req: Request, deviceId: string, tokenExp: number, tokenIat: number): Promise<boolean> {
     try {
-      const objectId = new ObjectId();
       const userAgent = req.get('User-Agent') || 'Unknown Device';
-      const ip = req.ip || req.socket.remoteAddress || 'Unknown IP'; 
+      const ip = req.ip || req.socket.remoteAddress || 'Unknown IP';
       const title = parseUserAgent(userAgent);
 
       const newSession = {
-          userId: userId,
-          ip: ip,
-          title: title,
-          deviceId: deviceId,
-          exp: tokenExp,
-          iat: tokenIat,
-          _id: objectId,
-          lastActiveDate: new Date()
+        userId: userId,
+        ip: ip,
+        title: title,
+        deviceId: deviceId,
+        exp: tokenExp,
+        iat: tokenIat,
+        lastActiveDate: new Date()
       };
 
       return await deviceSessionsDBRepository.saveDeviceSession(newSession);
-  } catch (error) {
+    } catch (error) {
       console.error('Error in authService.saveDeviceSession:', error);
       return false;
-  }
+    }
   },
 
   async removeOtherDeviceSessions(deviceId: string): Promise<void> {
@@ -160,7 +159,7 @@ export const authService = {
     const hash = await bcrypt.hash(password, salt);
     return hash
   },
-  
+
   async removeSpecificDeviceSession(deviceId: string): Promise<void> {
     await deviceSessionsDBRepository.removeSpecificDeviceSession(deviceId);
   }

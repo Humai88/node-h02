@@ -15,10 +15,24 @@ export const terminateSpecificDeviceSessionController = async (req: Request<{ de
       });
     }
 
-    const decoded = await jwtService.verifyRefreshToken(refreshToken);
-    if (!decoded!.userId || !decoded!.deviceId) {
+    const verificationResult = await jwtService.verifyRefreshToken(refreshToken);
+
+    if (!verificationResult.isValid) {
+      if (verificationResult.isExpired) {
+        return res.status(401).json({
+          errorsMessages: [{ message: 'Refresh token has expired', field: 'refreshToken' }]
+        });
+      }
       return res.status(401).json({
         errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]
+      });
+    }
+  
+    const { payload } = verificationResult;
+  
+    if (!payload?.userId || !payload?.deviceId) {
+      return res.status(401).json({
+        errorsMessages: [{ message: 'Invalid token payload', field: 'refreshToken' }]
       });
     }
     const sessionToRemove = await deviceSessionsDBRepository.findSessionByDeviceId(deviceId);
@@ -27,7 +41,7 @@ export const terminateSpecificDeviceSessionController = async (req: Request<{ de
         errorsMessages: [{ message: 'Session not found', field: 'deviceId' }]
       });
     }
-    if (sessionToRemove.userId !== decoded!.userId) {
+    if (sessionToRemove.userId !== payload.userId) {
       return res.status(403).json({
         errorsMessages: [{ message: 'Forbidden: Cannot delete session of another user', field: 'deviceId' }]
       });

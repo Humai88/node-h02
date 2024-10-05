@@ -12,14 +12,28 @@ export const terminateAllDevicesSessionsController = async (req: Request<any>, r
       });
     }
 
-    const decoded = await jwtService.verifyRefreshToken(refreshToken);
-    if (!decoded!.userId || !decoded!.deviceId) {
+    const verificationResult = await jwtService.verifyRefreshToken(refreshToken);
+
+    if (!verificationResult.isValid) {
+      if (verificationResult.isExpired) {
+        return res.status(401).json({
+          errorsMessages: [{ message: 'Refresh token has expired', field: 'refreshToken' }]
+        });
+      }
       return res.status(401).json({
         errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]
       });
     }
+  
+    const { payload } = verificationResult;
+  
+    if (!payload?.userId || !payload?.deviceId) {
+      return res.status(401).json({
+        errorsMessages: [{ message: 'Invalid token payload', field: 'refreshToken' }]
+      });
+    }
 
-    await authService.removeOtherDeviceSessions(decoded!.deviceId);
+    await authService.removeOtherDeviceSessions(payload.deviceId);
     return res.sendStatus(204);
 
 

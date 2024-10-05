@@ -20,14 +20,29 @@ export const authRefreshTokenMiddleware: RequestHandler = async (req: Request, r
   }
 
   try {
-    const decoded = await jwtService.verifyRefreshToken(refreshToken);
-    if (!decoded!.userId) {
-      return res.status(401).json({
-        errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]  
-      });
+  
+    const verificationResult = await jwtService.verifyRefreshToken(refreshToken);
+
+    if (!verificationResult.isValid) {
+        if (verificationResult.isExpired) {
+            return res.status(401).json({
+                errorsMessages: [{ message: 'Refresh token has expired', field: 'refreshToken' }]
+            });
+        }
+        return res.status(401).json({
+            errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]
+        });
     }
 
-    const user = await usersQueryRepository.findUser(decoded!.userId);
+    const { payload } = verificationResult;
+
+    if (!payload?.userId || !payload?.deviceId) {
+        return res.status(401).json({
+            errorsMessages: [{ message: 'Invalid token payload', field: 'refreshToken' }]
+        });
+    }
+
+    const user = await usersQueryRepository.findUser(payload.userId);
     if (!user) {
       return res.status(401).json({ 
         errorsMessages: [{ message: 'User not found', field: 'user' }]  
