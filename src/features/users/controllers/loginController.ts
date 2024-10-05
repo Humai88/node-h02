@@ -16,18 +16,6 @@ export const loginController = async (req: Request<any, null, LoginInputModel>, 
             const accessToken = await jwtService.generateToken(user._id.toString());
             const refreshToken = await jwtService.generateRefreshToken(user._id.toString(), deviceId);
             const verificationResult = await jwtService.verifyRefreshToken(refreshToken);
-
-            if (!verificationResult.isValid) {
-              if (verificationResult.isExpired) {
-                return res.status(401).json({
-                  errorsMessages: [{ message: 'Refresh token has expired', field: 'refreshToken' }]
-                });
-              }
-              return res.status(401).json({
-                errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]
-              });
-            }
-          
             const { payload } = verificationResult;
           
             if (!payload?.userId || !payload?.deviceId) {

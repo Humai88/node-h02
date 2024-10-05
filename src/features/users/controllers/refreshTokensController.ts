@@ -9,39 +9,20 @@ export const refreshTokensController = async (req: Request<any>, res: Response<L
         const oldRefreshToken = req.cookies.refreshToken;
         if (!oldRefreshToken) {
             return res.status(401).json({
-                errorsMessages: [{ message: 'Refresh token is missing', field: 'refreshToken' }]  
+                errorsMessages: [{ message: 'Refresh token is missing', field: 'refreshToken' }]
             });
         }
- 
+
         const verificationResult = await jwtService.verifyRefreshToken(oldRefreshToken);
-
-  if (!verificationResult.isValid) {
-    if (verificationResult.isExpired) {
-      return res.status(401).json({
-        errorsMessages: [{ message: 'Refresh token has expired', field: 'refreshToken' }]
-      });
-    }
-    return res.status(401).json({
-      errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]
-    });
-  }
-
-  const { payload } = verificationResult;
-
-  if (!payload?.userId || !payload?.deviceId) {
-    return res.status(401).json({
-      errorsMessages: [{ message: 'Invalid token payload', field: 'refreshToken' }]
-    });
-  }
-        
-        const newAccessToken = await jwtService.generateToken(payload.userId);
-        const newRefreshToken = await jwtService.generateRefreshToken(payload.userId, payload.deviceId);
+        const { payload } = verificationResult;
+        const newAccessToken = await jwtService.generateToken(payload!.userId);
+        const newRefreshToken = await jwtService.generateRefreshToken(payload!.userId, payload!.deviceId);
         await authService.updateRefreshToken(newRefreshToken);
 
         res.cookie('refreshToken', newRefreshToken, {
-          httpOnly: true,
-          secure: true,
-      });
+            httpOnly: true,
+            secure: true,
+        });
         return res.status(200).send(newAccessToken);
 
     } catch (error) {
