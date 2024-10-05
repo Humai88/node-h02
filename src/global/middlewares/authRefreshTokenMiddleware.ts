@@ -3,6 +3,7 @@ import { jwtService } from '../../application/jwtService';
 import { usersQueryRepository } from '../../repositories/usersQueryRepository';
 import {tokenBlacklistRepository} from '../../repositories/tokenBlacklistRepository';
 import jwt from 'jsonwebtoken';
+import {deviceSessionsDBRepository} from '../../repositories/deviceSessionsDBRepository';
 
 export const authRefreshTokenMiddleware: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   const refreshToken = req.cookies.refreshToken;
@@ -40,6 +41,19 @@ export const authRefreshTokenMiddleware: RequestHandler = async (req: Request, r
         return res.status(401).json({
             errorsMessages: [{ message: 'Invalid token payload', field: 'refreshToken' }]
         });
+    }
+
+    const session = await deviceSessionsDBRepository.findSessionByDeviceId(payload.deviceId);
+    if (!session) {
+      return res.status(401).json({
+        errorsMessages: [{ message: 'Session not found', field: 'deviceId' }]
+      });
+    }
+
+    if (session.iat !== payload.iat) {
+      return res.status(401).json({
+        errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]
+      });
     }
 
     const user = await usersQueryRepository.findUser(payload.userId);
