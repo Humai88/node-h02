@@ -5,17 +5,19 @@ import { jwtService } from '../application/jwtService';
 export const deviceSessionsDBRepository = {
 
   async updateRefreshToken(newRefreshToken: string): Promise<boolean> {
-    const decoded = await jwtService.verifyRefreshToken(newRefreshToken);
+    const verificationResult = await jwtService.verifyRefreshToken(newRefreshToken);
+    const { payload } = verificationResult;
+
     const result = await deviceSessionsCollection.updateOne(
       { 
-        deviceId: decoded!.deviceId
+        deviceId: payload!.deviceId
       },
-      { $set: { iat: decoded!.iat, 
-        exp: decoded!.exp,
+      { $set: { iat: payload!.iat, 
+        exp: payload!.exp,
         lastActiveDate: new Date()} }
     )
    if (result.modifiedCount === 0) {
-      console.warn(`Failed to update refresh token for device ${decoded!.deviceId}`);
+      console.warn(`Failed to update refresh token for device ${payload!.deviceId}`);
   }
     return result.modifiedCount === 1
   },
