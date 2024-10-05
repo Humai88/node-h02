@@ -9,7 +9,7 @@ import { add } from "date-fns";
 import { nodemailerAdapter, emailManager } from "../adapters/nodemailerAdapter";
 import { Request } from 'express';
 import { parseUserAgent } from "../helpers/authHelper";
-import { jwtService } from "../application/jwtService";
+
 
 export const authService = {
 
@@ -118,15 +118,6 @@ export const authService = {
   async updateRefreshToken(newRefreshToken: string): Promise<boolean> {
     return await deviceSessionsDBRepository.updateRefreshToken(newRefreshToken);
   },
-
-  // async removeDevice(refreshToken: string): Promise<void> {
-  //   const verificationResult = await jwtService.verifyRefreshToken(refreshToken);
-  //   const { payload } = verificationResult
-  //   if (!payload!.userId || !payload!.deviceId) {
-  //     throw new Error('Invalid refresh token');
-  //   }
-  //   await deviceSessionsDBRepository.removeDevice(payload!.userId, payload!.deviceId);
-  // },
 
   async saveDeviceSession(userId: string, req: Request, deviceId: string, tokenExp: number, tokenIat: number): Promise<boolean> {
     try {
