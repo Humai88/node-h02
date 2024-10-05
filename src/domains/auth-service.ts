@@ -119,14 +119,14 @@ export const authService = {
     return await deviceSessionsDBRepository.updateRefreshToken(newRefreshToken);
   },
 
-  async removeDevice(refreshToken: string): Promise<void> {
-    const verificationResult = await jwtService.verifyRefreshToken(refreshToken);
-    const { payload } = verificationResult
-    if (!payload!.userId || !payload!.deviceId) {
-      throw new Error('Invalid refresh token');
-    }
-    await deviceSessionsDBRepository.removeDevice(payload!.userId, payload!.deviceId);
-  },
+  // async removeDevice(refreshToken: string): Promise<void> {
+  //   const verificationResult = await jwtService.verifyRefreshToken(refreshToken);
+  //   const { payload } = verificationResult
+  //   if (!payload!.userId || !payload!.deviceId) {
+  //     throw new Error('Invalid refresh token');
+  //   }
+  //   await deviceSessionsDBRepository.removeDevice(payload!.userId, payload!.deviceId);
+  // },
 
   async saveDeviceSession(userId: string, req: Request, deviceId: string, tokenExp: number, tokenIat: number): Promise<boolean> {
     try {

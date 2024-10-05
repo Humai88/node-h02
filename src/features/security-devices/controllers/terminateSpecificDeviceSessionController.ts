@@ -12,12 +12,13 @@ export const terminateSpecificDeviceSessionController = async (req: Request<{ de
     const verificationResult = await jwtService.verifyRefreshToken(refreshToken);
     const { payload } = verificationResult;
     const sessionToRemove = await deviceSessionsDBRepository.findSessionByDeviceId(deviceId);
-    
+
     if (!sessionToRemove) {
       return res.status(404).json({
         errorsMessages: [{ message: 'Session not found', field: 'deviceId' }]
       });
     }
+    
     if (sessionToRemove.userId !== payload!.userId) {
       return res.status(403).json({
         errorsMessages: [{ message: 'Forbidden: Cannot delete session of another user', field: 'deviceId' }]
