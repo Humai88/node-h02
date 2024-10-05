@@ -135,12 +135,23 @@ export const usersDBRepository = {
     }
   },
 
+  // async removeSpecificDeviceSession(deviceId: string): Promise<void> {
+  //   const result = await deviceSessionsCollection.deleteOne({ deviceId: deviceId });
+  //   if (result.deletedCount !== 1) {
+  //     throw new Error('Failed to remove device session');
+  //   }
+  // },
+
   async removeSpecificDeviceSession(deviceId: string): Promise<void> {
+    console.log(`Attempting to remove device session with ID: ${deviceId}`);
     const result = await deviceSessionsCollection.deleteOne({ deviceId: deviceId });
+    console.log(`Deletion result: ${JSON.stringify(result)}`);
     if (result.deletedCount !== 1) {
+      console.error(`Failed to remove device session. DeletedCount: ${result.deletedCount}`);
       throw new Error('Failed to remove device session');
     }
-  },
+    console.log(`Successfully removed device session with ID: ${deviceId}`);
+  }
 
 }
 
