@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { blogsCollection, commentsCollection, postsCollection, usersCollection, deviceSessionsCollection, blacklistCollection } from '../../db/mongo-db';
+import { blogsCollection, commentsCollection, postsCollection, usersCollection, deviceSessionsCollection } from '../../db/mongo-db';
 
 export const deleteAllDataController = async (req: Request, res: Response): Promise<any> => {
   try {
@@ -8,7 +8,6 @@ export const deleteAllDataController = async (req: Request, res: Response): Prom
     await usersCollection.deleteMany({});
     await commentsCollection.deleteMany({});
     await deviceSessionsCollection.deleteMany({});
-    await blacklistCollection.deleteMany({});
     return res
       .sendStatus(204)
   } catch (error) {

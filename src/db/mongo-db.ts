@@ -13,7 +13,6 @@ export const usersCollection: Collection<UserDBViewModel> = db.collection<UserDB
 export const commentsCollection: Collection<CommentDBViewModel> = db.collection<CommentDBViewModel>(SETTINGS.COMMENT_COLLECTION_NAME)
 export const deviceSessionsCollection: Collection<DeviceDBViewModel> = db.collection<DeviceDBViewModel>(SETTINGS.DEVICE_SESSIONS_COLLECTION_NAME)
 export const apiRequestsCollection: Collection<ApiRequestDBViewModel> = db.collection<ApiRequestDBViewModel>(SETTINGS.API_REQUESTS_COLLECTION_NAME)
-export const blacklistCollection: Collection<{ token: string, createdAt: Date }> = db.collection<{ token: string, createdAt: Date }>(SETTINGS.BLACKLIST_COLLECTION_NAME)
  
 // проверка подключения к бд
 export const runDB = async () => {
