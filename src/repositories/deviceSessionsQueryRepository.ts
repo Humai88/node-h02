@@ -3,7 +3,7 @@ import {DeviceViewModel} from '../models/DeviceModel'
 import {DeviceDBViewModel} from '../models/DBModel'
 
 
-export const securityDevicesQueryRepository = {
+export const deviceSessionsQueryRepository = {
 
   async getSessions(): Promise<DeviceViewModel[]> {
     const sessions = await deviceSessionsCollection.find({}).toArray()

@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { UserDBViewModel } from "../models/DBModel";
 import { LoginInputModel, UserInputModel } from "../models/UserModel";
 import { usersDBRepository } from "../repositories/usersDBRepository";
-import { tokenBlacklistRepository } from "../repositories/tokenBlacklistRepository";
+import { deviceSessionsDBRepository } from "../repositories/deviceSessionsDBRepository";
 import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
@@ -116,7 +116,7 @@ export const authService = {
   },
 
   async updateRefreshToken( newRefreshToken: string): Promise<boolean> {
-    return await usersDBRepository.updateRefreshToken(newRefreshToken);
+    return await deviceSessionsDBRepository.updateRefreshToken(newRefreshToken);
   },
 
   async removeDevice(refreshToken: string): Promise<void> {
@@ -124,7 +124,7 @@ export const authService = {
     if (!decoded!.userId || !decoded!.deviceId) {
       throw new Error('Invalid refresh token');
     }
-    await usersDBRepository.removeDevice(decoded!.userId, decoded!.deviceId);
+    await deviceSessionsDBRepository.removeDevice(decoded!.userId, decoded!.deviceId);
   },
 
   async saveDeviceSession(userId: string, req: Request, deviceId: string, tokenExp: number, tokenIat: number): Promise<boolean> {
@@ -145,7 +145,7 @@ export const authService = {
           lastActiveDate: new Date()
       };
 
-      return await usersDBRepository.saveDeviceSession(newSession);
+      return await deviceSessionsDBRepository.saveDeviceSession(newSession);
   } catch (error) {
       console.error('Error in authService.saveDeviceSession:', error);
       return false;
@@ -153,7 +153,7 @@ export const authService = {
   },
 
   async removeOtherDeviceSessions(deviceId: string): Promise<void> {
-    await usersDBRepository.removeOtherDeviceSessions(deviceId);
+    await deviceSessionsDBRepository.removeOtherDeviceSessions(deviceId);
   },
 
   async generateHash(password: string, salt: string) {
@@ -162,7 +162,7 @@ export const authService = {
   },
   
   async removeSpecificDeviceSession(deviceId: string): Promise<void> {
-    await usersDBRepository.removeSpecificDeviceSession(deviceId);
+    await deviceSessionsDBRepository.removeSpecificDeviceSession(deviceId);
   }
 
 }

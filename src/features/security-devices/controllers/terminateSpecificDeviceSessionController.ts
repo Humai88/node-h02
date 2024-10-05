@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { authService } from '../../../domains/auth-service';
 import { jwtService } from '../../../application/jwtService';
-import { usersDBRepository } from '../../../repositories/usersDBRepository';
+import { deviceSessionsDBRepository } from '../../../repositories/deviceSessionsDBRepository';
 
 
 export const terminateSpecificDeviceSessionController = async (req: Request<{ deviceId: string }>, res: Response<null | ErrorResultModel>) => {
@@ -21,7 +21,7 @@ export const terminateSpecificDeviceSessionController = async (req: Request<{ de
         errorsMessages: [{ message: 'Invalid refresh token', field: 'refreshToken' }]
       });
     }
-    const sessionToRemove = await usersDBRepository.findSessionByDeviceId(deviceId);
+    const sessionToRemove = await deviceSessionsDBRepository.findSessionByDeviceId(deviceId);
     if (!sessionToRemove) {
       return res.status(404).json({
         errorsMessages: [{ message: 'Session not found', field: 'deviceId' }]
