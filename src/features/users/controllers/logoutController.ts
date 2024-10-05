@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ErrorResultModel } from '../../../models/ErrorResultModel';
 import { authService } from '../../../domains/auth-service';
 import { jwtService } from '../../../application/jwtService';
+import { tokenBlacklistRepository } from '../../../repositories/tokenBlacklistRepository';
 
 export const logoutController = async (req: Request<any>, res: Response<null | ErrorResultModel>) => {
   try {
@@ -32,7 +33,7 @@ export const logoutController = async (req: Request<any>, res: Response<null | E
         errorsMessages: [{ message: 'Invalid token payload', field: 'refreshToken' }]
       });
     }
-    // await tokenBlacklistRepository.addToBlacklist(refreshToken);
+    await tokenBlacklistRepository.addToBlacklist(refreshToken);
     await authService.removeDevice(refreshToken);
 
     res.clearCookie('refreshToken', {
