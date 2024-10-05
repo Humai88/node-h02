@@ -50,11 +50,9 @@ export const deviceSessionsDBRepository = {
     }
   },
 
-  async removeSpecificDeviceSession(deviceId: string): Promise<void> {
+  async removeSpecificDeviceSession(deviceId: string): Promise<boolean> {
     const result = await deviceSessionsCollection.deleteOne({ deviceId: deviceId });
-    if (result.deletedCount !== 1) {
-      throw new Error('Failed to remove device session');
-    }
+    return result.deletedCount === 1
   },
 
 

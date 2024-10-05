@@ -18,14 +18,20 @@ export const terminateSpecificDeviceSessionController = async (req: Request<{ de
         errorsMessages: [{ message: 'Session not found', field: 'deviceId' }]
       });
     }
-    
+
     if (sessionToRemove.userId !== payload!.userId) {
       return res.status(403).json({
         errorsMessages: [{ message: 'Forbidden: Cannot delete session of another user', field: 'deviceId' }]
       });
     }
 
-    await authService.removeSpecificDeviceSession(deviceId);
+    const deletedSession =   await authService.removeSpecificDeviceSession(deviceId);
+    if (!deletedSession) {
+      return res.status(404).json({
+        errorsMessages: [{ message: 'Session not found', field: 'deviceId' }]
+      });
+    }
+  
     return res.sendStatus(204);
 
 
