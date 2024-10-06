@@ -5,8 +5,8 @@ import {DeviceDBViewModel} from '../models/DBModel'
 
 export const deviceSessionsQueryRepository = {
 
-  async getSessions(): Promise<DeviceViewModel[]> {
-    const sessions = await deviceSessionsCollection.find({}).toArray()
+  async getSessions(userId:string): Promise<DeviceViewModel[]> {
+    const sessions = await deviceSessionsCollection.find({ userId: userId }).toArray();
     return sessions.map(session => this.mapCommentResult(session))
   },
 
