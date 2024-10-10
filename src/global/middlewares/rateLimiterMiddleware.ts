@@ -20,3 +20,5 @@ export const loginRateLimiter = createRateLimiter('login');
 export const registrationRateLimiter = createRateLimiter('registration');
 export const registrationConfirmationRateLimiter = createRateLimiter('registration-confirmation');
 export const registrationEmailResendingRateLimiter = createRateLimiter('registration-email-resending');
+export const passwordRecoveryRateLimiter = createRateLimiter('password-recovery');
+export const createNewPasswordRateLimiter = createRateLimiter('new-password');

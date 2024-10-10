@@ -41,7 +41,11 @@ export interface UserDBViewModel {
     confirmationCode: string,
     isConfirmed: boolean,
     expirationDate: Date
-  }
+  },
+  passwordRecovery?: {
+    recoveryCode: string,
+    expirationDate: Date
+  } | null
 }
 
 export interface CommentDBViewModel {

@@ -8,8 +8,10 @@ import { registrationConfirmationController } from '../features/users/controller
 import { registrationEmailResendingController } from '../features/users/controllers/registrationEmailResendingController'
 import { refreshTokensController } from '../features/users/controllers/refreshTokensController'
 import { logoutController } from '../features/users/controllers/logoutController'
-import { userValidator, userResendValidator, userConfirmationValidator } from '../features/users/middlewares/userValidator'
-import {loginRateLimiter, registrationRateLimiter, registrationConfirmationRateLimiter, registrationEmailResendingRateLimiter} from '../global/middlewares/rateLimiterMiddleware'
+import { userValidator, emailValidator, userConfirmationValidator, passwordRecoveryValidator } from '../features/users/middlewares/userValidator'
+import {loginRateLimiter, registrationRateLimiter, registrationConfirmationRateLimiter, registrationEmailResendingRateLimiter, passwordRecoveryRateLimiter, createNewPasswordRateLimiter} from '../global/middlewares/rateLimiterMiddleware'
+import {passwordRecoveryController} from '../features/users/controllers/passwordRecoveryController'
+import {createNewPasswordController} from '../features/users/controllers/createNewPasswordController'
 
 
 export const authRouter = Router()
@@ -18,7 +20,10 @@ authRouter.post('/login', loginRateLimiter, loginController)
 authRouter.get('/me', authMiddleware, getUserInfoController)
 authRouter.post('/registration', registrationRateLimiter, ...userValidator, registrationController)
 authRouter.post('/registration-confirmation', registrationConfirmationRateLimiter, userConfirmationValidator, registrationConfirmationController)
-authRouter.post('/registration-email-resending', registrationEmailResendingRateLimiter, userResendValidator, registrationEmailResendingController)
+authRouter.post('/registration-email-resending', registrationEmailResendingRateLimiter, emailValidator, registrationEmailResendingController)
 authRouter.post('/refresh-token', authRefreshTokenMiddleware, refreshTokensController)
 authRouter.post('/logout', authRefreshTokenMiddleware, logoutController)
+authRouter.post('/password-recovery', passwordRecoveryRateLimiter, emailValidator, passwordRecoveryController)
+authRouter.post('/new-password', createNewPasswordRateLimiter, passwordRecoveryValidator, createNewPasswordController)
+
 

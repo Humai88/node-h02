@@ -15,7 +15,14 @@ export const userConfirmationValidator = [
   inputErrors
 ];
 
-export const userResendValidator = [
+export const passwordRecoveryValidator = [
+  body('recoveryCode').isUUID().withMessage('Invalid confirmation code format'),
+  body('newPassword').trim().isLength({ min: 6, max: 20 }).withMessage('Password must be between 6 and 20 characters'),
+  inputErrors
+];
+
+
+export const emailValidator = [
   body('email').trim().matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).withMessage('Invalid email format'),
   inputErrors
 ];
