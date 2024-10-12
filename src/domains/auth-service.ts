@@ -59,8 +59,8 @@ export const authService = {
 
     await nodemailerAdapter.sendEmail(
       user.email,
-      user.emailConfirmation.confirmationCode,
-      emailManager.registrationEmail
+      emailManager.registrationEmail,
+      {your_confirmation_code: user.emailConfirmation.confirmationCode}
     );
   },
 
@@ -104,8 +104,8 @@ export const authService = {
       await usersDBRepository.updateEmailConfirmation(user.email, newConfirmationCode);
       await nodemailerAdapter.sendEmail(
         user.email,
-        newConfirmationCode,
-        emailManager.registrationEmail
+        emailManager.registrationEmail,
+        {your_confirmation_code: newConfirmationCode}
       );
 
       return true;
@@ -153,6 +153,41 @@ export const authService = {
 
   async removeSpecificDeviceSession(deviceId: string): Promise<void> {
     await deviceSessionsDBRepository.removeSpecificDeviceSession(deviceId);
+  },
+
+  async createNewPassword(recoveryCode: string, newPassword: string): Promise<boolean> {
+    const user = await usersDBRepository.findUserByRecoveryCode(recoveryCode);
+    if (!user) {
+      return false
+    }
+    if (user.passwordRecovery!.expirationDate < new Date()) {
+      return false
+    }
+
+    const passwordSalt = await bcrypt.genSalt(10);
+    const passwordHash = await this.generateHash(newPassword, passwordSalt);
+    const updatedUser = await usersDBRepository.updateUserPassword(user._id.toString(), passwordHash, passwordSalt);
+    if (!updatedUser) {
+      return false
+    }
+    await nodemailerAdapter.sendEmail(
+      user.email,
+      emailManager.passwordRecoveryEmail,
+      {your_recovery_code: recoveryCode}
+    );
+    return true
+  },
+
+  async passwordRecovery(email: string): Promise<boolean> {
+    const user = await usersDBRepository.findUserByLoginOrEmail(email);
+    const recoveryCode = randomUUID();
+    user && await usersDBRepository.updatePasswordRecovery(user._id.toString(), recoveryCode);
+    await nodemailerAdapter.sendEmail(
+      email,
+      emailManager.passwordRecoveryEmail,
+      {your_recovery_code: recoveryCode}
+    );
+    return true
   }
 
 }

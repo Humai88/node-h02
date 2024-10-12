@@ -80,6 +80,40 @@ export const usersDBRepository = {
     return result.deletedCount === 1
   },
 
+  async findUserByRecoveryCode(code: string): Promise<UserDBViewModel | null> {
+    const user = await usersCollection.findOne({ 'passwordRecovery.recoveryCode': code })
+    return user
+  },
+
+  async updateUserPassword(id: string, newPasswordHash: string, newPasswordSalt: string): Promise<boolean> {
+    const objectUserId = new ObjectId(id);
+    const result = await usersCollection.updateOne(
+      { _id: objectUserId },  
+      { 
+        $set: {
+          passwordHash: newPasswordHash,
+          passwordSalt: newPasswordSalt,
+          passwordRecovery: null
+        }
+      } 
+    )
+    return result.modifiedCount === 1
+  },
+
+  async updatePasswordRecovery(id: string, recoveryCode: string): Promise<boolean> {
+    const objectUserId = new ObjectId(id);
+    const result = await usersCollection.updateOne(
+      { _id: objectUserId },
+      {
+        $set: {
+          'passwordRecovery.recoveryCode': recoveryCode,
+          'passwordRecovery.expirationDate': add(new Date(), { hours: 1, minutes: 30 }),
+        }
+      }
+    );
+    return result.modifiedCount === 1;
+  }
+
 
 }
 

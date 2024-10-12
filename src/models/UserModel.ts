@@ -34,8 +34,16 @@ export interface RegistrationEmailResendingModel {
   email: string,
 }
 
-
 export interface EmailConfirmationType {
-    subject: string,
-    body: string,
+  subject: string,
+  body: string,
+}
+
+export interface PasswordRecoveryInputModel {
+  email: string,
+}
+
+export interface NewPasswordRecoveryInputModel {
+  newPassword: string,
+  recoveryCode: string
 }

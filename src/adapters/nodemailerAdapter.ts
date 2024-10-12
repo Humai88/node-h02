@@ -10,12 +10,15 @@ const transporter = nodemailer.createTransport({
 });
 
 
-const getEmailBody = (template: string, confirmationCode: string): string => {
-  return template.replace('{{your_confirmation_code}}', confirmationCode);
+const getEmailBody = (template: string, replacements: Record<string, string>): string => {
+  return Object.entries(replacements).reduce((body, [key, value]) => {
+    const regex = new RegExp(`{{${key}}}`, 'g');
+    return body.replace(regex, value);
+  }, template);
 };
 
 export const nodemailerAdapter = {
-  async sendEmail(to: string, confirmationCode: string, emailTemplate: EmailConfirmationType): Promise<void> {
+  async sendEmail(to: string, emailTemplate: EmailConfirmationType, replacements: Record<string, string>): Promise<void> {
     const mailOptions = {
       from: {
         name: 'BLOG',
@@ -23,7 +26,7 @@ export const nodemailerAdapter = {
       },
       to: to,
       subject: emailTemplate.subject,
-      html: getEmailBody(emailTemplate.body, confirmationCode)
+      html: getEmailBody(emailTemplate.body, replacements)
     };
 
     try {
@@ -44,6 +47,15 @@ export const emailManager = {
    <h1>Thank for your registration</h1>
       <p>To finish registration please follow the link below:
       <a href='https://somesite.com/confirm-email?code={{your_confirmation_code}}'>complete registration</a>
+   </p>
+    `
+  },
+  passwordRecoveryEmail: {
+    subject: 'Password Recovery',
+    body: `
+   <h1>Password Recovery</h1>
+      <p>To recover your password please follow the link below:
+      <a href='https://somesite.com/password-recovery?recoveryCode={{your_recovery_code}}'>recover password</a>
    </p>
     `
   }
