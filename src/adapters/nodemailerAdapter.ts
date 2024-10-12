@@ -55,7 +55,7 @@ export const emailManager = {
     body: `
    <h1>Password Recovery</h1>
       <p>To recover your password please follow the link below:
-      <a href='https://somesite.com/password-recovery?recoveryCode={{your_recovery_code'}}>recover password</a>
+      <a href='https://somesite.com/password-recovery?recoveryCode={{your_recovery_code}}'>recover password</a>
    </p>
     `
   }
